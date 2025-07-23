@@ -1,6 +1,6 @@
 ﻿namespace MultiShop.Catalog.Entities
 {
-    public class ProductImages
+    public class ProductImage
     {
         public string ProductImagesID { get; set; } // MongoDB'de benzersiz kimlik olarak kullanılacak
         public string ProductImage1 { get; set; } //Birden fazla ürünün resmi varsa yolunu birden fazla tabloda tutacağız.
