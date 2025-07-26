@@ -9,11 +9,11 @@ namespace MultiShop.Catalog.Controllers
     //ProductDetailController, ürün detaylarını yöneten bir API denetleyicisidir.
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductDetailController : ControllerBase
+    public class ProductDetailsController : ControllerBase
     {
         private readonly IProductDetailService _ProductDetailService; // ProductDetail Service için Dependency Injection 
 
-        public ProductDetailController(IProductDetailService ProductDetailService)
+        public ProductDetailsController(IProductDetailService ProductDetailService)
         {
             _ProductDetailService = ProductDetailService; // Constructor üzerinden ProductDetail Service'i alıyoruz
         }
