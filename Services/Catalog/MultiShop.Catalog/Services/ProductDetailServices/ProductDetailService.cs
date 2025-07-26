@@ -2,10 +2,9 @@
 using MongoDB.Driver;
 using MultiShop.Catalog.DTOs.ProductDetailDTOs;
 using MultiShop.Catalog.Entities;
-using MultiShop.Catalog.Services.ProductDetailServices;
 using MultiShop.Catalog.Settings;
 
-namespace MultiShop.Catalog.Services.ProductDetailDetailServices
+namespace MultiShop.Catalog.Services.ProductDetailServices
 {
     public class ProductDetailService : IProductDetailService
     {

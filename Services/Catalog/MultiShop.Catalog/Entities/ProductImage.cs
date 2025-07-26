@@ -13,6 +13,7 @@ namespace MultiShop.Catalog.Entities
         public string ProductImage2 { get; set; } //İkinci resim için
         public string ProductImage3 { get; set; } //Üçüncü resim için
         public string ProductID { get; set; } //Ürün ile ilişkili hale getirmek için ProductID ekledik.
+        [BsonIgnore] // Bu attribute, MongoDB'de bu property'nin serileştirilmemesini sağlar.
         public Product Product { get; set; } //Product tablosuyla ilişki ekledik.
 
     }

@@ -12,6 +12,7 @@ namespace MultiShop.Catalog.Entities
         public string ProductDetailDescription { get; set; } // Ürün Detay Açıklamasını Tuttuk.
         public string ProductDetailInfo { get; set; } //Ürün Detay Bilgilerini Tuttuk.,
         public string ProductID { get; set; } //Ürün ile ilişkili olduğu için Ürün ID'sini aldık.
+        [BsonIgnore] // Bu attribute, MongoDB'de bu property'nin serileştirilmemesini sağlar.
         public Product Product { get; set; } //Product tablosuyla ilişki ekledik.
     }
 }
