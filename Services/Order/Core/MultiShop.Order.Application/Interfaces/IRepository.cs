@@ -11,9 +11,9 @@ namespace MultiShop.Order.Application.Interfaces
     {
         Task<List<T>> GetAllAsync(); // T türünden tüm kayıtları asenkron olarak getirir
         Task<T> GetByIDAsync(int id); // T türünden bir kaydı ID'sine göre asenkron olarak getirir
-        Task<T> CreateAsync(T entity); // T türünden yeni bir kayıt oluşturur ve asenkron olarak döner
-        Task<T> UpdateAsync(T entity); // T türünden mevcut bir kaydı günceller ve asenkron olarak döner
-        Task<T> DeleteAsync(T entity); // T türünden mevcut bir kaydı siler ve asenkron olarak döner
+        Task CreateAsync(T entity); // T türünden yeni bir kayıt oluşturur ve asenkron olarak döner
+        Task UpdateAsync(T entity); // T türünden mevcut bir kaydı günceller ve asenkron olarak döner
+        Task DeleteAsync(T entity); // T türünden mevcut bir kaydı siler ve asenkron olarak döner
         Task<T> GetByFilterAsync(Expression<Func<T, bool>> filter); // T türünden bir kaydı belirli bir filtreye göre asenkron olarak getirir. T bizim giriş olacak bool bizim çıkış olacak filtreleme işlemi için kullanılır
 
     }
