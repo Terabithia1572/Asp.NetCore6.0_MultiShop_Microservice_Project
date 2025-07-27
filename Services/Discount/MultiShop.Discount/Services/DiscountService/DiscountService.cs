@@ -46,7 +46,7 @@ namespace MultiShop.Discount.Services.DiscountService
 
         public async Task DeleteDiscountCouponAsync(int couponID)
         {
-            string query = "delete from Coupon where CouponID=@couponID";
+            string query = "delete from Coupons where CouponID=@couponID";
             // Kuponu silmek için gerekli olan SQL sorgusunu tanımlar.
             var parameters = new DynamicParameters();
             // Dapper için kullanılacak dinamik parametre nesnesi oluşturulur.
