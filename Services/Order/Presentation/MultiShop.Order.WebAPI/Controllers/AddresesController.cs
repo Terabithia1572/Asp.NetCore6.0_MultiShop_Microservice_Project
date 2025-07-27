@@ -49,7 +49,7 @@ namespace MultiShop.Order.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> AddressListByID(int id)
+        public async Task<IActionResult> GetAddressByID(int id)
         {
             var values = await _getAddressByIDQueryHandler.Handle(new GetAddressByIDQuery(id));
             // Verilen ID'ye sahip adres bilgisini asenkron olarak getirir.
