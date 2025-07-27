@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MultiShop.Order.Application.Features.CQRS.Queries.OrderDetailQueries
 {
-    public class GetOrderDetailQuery
+    public class GetOrderDetailByIDQuery
     {
         public int OrderDetailID { get; set; } // Sipariş Detay ID'si, her sipariş detayı için benzersiz bir kimlik
 
-        public GetOrderDetailQuery(int orderDetailID) //Constructor geçerli sipariş detayını almak için kullanılır
+        public GetOrderDetailByIDQuery(int orderDetailID) //Constructor geçerli sipariş detayını almak için kullanılır
         {
             OrderDetailID = orderDetailID; // Sipariş Detay ID'sini alır
         }
