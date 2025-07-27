@@ -1,6 +1,6 @@
-﻿namespace MultiShop.Discount.DTOs
+﻿namespace MultiShop.Discount.DTOs.DiscountCouponDTOs
 {
-    public class GetByIDCouponDTO
+    public class ResultDiscountCouponDTO
     {
         public int CouponID { get; set; } //Kupon ID 'sini tuttuk.
         public string CouponCode { get; set; } //Kupon Kodunu tuttuk.

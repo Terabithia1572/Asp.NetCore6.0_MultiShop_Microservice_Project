@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using MultiShop.Discount.Context;
-using MultiShop.Discount.DTOs;
+using MultiShop.Discount.DTOs.DiscountCouponDTOs;
 
 namespace MultiShop.Discount.Services.DiscountService
 {
@@ -13,7 +13,7 @@ namespace MultiShop.Discount.Services.DiscountService
             _context = context;
         }
 
-        public async Task CreateCouponAsync(CreateCouponDTO createCouponDTO)
+        public async Task CreateDiscountCouponAsync(CreateDiscountCouponDTO createCouponDTO)
         {
             string query = "insert into Coupons (CouponCode,CouponRate,CouponIsActive,CouponValidDate) values" +
    "(@couponCode,@couponRate,@couponIsActive,@couponValidDate)";
@@ -44,7 +44,7 @@ namespace MultiShop.Discount.Services.DiscountService
 
         }
 
-        public async Task DeleteCouponAsync(int couponID)
+        public async Task DeleteDiscountCouponAsync(int couponID)
         {
             string query = "delete from Coupon where CouponID=@couponID";
             // Kuponu silmek için gerekli olan SQL sorgusunu tanımlar.
@@ -59,20 +59,20 @@ namespace MultiShop.Discount.Services.DiscountService
             }
         }
 
-        public async Task<List<ResultCouponDTO>> GetAllCouponAsync()
+        public async Task<List<ResultDiscountCouponDTO>> GetAllDiscountCouponAsync()
         {
             string query = "select * from Coupons";
             // Tüm kuponları almak için gerekli olan SQL sorgusunu tanımlar.
             using (var connection = _context.CreateConnection())
                 {
                 // DapperContext üzerinden yeni bir veritabanı bağlantısı oluşturur.
-                var result = await connection.QueryAsync<ResultCouponDTO>(query);
+                var result = await connection.QueryAsync<ResultDiscountCouponDTO>(query);
                 // Sorguyu çalıştırarak ResultCouponDTO tipinde sonuçları alır.
                 return result.ToList(); // Sonuçları listeye çevirir ve geri döner.
             }
         }
 
-        public async Task<GetByIDCouponDTO> GetByIDCouponAsync(int couponID)
+        public async Task<GetByIDDiscountCouponDTO> GetByIDDiscountCouponAsync(int couponID)
         {
             string query = "select * from Coupons where CouponID=@couponID";
             // Belirli bir kuponu ID'sine göre almak için gerekli olan SQL sorgusunu tanımlar.
@@ -83,13 +83,13 @@ namespace MultiShop.Discount.Services.DiscountService
             using (var connection = _context.CreateConnection())
             {
                 // DapperContext üzerinden yeni bir veritabanı bağlantısı oluşturur.
-                var result = await connection.QueryFirstOrDefaultAsync<GetByIDCouponDTO>(query, parameters);
+                var result = await connection.QueryFirstOrDefaultAsync<GetByIDDiscountCouponDTO>(query, parameters);
                 // Sorguyu çalıştırarak GetByIDCouponDTO tipinde sonucu alır.
                 return result; // Sonucu geri döner. Eğer kupon bulunamazsa null dönecektir.
             }
         }
 
-        public async Task UpdateCouponAsync(UpdateCouponDTO updateCouponDTO)
+        public async Task UpdateDiscountCouponAsync(UpdateDiscountCouponDTO updateCouponDTO)
         {
             string query="update Coupons set CouponCode=@couponCode,CouponRate=@couponRate," +
                 "CouponIsActive=@couponIsActive,CouponValidDate=@couponValidDate where CouponID=@couponID";
