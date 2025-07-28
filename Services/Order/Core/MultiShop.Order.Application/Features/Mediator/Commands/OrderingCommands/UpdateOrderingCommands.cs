@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MultiShop.Order.Application.Features.Mediator.Commands.OrderingCommands
 {
-    public class UpdateOrderingRequest:IRequest
+    public class UpdateOrderingCommands:IRequest
     {
         public int OrderingID { get; set; } //Unique olarak her sipariş için bir ID
         public string OrderingUserID { get; set; } // Siparişi veren kullanıcının ID'si
