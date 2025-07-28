@@ -10,11 +10,11 @@ namespace MultiShop.Order.WebAPI.Controllers
     [ApiController]
     public class OrderDetailsController : ControllerBase
     {
-        private readonly GetOrderDetailByIDQueryHandler _getOrderDetailByIDQueryHandler;
-        private readonly GetOrderDetailQueryHandler _getOrderDetailQueryHandler;
-        private readonly CreateOrderDetailCommandHandler _createOrderDetailCommandHandler;
-        private readonly UpdateOrderDetailCommandHandler _updateOrderDetailCommandHandler;
-        private readonly RemoveOrderDetailCommandHandler _removeOrderDetailCommandHandler;
+        private readonly GetOrderDetailByIDQueryHandler _getOrderDetailByIDQueryHandler; // Sipariş detaylarını ID'ye göre getiren sorgu işleyici
+        private readonly GetOrderDetailQueryHandler _getOrderDetailQueryHandler; // Tüm sipariş detaylarını getiren sorgu işleyici
+        private readonly CreateOrderDetailCommandHandler _createOrderDetailCommandHandler; // Yeni sipariş detayı ekleyen komut işleyici
+        private readonly UpdateOrderDetailCommandHandler _updateOrderDetailCommandHandler; // Var olan sipariş detayını güncelleyen komut işleyici
+        private readonly RemoveOrderDetailCommandHandler _removeOrderDetailCommandHandler; // Sipariş detayını silen komut işleyici
 
         public OrderDetailsController(GetOrderDetailByIDQueryHandler getOrderDetailByIDQueryHandler, GetOrderDetailQueryHandler getOrderDetailQueryHandler, CreateOrderDetailCommandHandler createOrderDetailCommandHandler, UpdateOrderDetailCommandHandler updateOrderDetailCommandHandler, RemoveOrderDetailCommandHandler removeOrderDetailCommandHandler)
         {

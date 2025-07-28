@@ -1,6 +1,38 @@
+using MultiShop.Order.Application.Features.CQRS.Handlers.AddressHandlers;
+using MultiShop.Order.Application.Features.CQRS.Handlers.OrderDetailHandlers;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddScoped<GetAddressByIDQueryHandler>();
+// Her HTTP isteðinde yeni bir GetAddressByIDQueryHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<GetAddressQueryHandler>();
+// Her HTTP isteðinde yeni bir GetAddressQueryHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<CreateAddressCommandHandler>();
+// Her HTTP isteðinde yeni bir CreateAddressCommandHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<UpdateAddressCommandHandler>();
+// Her HTTP isteðinde yeni bir UpdateAddressCommandHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<RemoveAddressCommandHandler>();
+// Her HTTP isteðinde yeni bir RemoveAddressCommandHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<GetOrderDetailQueryHandler>();
+// Her HTTP isteðinde yeni bir GetOrderDetailQueryHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<CreateOrderDetailCommandHandler>();
+// Her HTTP isteðinde yeni bir CreateOrderDetailCommandHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<UpdateOrderDetailCommandHandler>();
+// Her HTTP isteðinde yeni bir UpdateOrderDetailCommandHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<RemoveOrderDetailCommandHandler>();
+// Her HTTP isteðinde yeni bir RemoveOrderDetailCommandHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
+builder.Services.AddScoped<GetOrderDetailByIDQueryHandler>();
+// Her HTTP isteðinde yeni bir GetOrderDetailByIDQueryHandler nesnesi oluþturur ve Dependency Injection ile saðlar.
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
