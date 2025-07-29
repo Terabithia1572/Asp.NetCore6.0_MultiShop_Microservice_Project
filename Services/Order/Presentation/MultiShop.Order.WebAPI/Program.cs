@@ -2,10 +2,14 @@ using MultiShop.Order.Application.Features.CQRS.Handlers.AddressHandlers;
 using MultiShop.Order.Application.Features.CQRS.Handlers.OrderDetailHandlers;
 using MultiShop.Order.Application.Interfaces;
 using MultiShop.Order.Application.Services;
+using MultiShop.Order.Persistence.Context;
+using MultiShop.Order.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped(typeof(IRepository<>),typeof(IRepository<>)); // IRepository arayüzünü uygulayan tüm sýnýflar için DI konteynerine ekler.
+builder.Services.AddDbContext<OrderContext>();
+
+builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>)); // IRepository arayüzünü uygulayan tüm sýnýflar için DI konteynerine ekler.
 builder.Services.AddApplicationServices(builder.Configuration); // Uygulama katmanýndaki servislerin DI konteynerine eklenmesi için kullanýlýr. Bu, uygulama katmanýndaki tüm servislerin Dependency Injection ile kullanýlabilmesini saðlar.
 
 #region
