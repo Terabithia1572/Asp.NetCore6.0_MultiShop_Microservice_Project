@@ -58,5 +58,24 @@ namespace MultiShop.IdentityServer
         // API'ye erişim kapsamlarını (scopes) tanımlar.
         // "CatalogFullPermission": Katalog API'sine tam yetkili erişimi temsil eder.
         // "CatalogReadPermission": Sadece okuma yetkisiyle erişimi temsil eder.
+
+        public static IEnumerable<Client> Clients => new Client[]
+ {
+    new Client
+    {
+        ClientId = "MultiShopVisitorID", // İstemcinin (client) benzersiz kimliği.
+        ClientName = "MultiShop Visitor User", // İstemcinin açıklayıcı adı.
+        AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doğrulama için kullanılan grant type (client credentials akışı).
+        ClientSecrets =
+        {
+            new Secret("multishopsecret".Sha256()) // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
+        },
+        AllowedScopes =
+        {
+            "CatalogReadPermission" // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
+        }
+    }
+ };
+
     }
 }
