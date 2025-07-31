@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
@@ -74,7 +75,42 @@ namespace MultiShop.IdentityServer
         {
             "CatalogReadPermission" // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
         }
+    },
+    new Client {
+    ClientId = "MultiShopManagerID", // İstemcinin (client) benzersiz kimliği.
+    ClientName = "MultiShop Manager User", // İstemcinin açıklayıcı adı.
+    AllowedGrantTypes = GrantTypes.Code, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
+        AllowedScopes =
+        {
+            "CatlogReadPermission", // Bu client, Katalog API'sine okuma izni ile erişebilir.
+            "CatalogFullPermission", // Katalog API'sine tam erişim izni ile erişebilir.
+        }
+    
+    },
+    new Client {
+    ClientId="MultiShopAdminID", // İstemcinin (client) benzersiz kimliği.
+    ClientName = "MultiShop Admin User", // İstemcinin açıklayıcı adı.
+    AllowedGrantTypes = GrantTypes.Code, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
+    ClientSecrets={new Secret("multishopsecret".Sha256())},
+    AllowedScopes={
+            "CatalogFullPermission", // Bu client, Katalog API'sine tam erişim izni ile erişebilir.
+            "DiscountFullPermission", // İndirim API'sine tam erişim izni ile erişebilir.
+            "OrderFullPermission", // Sipariş API'sine tam erişim izni ile erişebilir.
+            "CatalogReadPermission", // Katalog API'sine okuma izni ile erişebilir.
+            IdentityServerConstants.LocalApi.ScopeName, // Local API erişimi için gerekli izin.
+            IdentityServerConstants.StandardScopes.OpenId, // OpenID kimlik doğrulama izni.
+            IdentityServerConstants.StandardScopes.Profile, // Kullanıcı profili bilgilerine erişim izni.
+            IdentityServerConstants.StandardScopes.Email // Kullanıcı e-posta bilgilerine erişim izni.
+
+        },
+    AccessTokenLifetime = 600, // Erişim token'ının ömrü (saniye cinsinden).
+
+
     }
+
+    //
+
+
  };
 
     }
