@@ -9,50 +9,36 @@ namespace MultiShop.IdentityServer
 {
     public static class Config
     {
-        public static IEnumerable<IdentityResource> IdentityResources =>
-                   new IdentityResource[]
-                   {
-                new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
-                   };
+        public static IEnumerable<ApiResource> ApiResources => new ApiResource[]
+    {
+    new ApiResource("ResourceCatalog")
+    {
+        Scopes = { "CatalogFullPermission", "CatalogReadPermission" }
+    }
+    };
+        // "ResourceCatalog" adında bir API kaynağı tanımlanır. 
+        // Bu API kaynağına erişmek için iki farklı yetki kapsamı (scope) belirlenmiştir:
+        // 1. "CatalogFullPermission": Katalog API'sine tam erişim izni sağlar (okuma, yazma, güncelleme, silme).
+        // 2. "CatalogReadPermission": Katalog API'sini sadece okuma (read) izniyle kullanmaya imkan tanır.
 
-        public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
-            {
-                new ApiScope("scope1"),
-                new ApiScope("scope2"),
-            };
+        public static IEnumerable<IdentityResource> IdentityResources => new IdentityResource[]
+        {
+    new IdentityResources.OpenId(),
+    new IdentityResources.Email(),
+    new IdentityResources.Profile()
+        };
+        // Kimlik doğrulama sırasında kullanıcının kimliğini ve temel bilgilerini içeren standart identity kaynakları tanımlanır.
+        // OpenId: Kullanıcı kimliğini (id) sağlar. Kimlik doğrulamanın temelidir ve zorunludur.
+        // Email: Kullanıcının e-posta bilgisini sağlar.
+        // Profile: Kullanıcının profil bilgilerini (ad, soyad, vs.) sağlar.
 
-        public static IEnumerable<Client> Clients =>
-            new Client[]
-            {
-                // m2m client credentials flow client
-                new Client
-                {
-                    ClientId = "m2m.client",
-                    ClientName = "Client Credentials Client",
-
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
-
-                    AllowedScopes = { "scope1" }
-                },
-
-                // interactive client using code flow + pkce
-                new Client
-                {
-                    ClientId = "interactive",
-                    ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
-
-                    AllowedGrantTypes = GrantTypes.Code,
-
-                    RedirectUris = { "https://localhost:44300/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
-
-                    AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "scope2" }
-                },
-            };
+        public static IEnumerable<ApiScope> ApiScopes => new ApiScope[]
+        {
+    new ApiScope("CatalogFullPermission", "Full access to the Catalog API"),
+    new ApiScope("CatalogReadPermission", "Read access to the Catalog API")
+        };
+        // API'ye erişim kapsamlarını (scopes) tanımlar.
+        // "CatalogFullPermission": Katalog API'sine tam yetkili erişimi temsil eder.
+        // "CatalogReadPermission": Sadece okuma yetkisiyle erişimi temsil eder.
     }
 }
