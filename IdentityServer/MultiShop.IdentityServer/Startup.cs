@@ -28,6 +28,7 @@ namespace MultiShop.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalApiAuthentication(); //bu satır, API'lerin kimlik doğrulamasını sağlar.
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -81,6 +82,7 @@ namespace MultiShop.IdentityServer
 
             app.UseRouting();
             app.UseIdentityServer();
+            app.UseAuthentication(); // Kimlik doğrulama middleware'ini ekler
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
