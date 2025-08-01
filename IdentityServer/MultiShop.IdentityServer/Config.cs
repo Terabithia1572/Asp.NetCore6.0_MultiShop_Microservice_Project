@@ -25,6 +25,7 @@ namespace MultiShop.IdentityServer
             {
                 Scopes = { "OrderFullPermission" }
             },
+            new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
         };
 
         // Kimlik doğrulama sırasında kullanıcının kimliğini ve temel bilgilerini içeren standart identity kaynakları tanımlanır.
@@ -48,7 +49,8 @@ namespace MultiShop.IdentityServer
             new ApiScope("DiscountFullPermission", "Full access to the Discount API"),
             new ApiScope("DiscountReadPermission", "Read access to the Discount API"),
             new ApiScope("OrderFullPermission", "Full access to the Order API"),
-            new ApiScope("OrderReadPermission", "Read access to the Order API")
+            new ApiScope("OrderReadPermission", "Read access to the Order API"),
+             new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
         };
 
         // IdentityServer için kullanılacak istemci (client) uygulamaları tanımlanır.
