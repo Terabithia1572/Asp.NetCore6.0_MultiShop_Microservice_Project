@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Catalog.DTOs.CategoryDTOs;
 using MultiShop.Catalog.Services.CategoryServices;
 
 namespace MultiShop.Catalog.Controllers
 {
+    [Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase

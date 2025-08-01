@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Catalog.DTOs.ProductDTOs;
 using MultiShop.Catalog.Services.ProductServices;
 
 namespace MultiShop.Catalog.Controllers
 {
+    [Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
