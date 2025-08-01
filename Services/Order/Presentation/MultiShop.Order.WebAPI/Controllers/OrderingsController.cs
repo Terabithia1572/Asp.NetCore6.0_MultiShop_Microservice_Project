@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Order.Application.Features.Mediator.Commands.OrderingCommands;
@@ -6,6 +7,7 @@ using MultiShop.Order.Application.Features.Mediator.Queries.OrderingQueries;
 
 namespace MultiShop.Order.WebAPI.Controllers
 {
+    [Authorize] // Bu controller'a erişim için kimlik doğrulama gereklidir.
     [Route("api/[controller]")]
     [ApiController]
     public class OrderingsController : ControllerBase
