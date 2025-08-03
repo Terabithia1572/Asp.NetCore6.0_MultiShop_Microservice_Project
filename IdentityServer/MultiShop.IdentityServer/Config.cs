@@ -25,6 +25,7 @@ namespace MultiShop.IdentityServer
             {
                 Scopes = { "OrderFullPermission" }
             },
+            new ApiResource("ResourceCargo"){Scopes={"CargoFullPermission"}},
             new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
         };
 
@@ -47,9 +48,8 @@ namespace MultiShop.IdentityServer
             new ApiScope("CatalogFullPermission", "Full access to the Catalog API"),
             new ApiScope("CatalogReadPermission", "Read access to the Catalog API"),
             new ApiScope("DiscountFullPermission", "Full access to the Discount API"),
-            new ApiScope("DiscountReadPermission", "Read access to the Discount API"),
             new ApiScope("OrderFullPermission", "Full access to the Order API"),
-            new ApiScope("OrderReadPermission", "Read access to the Order API"),
+            new ApiScope("CargoFullPermission", "Full access to the Cargo API"),
              new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
         };
 
@@ -64,7 +64,7 @@ namespace MultiShop.IdentityServer
                 ClientName = "MultiShop Visitor User", // İstemcinin açıklayıcı adı.
                 AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doğrulama için kullanılan grant type (client credentials akışı).
                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
-                AllowedScopes = { "CatalogReadPermission" } // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
+                AllowedScopes = { "DiscountFullPermission" } // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
             },
 
             // Katalog yönetici paneli için, kod akışıyla giriş yapan client (kullanıcı kimliğiyle giriş)
@@ -72,7 +72,8 @@ namespace MultiShop.IdentityServer
             {
                 ClientId = "MultiShopManagerID", // İstemcinin (client) benzersiz kimliği.
                 ClientName = "MultiShop Manager User", // İstemcinin açıklayıcı adı.
-                AllowedGrantTypes = GrantTypes.Code, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
+                AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
+                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
                 AllowedScopes =
                 {
                     "CatalogReadPermission", // Katalog API'sine okuma izni ile erişebilir.
@@ -93,6 +94,7 @@ namespace MultiShop.IdentityServer
                     "DiscountFullPermission",      // İndirim API'sine tam erişim
                     "OrderFullPermission",         // Sipariş API'sine tam erişim
                     "CatalogReadPermission",       // Katalog API'sine okuma erişimi
+                    "CargoFullPermission",         // Kargo API'sine tam erişim
                     IdentityServerConstants.LocalApi.ScopeName,         // Local API erişimi
                     IdentityServerConstants.StandardScopes.OpenId,      // OpenID kimlik doğrulama
                     IdentityServerConstants.StandardScopes.Profile,     // Kullanıcı profili bilgileri

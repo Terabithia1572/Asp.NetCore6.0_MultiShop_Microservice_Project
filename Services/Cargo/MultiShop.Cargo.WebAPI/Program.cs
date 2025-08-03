@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MultiShop.Cargo.BusinessLayer.Abstract;
 using MultiShop.Cargo.BusinessLayer.Concrete;
 using MultiShop.Cargo.DataAccessLayer.Abstract;
@@ -5,6 +6,14 @@ using MultiShop.Cargo.DataAccessLayer.Concrete;
 using MultiShop.Cargo.DataAccessLayer.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // JWT Bearer kimlik doðrulamasýný kullanýr.
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"]; // IdentityServer URL'sini yapýlandýrma dosyasýndan alýr.
+        options.Audience = "ResourceCargo"; // Bu API'nin Audience'ýný tanýmlar.
+        options.RequireHttpsMetadata = false; // HTTPS gereksinimini devre dýþý býrakýr (geliþtirme ortamýnda kullanýlabilir).
+    });
 
 builder.Services.AddDbContext<CargoContext>(); //Dbcontext'e Depency Injection ile ekleniyor
 builder.Services.AddScoped<ICargoCompanyDal,EfCargoCompanyDal>(); // CargoCompany için EntityFramework implementasyonu ekleniyor
@@ -31,6 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication(); // Kimlik doðrulama middleware'ini kullanýr.
 
 app.UseAuthorization();
 
