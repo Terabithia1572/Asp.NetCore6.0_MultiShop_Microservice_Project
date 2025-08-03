@@ -1,0 +1,16 @@
+IdentityDB------>localhost:1435
+OrderDB--------->localhost:1440
+CargoDB------>localhost:1441
+DiscountDB------>localhost kendi localhost SQL sunucumuzda tuttuk.
+
+// Bu portlar, ilgili veritabanlarýnýn SQL sunucusundaki baðlantý noktalarýný temsil eder.
+// Bu bilgiler, uygulamanýn bu veritabanlarýna baðlanabilmesi için gereklidir.
+// Örneðin, IdentityDB için baðlantý noktasý 1435, OrderDB için 1440, CargoDB için 1441 ve DiscountDB için kendi localhost SQL sunucumuzda tutulmaktadýr.
+// Bu portlar, uygulamanýn bu veritabanlarýna eriþimini saðlar ve her bir veritabanýnýn farklý bir portta çalýþtýðýný gösterir.
+// Bu bilgiler, uygulamanýn yapýlandýrma dosyasýnda veya baðlantý ayarlarýnda kullanýlabilir.
+// Bu portlar, veritabaný sunucusunun hangi baðlantý noktalarýnda dinlediðini belirtir ve uygulamanýn bu veritabanlarýna eriþimini saðlar.
+
+
+MultiShop.Catalog ----> 1002
+MultiShop.Discount----> 1003
+MultiShop.WebAPI------>1004
