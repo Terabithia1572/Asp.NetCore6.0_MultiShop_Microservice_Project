@@ -45,12 +45,12 @@ namespace MultiShop.IdentityServer
         // "CatalogReadPermission": Sadece okuma yetkisiyle erişimi temsil eder.
         public static IEnumerable<ApiScope> ApiScopes => new ApiScope[]
         {
-            new ApiScope("CatalogFullPermission", "Full access to the Catalog API"),
-            new ApiScope("CatalogReadPermission", "Read access to the Catalog API"),
-            new ApiScope("DiscountFullPermission", "Full access to the Discount API"),
-            new ApiScope("OrderFullPermission", "Full access to the Order API"),
-            new ApiScope("CargoFullPermission", "Full access to the Cargo API"),
-             new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
+            new ApiScope("CatalogFullPermission", "Full access to the Catalog API"), // Katalog API'sine tam erişim izni
+            new ApiScope("CatalogReadPermission", "Read access to the Catalog API"), // Katalog API'sine okuma erişimi izni
+            new ApiScope("DiscountFullPermission", "Full access to the Discount API"), // İndirim API'sine tam erişim izni
+            new ApiScope("OrderFullPermission", "Full access to the Order API"), // Sipariş API'sine tam erişim izni
+            new ApiScope("CargoFullPermission", "Full access to the Cargo API"), // Kargo API'sine tam erişim izni
+             new ApiScope(IdentityServerConstants.LocalApi.ScopeName) // Local API erişim izni
         };
 
         // IdentityServer için kullanılacak istemci (client) uygulamaları tanımlanır.
