@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MultiShop.Cargo.DTOLayer.DTOs.CargoCustomerDTOs
+{
+    public class CreateCargoCustomerDTO
+    {
+        public string CargoCustomerName { get; set; } // Kargo Müşteri Adı
+        public string CargoCustomerSurname { get; set; } // Kargo Müşteri Soyadı
+        public string CargoCustomerEmail { get; set; } // Kargo Müşteri E-Posta Adresi
+
+        public string CargoCustomerPhone { get; set; } // Kargo Müşteri Telefonu
+        public string CargoCustomerCity { get; set; } // Kargo Müşteri Şehri
+        public string CargoCustomerDistrict { get; set; } // Kargo Müşteri İlçesi
+        public string CargoCustomerAddress { get; set; } // Kargo Müşteri Adresi
+    }
+}
