@@ -64,7 +64,7 @@ namespace MultiShop.IdentityServer
             {
                 ClientId = "MultiShopVisitorID", // İstemcinin (client) benzersiz kimliği.
                 ClientName = "MultiShop Visitor User", // İstemcinin açıklayıcı adı.
-                AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doğrulama için kullanılan grant type (client credentials akışı).
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Kimlik doğrulama için kullanılan grant type (client credentials akışı).
                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
                 AllowedScopes = { "DiscountFullPermission" } // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
             },
@@ -74,7 +74,7 @@ namespace MultiShop.IdentityServer
             {
                 ClientId = "MultiShopManagerID", // İstemcinin (client) benzersiz kimliği.
                 ClientName = "MultiShop Manager User", // İstemcinin açıklayıcı adı.
-                AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
                  ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
                 AllowedScopes =
                 {
@@ -88,7 +88,7 @@ namespace MultiShop.IdentityServer
             {
                 ClientId = "MultiShopAdminID", // İstemcinin (client) benzersiz kimliği.
                 ClientName = "MultiShop Admin User", // İstemcinin açıklayıcı adı.
-                AllowedGrantTypes = GrantTypes.ClientCredentials, // (DÜZELTİLDİ) Kimlik doğrulama için client credentials grant type kullanılır.
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // (DÜZELTİLDİ) Kimlik doğrulama için client credentials grant type kullanılır.
                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
                 AllowedScopes =
                 {
