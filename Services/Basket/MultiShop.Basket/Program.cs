@@ -1,10 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Options;
 using MultiShop.Basket.LoginServices;
 using MultiShop.Basket.Services;
 using MultiShop.Basket.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var requireAuthorizationPolicy = new AuthorizationPolicyBuilder() // Yetkilendirme politikasý oluþturma
+    .RequireAuthenticatedUser() // Kimlik doðrulamasý gerektirir
+    .Build(); // Yetkilendirme politikasýný oluþturur
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -26,7 +32,10 @@ builder.Services.AddSingleton<RedisService>(sp =>
     return redis; // Redis servisini döner
 }); // Redis servisini tekil olarak ekleme
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add(new AuthorizeFilter(requireAuthorizationPolicy)); // Tüm denetleyicilere yetkilendirme politikasý uygula
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,6 +50,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication(); // Kimlik doðrulama middleware'ini ekle
 
 app.UseAuthorization();
 
