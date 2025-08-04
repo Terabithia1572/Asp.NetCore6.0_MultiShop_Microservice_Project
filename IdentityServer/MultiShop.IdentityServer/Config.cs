@@ -16,17 +16,18 @@ namespace MultiShop.IdentityServer
             new ApiResource("ResourceCatalog")
             {
                 Scopes = { "CatalogFullPermission", "CatalogReadPermission" }
-            },
+            }, // Katalog API'si için kaynak tanımı
             new ApiResource("ResourceDiscount")
             {
                 Scopes = { "DiscountFullPermission" }
-            },
+            }, // İndirim API'si için kaynak tanımı
             new ApiResource("ResourceOrder")
             {
                 Scopes = { "OrderFullPermission" }
-            },
-            new ApiResource("ResourceCargo"){Scopes={"CargoFullPermission"}},
-            new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
+            }, // Sipariş API'si için kaynak tanımı
+            new ApiResource("ResourceCargo"){Scopes={"CargoFullPermission"}}, // Kargo API'si için kaynak tanımı
+            new ApiResource("ResourceBasket"){Scopes={"BasketFullPermission"}}, // Sepet API'si için kaynak tanımı
+            new ApiResource(IdentityServerConstants.LocalApi.ScopeName) // Local API erişimi için kaynak tanımı
         };
 
         // Kimlik doğrulama sırasında kullanıcının kimliğini ve temel bilgilerini içeren standart identity kaynakları tanımlanır.
@@ -50,6 +51,7 @@ namespace MultiShop.IdentityServer
             new ApiScope("DiscountFullPermission", "Full access to the Discount API"), // İndirim API'sine tam erişim izni
             new ApiScope("OrderFullPermission", "Full access to the Order API"), // Sipariş API'sine tam erişim izni
             new ApiScope("CargoFullPermission", "Full access to the Cargo API"), // Kargo API'sine tam erişim izni
+            new ApiScope("BasketFullPermission", "Full access to the Basket API"), // Sepet API'sine tam erişim izni
              new ApiScope(IdentityServerConstants.LocalApi.ScopeName) // Local API erişim izni
         };
 
@@ -95,6 +97,7 @@ namespace MultiShop.IdentityServer
                     "OrderFullPermission",         // Sipariş API'sine tam erişim
                     "CatalogReadPermission",       // Katalog API'sine okuma erişimi
                     "CargoFullPermission",         // Kargo API'sine tam erişim
+                    "BasketFullPermission",        // Sepet API'sine tam erişim
                     IdentityServerConstants.LocalApi.ScopeName,         // Local API erişimi
                     IdentityServerConstants.StandardScopes.OpenId,      // OpenID kimlik doğrulama
                     IdentityServerConstants.StandardScopes.Profile,     // Kullanıcı profili bilgileri
