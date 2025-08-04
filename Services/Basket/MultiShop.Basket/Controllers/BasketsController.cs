@@ -21,6 +21,7 @@ namespace MultiShop.Basket.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMyBasketDetail() // Sepeti getirir
         {
+            var user = User.Claims; // Kullanıcının kimlik bilgilerini alır
             var userID = _loginService.GetUserID; // Kullanıcının ID'sini alır
             var basket = await _basketService.GetBasket(userID); // Sepeti alır
             return Ok(basket); // Sepeti döner

@@ -5,12 +5,15 @@ using Microsoft.Extensions.Options;
 using MultiShop.Basket.LoginServices;
 using MultiShop.Basket.Services;
 using MultiShop.Basket.Settings;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var requireAuthorizationPolicy = new AuthorizationPolicyBuilder() // Yetkilendirme politikasý oluþturma
     .RequireAuthenticatedUser() // Kimlik doðrulamasý gerektirir
     .Build(); // Yetkilendirme politikasýný oluþturur
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub"); // JWT'den gelen "sub" (subject) claim'ini varsayýlan olarak haritalamaktan kaldýrýr
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -23,14 +26,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddHttpContextAccessor(); // HttpContext eriþimi için gerekli
 builder.Services.AddScoped<ILoginService, LoginService>(); // Kullanýcý kimliði yönetimi için servis
 builder.Services.AddScoped<IBasketService, BasketService>(); // Sepet iþlemleri için servis
-builder.Services.Configure<RedisService>(builder.Configuration.GetSection("RedisSettings")); // Redis ayarlarýný yapýlandýrma
-builder.Services.AddSingleton<RedisService>(sp =>
+builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings")); // Redis ayarlarýný yapýlandýrma
+
+builder.Services.AddSingleton<RedisService>(sp => // RedisService'i DI konteynerine ekleme
 {
-    var redisSettings = sp.GetRequiredService<IOptions<RedisService>>().Value; // Redis ayarlarýný al
-    var redis= new RedisService(redisSettings._host,redisSettings._port); // Redis servisini oluþtur
-    redis.Connect(); // Redis'e baðlan
-    return redis; // Redis servisini döner
-}); // Redis servisini tekil olarak ekleme
+    var redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value; // Redis ayarlarýný al
+    var redis = new RedisService(redisSettings.Host, redisSettings.Port); // RedisService nesnesini oluþtur
+    redis.Connect(); // Redis'e baðlantý kur
+    return redis; // RedisService nesnesini döner
+});
 
 builder.Services.AddControllers(opt =>
 {
