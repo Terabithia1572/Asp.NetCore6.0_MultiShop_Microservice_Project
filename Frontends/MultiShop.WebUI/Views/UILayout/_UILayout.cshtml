@@ -5,40 +5,13 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
     @await Component.InvokeAsync("_HeadUILayoutComponentPartial")  <!-- Burada Biz Head kodlarını _HeadUILayoutComponentPartial Tuttuk -->
-
 <body>
-    <!-- Topbar Start -->
     @await Component.InvokeAsync("_TopbarUILayoutComponentPartial") <!-- Burada Biz Topbar kodlarını _TopbarUILayoutComponentPartial Tuttuk -->
-    <!-- Topbar End -->
-    <!-- Navbar Start -->
     @await Component.InvokeAsync("_NavbarUILayoutComponentPartial") <!-- Burada Biz Navbar kodlarını _NavbarUILayoutComponentPartial Tuttuk -->
-    <!-- Navbar End -->
-    <!-- Breadcrumb Start -->
   @RenderBody()
-    <!-- Breadcrumb End -->
-    <!-- Contact Start -->
-    <!-- Contact End -->
-    <!-- Footer Start -->
     @await Component.InvokeAsync("_FooterUILayoutComponentPartial") <!-- Burada Biz Footer kodlarını _FooterUILayoutComponentPartial Tuttuk -->
-    <!-- Footer End -->
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="~/multishop/lib/easing/easing.min.js"></script>
-    <script src="~/multishop/lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Contact Javascript File -->
-    <script src="~/multishop/mail/jqBootstrapValidation.min.js"></script>
-    <script src="~/multishop/mail/contact.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="~/multishop/js/main.js"></script>
+    @await Component.InvokeAsync("_ScriptUILayoutComponentPartial") <!-- Burada Biz Script kodlarını _ScriptUILayoutComponentPartial Tuttuk -->
 </body>
 
 </html>
