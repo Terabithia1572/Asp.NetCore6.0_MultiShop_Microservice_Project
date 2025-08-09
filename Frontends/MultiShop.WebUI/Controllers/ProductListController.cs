@@ -8,5 +8,9 @@ namespace MultiShop.WebUI.Controllers
         {
             return View();
         }
+        public IActionResult ProductDetail() //Bu aksin, ürün detaylarını göstermek için kullanılacak
+        {
+            return View(); // Bu aksiyon, ürün detaylarını göstermek için kullanılacak
+        }
     }
 }
