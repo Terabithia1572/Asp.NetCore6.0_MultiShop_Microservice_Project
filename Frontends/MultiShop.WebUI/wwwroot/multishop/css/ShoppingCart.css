@@ -1,0 +1,53 @@
+/* Tablo sabit sütun geniþlikleri */
+.cart-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+    .cart-table th:nth-child(1) {
+        width: 45%;
+    }
+    /* Ürünler */
+    .cart-table th:nth-child(2) {
+        width: 15%;
+    }
+    /* Fiyat  */
+    .cart-table th:nth-child(3) {
+        width: 20%;
+    }
+    /* Miktar */
+    .cart-table th:nth-child(4) {
+        width: 15%;
+    }
+    /* Toplam */
+    .cart-table th:nth-child(5) {
+        width: 5%;
+    }
+/* Sil    */
+
+/* Ürün hücresi: resim + ad hizalamasý */
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .product-cell img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        flex: 0 0 50px;
+    }
+
+    .product-cell .name {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+/* Para deðerleri tek satýr */
+.currency {
+    white-space: nowrap;
+}
