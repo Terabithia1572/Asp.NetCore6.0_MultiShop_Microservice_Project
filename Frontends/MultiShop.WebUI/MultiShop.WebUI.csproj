@@ -14,4 +14,17 @@
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\ovio\help-documentation\assets\.DS_Store" />
+    <None Include="wwwroot\ovio\help-documentation\assets\blueprint-css\plugins\.DS_Store" />
+    <None Include="wwwroot\ovio\html\app\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\charts\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\component\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\dist\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\forms\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\maps\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\pages\et-line-font\fonts\.DS_Store" />
+    <None Include="wwwroot\ovio\html\tables\et-line-font\fonts\.DS_Store" />
+  </ItemGroup>
+
 </Project>
