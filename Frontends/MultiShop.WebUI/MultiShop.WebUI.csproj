@@ -29,4 +29,8 @@
     <None Include="wwwroot\ovio\html\tables\et-line-font\fonts\.DS_Store" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MultiShop.DTOLayer\MultiShop.DTOLayer.csproj" />
+  </ItemGroup>
+
 </Project>
