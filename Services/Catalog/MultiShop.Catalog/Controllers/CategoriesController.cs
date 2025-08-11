@@ -6,7 +6,8 @@ using MultiShop.Catalog.Services.CategoryServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
+    //[Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CatalogDTOs.CategoryDTOs;
 using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
+    [AllowAnonymous]
     [Area("Admin")] // Bu Area'nın adı "Admin" olarak ayarlanır. yani URL'de /Admin/ ile başlayacak.
     public class CategoryController : Controller
     {
@@ -14,6 +16,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+       
         public async Task< IActionResult> Index()
         {
             ViewBag.v1="Ana Sayfa"; 
