@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MultiShop.DTOLayer.CatalogDTOs.CategoryDTOs;
 using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -11,7 +13,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     [Route("Admin/[controller]/[action]")] // Bu controller için rota ayarlanır. Örneğin: /Admin/Product/Index
     public class ProductController : Controller
     {
-      
+
         private readonly IHttpClientFactory _httpClientFactory;
 
         public ProductController(IHttpClientFactory httpClientFactory)
@@ -43,6 +45,18 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             ViewBag.v2 = "Ürünler";
             ViewBag.v3 = "Yeni Ürün Ekleme";
             ViewBag.v4 = "Ürün İşlemleri";
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            // Ürün ekleme sayfası için gerekli veriler burada hazırlanabilir.
+            var responseMessage = client.GetAsync("https://localhost:1002/api/Categories"); // Ürünleri almak için API'ye GET isteği yapılır.
+            var jsonData = responseMessage.Result.Content.ReadAsStringAsync().Result; // JSON verisi okunur.
+            var categories = JsonConvert.DeserializeObject<List<ResultCategoryDTO>>(jsonData); // JSON verisi dinamik bir listeye dönüştürülür.
+            List<SelectListItem> categoryList = (from x in categories
+                                                 select new SelectListItem
+                                                 {
+                                                     Text = x.CategoryName, // Kategori adını Text olarak alır.
+                                                     Value = x.CategoryID.ToString() // Kategori ID'sini Value olarak alır.
+                                                 }).ToList(); // Kategoriler SelectListItem listesine dönüştürülür.
+            ViewBag.CategoryList = categoryList; // Kategori listesi ViewBag'e eklenir, böylece view içinde kullanılabilir.
             return View(); // Ürün ekleme sayfası için view döndürülür.
         }
         [HttpPost]
