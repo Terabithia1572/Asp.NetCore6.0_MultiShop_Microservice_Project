@@ -86,13 +86,13 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             }
             return View(); // Başarısız ise aynı view döndürülür.
         }
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> UpdateCategory(UpdateCategoryDTO updateCategoryDTO)
         {
             var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
             var jsonData = JsonConvert.SerializeObject(updateCategoryDTO); // DTO nesnesi JSON formatına dönüştürülür.
             StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
-            var responseMessage = await client.PutAsync("https://localhost:1002/api/Categories", content); // API'ye PUT isteği yapılır.
+            var responseMessage = await client.PutAsync("https://localhost:1002/api/Categories/", content); // API'ye PUT isteği yapılır.
             if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
             {
                 return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
