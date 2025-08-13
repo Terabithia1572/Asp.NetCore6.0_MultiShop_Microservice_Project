@@ -7,6 +7,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
     [AllowAnonymous]
     [Area("Admin")] // Bu Area'nın adı "Admin" olarak ayarlanır. yani URL'de /Admin/ ile başlayacak.
+    [Route("Admin/[controller]/[action]")] // Bu controller için rota ayarlanır. Örneğin: /Admin/Category/Index
     public class CategoryController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -53,7 +54,18 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             var responseMessage = await client.PostAsync("https://localhost:1002/api/Categories", content); // API'ye POST isteği yapılır.
             if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
             {
-                return RedirectToAction("Index","Category",new {area="Admin"}); // Kategori listesine yönlendirilir.
+                return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
+            }
+            return View(); // Başarısız ise aynı view döndürülür.
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> DeleteCategory(string id)
+        {
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            var responseMessage = await client.DeleteAsync($"https://localhost:1002/api/Categories/{id}"); // API'den kategori silme isteği yapılır.
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
             }
             return View(); // Başarısız ise aynı view döndürülür.
         }
