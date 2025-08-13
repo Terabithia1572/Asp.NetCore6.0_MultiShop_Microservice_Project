@@ -72,5 +72,60 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             }
             return View(); // Başarısız ise aynı view döndürülür.
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> DeleteProduct(string id)
+        {
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            var responseMessage = await client.DeleteAsync($"https://localhost:1002/api/Products?id=" + id); // API'den kategori silme isteği yapılır.
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                return RedirectToAction("Index", "Product", new { area = "Admin" }); // Kategori listesine yönlendirilir.
+            }
+            return View(); // Başarısız ise aynı view döndürülür.
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> UpdateProduct(string id)
+        {
+            ViewBag.v1 = "Ana Sayfa";
+            ViewBag.v2 = "Ürünler";
+            ViewBag.v3 = "Ürün Güncelleme";
+            ViewBag.v4 = "Ürün İşlemleri";
+
+            var client1 = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            // Ürün ekleme sayfası için gerekli veriler burada hazırlanabilir.
+            var responseMessage2 = await client1.GetAsync("https://localhost:1002/api/Categories"); // Ürünleri almak için API'ye GET isteği yapılır.
+            var jsonData1 = responseMessage2.Content.ReadAsStringAsync().Result; // JSON verisi okunur.
+            var categories1 = JsonConvert.DeserializeObject<List<ResultCategoryDTO>>(jsonData1); // JSON verisi dinamik bir listeye dönüştürülür.
+            List<SelectListItem> categoryList1 = (from x in categories1
+                                                 select new SelectListItem
+                                                 {
+                                                     Text = x.CategoryName, // Kategori adını Text olarak alır.
+                                                     Value = x.CategoryID.ToString() // Kategori ID'sini Value olarak alır.
+                                                 }).ToList(); // Kategoriler SelectListItem listesine dönüştürülür.
+            ViewBag.CategoryList = categoryList1; // Kategori listesi ViewBag'e eklenir, böylece view içinde kullanılabilir.
+
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            var responseMessage = await client.GetAsync($"https://localhost:1002/api/Products/{id}"); // API'den kategori verisi alınır.
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
+                var values = JsonConvert.DeserializeObject<UpdateProductDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
+                return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
+            }
+            return View(); // Başarısız ise aynı view döndürülür.
+        }
+        [HttpPost("{id}")]
+        public async Task<IActionResult> UpdateProduct(UpdateProductDTO updateProductDTO)
+        {
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            var jsonData = JsonConvert.SerializeObject(updateProductDTO); // DTO nesnesi JSON formatına dönüştürülür.
+            StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
+            var responseMessage = await client.PutAsync("https://localhost:1002/api/Products/", content); // API'ye PUT isteği yapılır.
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                return RedirectToAction("Index", "Product", new { area = "Admin" }); // Kategori listesine yönlendirilir.
+            }
+            return View(); // Başarısız ise aynı view döndürülür.
+        }
     }
 }
