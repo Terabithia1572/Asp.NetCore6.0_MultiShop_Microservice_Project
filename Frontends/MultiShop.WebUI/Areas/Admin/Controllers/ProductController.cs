@@ -36,5 +36,27 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             }
             return View(); // Eğer istek başarısızsa, boş bir view döndürülür.
         }
+        [HttpGet]
+        public IActionResult CreateProduct()
+        {
+            ViewBag.v1 = "Ana Sayfa";
+            ViewBag.v2 = "Ürünler";
+            ViewBag.v3 = "Yeni Ürün Ekleme";
+            ViewBag.v4 = "Ürün İşlemleri";
+            return View(); // Ürün ekleme sayfası için view döndürülür.
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct(CreateProductDTO createProductDTO)
+        {
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            var jsonData = JsonConvert.SerializeObject(createProductDTO); // DTO nesnesi JSON formatına dönüştürülür.
+            StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
+            var responseMessage = await client.PostAsync("https://localhost:1002/api/Products", content); // API'ye POST isteği yapılır.
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                return RedirectToAction("Index", "Product", new { area = "Admin" }); // Ürün listesine yönlendirilir.
+            }
+            return View(); // Başarısız ise aynı view döndürülür.
+        }
     }
 }
