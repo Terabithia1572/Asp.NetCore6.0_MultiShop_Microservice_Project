@@ -36,6 +36,8 @@ namespace MultiShop.Catalog.Mapping
             CreateMap<ProductImage, CreateProductImageDTO>().ReverseMap(); // Burada ProductImage ile CreateProductImageDTO arasında çift yönlü eşleme yapılıyor
             CreateMap<ProductImage, UpdateProductImageDTO>().ReverseMap(); // Burada ProductImage ile UpdateProductImageDTO arasında çift yönlü eşleme yapılıyor
             CreateMap<ProductImage, GetByIDProductImageDTO>().ReverseMap(); // Burada ProductImage ile GetByIDProductImageDTO arasında çift yönlü eşleme yapılıyor
+
+            CreateMap<Product,ResultProductsWithCategoryDTO>().ReverseMap(); // Burada Product ile ResultProductsWithCategoryDTO arasında çift yönlü eşleme yapılıyor
         }
     }
 }

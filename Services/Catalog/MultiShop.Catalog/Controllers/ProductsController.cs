@@ -56,5 +56,16 @@ namespace MultiShop.Catalog.Controllers
             await _productService.UpdateProductAsync(updateProductDTO); // Product Service üzerinden güncelleme işlemi yapıyoruz
             return Ok("Ürün Başarıyla Güncellendi."); // Ürün başarıyla güncellendiyse 200 OK ile birlikte mesaj döndürüyoruz
         }
+        [HttpGet("ProductListWithCategory")] // Kategorilerle birlikte Ürünleri getirme işlemi için
+        public async Task<IActionResult> ProductListWithCategory()
+        {
+            var values = await _productService.GetProductsWithCategoryAsync(); // Product Service üzerinden Kategorilerle birlikte Ürünleri alıyoruz
+            if (values == null || !values.Any())
+            {
+                return NotFound("Ürün Bulunamadı."); // Eğer Ürün bulunamazsa 404 döndürüyoruz
+            }
+            return Ok(values); // Ürünler bulunduysa 200 OK ile birlikte Ürünleri döndürüyoruz
+        }
+
     }
 }

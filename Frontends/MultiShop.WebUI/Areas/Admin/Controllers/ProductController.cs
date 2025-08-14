@@ -5,6 +5,7 @@ using MultiShop.DTOLayer.CatalogDTOs.CategoryDTOs;
 using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
@@ -39,7 +40,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             return View(); // Eğer istek başarısızsa, boş bir view döndürülür.
         }
         [HttpGet]
-        public IActionResult CreateProduct()
+        public async Task<IActionResult> CreateProduct()
         {
             ViewBag.v1 = "Ana Sayfa";
             ViewBag.v2 = "Ürünler";
@@ -47,8 +48,8 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             ViewBag.v4 = "Ürün İşlemleri";
             var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
             // Ürün ekleme sayfası için gerekli veriler burada hazırlanabilir.
-            var responseMessage = client.GetAsync("https://localhost:1002/api/Categories"); // Ürünleri almak için API'ye GET isteği yapılır.
-            var jsonData = responseMessage.Result.Content.ReadAsStringAsync().Result; // JSON verisi okunur.
+            var responseMessage =await client.GetAsync("https://localhost:1002/api/Categories"); // Ürünleri almak için API'ye GET isteği yapılır.
+            var jsonData = responseMessage.Content.ReadAsStringAsync().Result; // JSON verisi okunur.
             var categories = JsonConvert.DeserializeObject<List<ResultCategoryDTO>>(jsonData); // JSON verisi dinamik bir listeye dönüştürülür.
             List<SelectListItem> categoryList = (from x in categories
                                                  select new SelectListItem

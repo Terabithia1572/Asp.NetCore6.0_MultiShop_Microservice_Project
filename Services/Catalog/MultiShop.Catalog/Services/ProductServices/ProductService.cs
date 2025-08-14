@@ -10,12 +10,14 @@ namespace MultiShop.Catalog.Services.ProductServices
     {
         private readonly IMapper _mapper; // AutoMapper kullanarak DTO'lar ve Entity'ler arasında dönüşüm yapar. AutoMapper kütüphanesi ile nesneler arası otomatik dönüşüm işlemlerinde kullanılır.
         private readonly IMongoCollection<Product> _productCollection; // MongoDB'deki Product koleksiyonuna erişim sağlar.
+        private readonly IMongoCollection<Category> _categoryCollection; // MongoDB'deki Category koleksiyonuna erişim sağlar.
 
         public ProductService(IMapper mapper,IDatabaseSettings _databaseSettings)
         {
             var client = new MongoClient(_databaseSettings.ConnectionString); // MongoDB ile bağlantı kurmak için istemci oluşturuluyor.
             var database = client.GetDatabase(_databaseSettings.DatabaseName); // Bağlantı kurulan MongoDB'de kullanılacak veritabanı seçiliyor.
             _productCollection = database.GetCollection<Product>(_databaseSettings.ProductCollectionName); // Product koleksiyonu üzerinden işlem yapabilmek için referans alınıyor.
+            _categoryCollection = database.GetCollection<Category>(_databaseSettings.CategoryCollectionName); // Category koleksiyonu üzerinden işlem yapabilmek için referans alınıyor.
             _mapper = mapper; // AutoMapper örneği sınıfın _mapper alanına atanıyor.
         }
 
@@ -42,6 +44,16 @@ namespace MultiShop.Catalog.Services.ProductServices
             var values=await _productCollection.Find<Product>(x => x.ProductID == id).FirstOrDefaultAsync(); // Verilen id'ye sahip ilk Product nesnesini, MongoDB'deki Product koleksiyonundan asenkron olarak bulur (yoksa null döner).
             return _mapper.Map<GetByIDProductDTO>(values); // Bulunan Product nesnesini GetByIDProductDTO tipine mapleyip (dönüştürüp) döner.
 
+        }
+
+        public async Task<List<ResultProductsWithCategoryDTO>> GetProductsWithCategoryAsync()
+        {
+            var values=await _productCollection.Find(x => true).ToListAsync(); // MongoDB'deki Product koleksiyonundan tüm Product nesnelerini asenkron olarak alır.
+            foreach (var item in values)
+            {
+                item.Category = await _categoryCollection.Find<Category>(x => x.CategoryID == item.CategoryID).FirstAsync();  // Her Product nesnesi için, ilgili Category nesnesini MongoDB'deki Category koleksiyonundan bulur ve Product nesnesinin Category özelliğine atar.
+            }
+            return _mapper.Map<List<ResultProductsWithCategoryDTO>>(values); // Alınan Product nesnelerini ResultProductsWithCategoryDTO tipine dönüştürür ve döner.
         }
 
         public async Task UpdateProductAsync(UpdateProductDTO updateProductDTO)
