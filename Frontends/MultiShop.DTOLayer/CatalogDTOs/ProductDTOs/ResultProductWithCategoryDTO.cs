@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiShop.DTOLayer.CatalogDTOs.CategoryDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace MultiShop.DTOLayer.CatalogDTOs.ProductDTOs
         public string ProductDescription { get; set; } //Ürün Açıklamasını Tuttuk.
         public string ProductImageURL { get; set; } //Ürün Resmini Tuttuk.
         public string CategoryID { get; set; } // Ürünün ait olduğu kategori ID'sini tuttuk.
+        public ResultCategoryDTO Category { get; set; } // Ürünün ait olduğu kategori bilgilerini tuttuk.
     }
 }
