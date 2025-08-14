@@ -1,4 +1,6 @@
-﻿namespace MultiShop.Catalog.DTOs.ProductDTOs
+﻿using MultiShop.Catalog.DTOs.CategoryDTOs;
+
+namespace MultiShop.Catalog.DTOs.ProductDTOs
 {
     public class ResultProductsWithCategoryDTO
     {
@@ -8,6 +10,6 @@
         public string ProductDescription { get; set; } //Ürün Açıklamasını Tuttuk.
         public string ProductImageURL { get; set; } //Ürün Resmini Tuttuk.
         public string CategoryID { get; set; } // Ürünün ait olduğu kategori ID'sini tuttuk.
-        public string Category { get; set; } // Ürünün ait olduğu kategori Adını tuttuk.
+        public ResultCategoryDTO Category { get; set; } // Ürünün ait olduğu kategori Adını tuttuk.
     }
 }
