@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using MultiShop.Catalog.Services.CategoryServices;
+using MultiShop.Catalog.Services.FeatureSliderServices;
 using MultiShop.Catalog.Services.ProductDetailServices;
 using MultiShop.Catalog.Services.ProductImageServices;
 using MultiShop.Catalog.Services.ProductServices;
@@ -21,6 +22,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>(); // Her istek iç
 builder.Services.AddScoped<IProductService, ProductService>(); // Her istek için yeni bir ProductService örneði oluþturur ve IProductService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IProductImageService, ProductImageService>(); // Her istek için yeni bir ProductImageService örneði oluþturur ve IProductImageService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>(); // Her istek için yeni bir ProductDetailService örneði oluþturur ve IProductDetailService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
+builder.Services.AddScoped<IFeatureSliderService, FeatureSliderService>(); // Her istek için yeni bir FeatureSliderService örneði oluþturur ve IFeatureSliderService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); // Uygulamadaki tüm AutoMapper profillerini yükler ve otomatik eþleme (mapping) iþlemlerinin kullanýlmasýný saðlar.
 
