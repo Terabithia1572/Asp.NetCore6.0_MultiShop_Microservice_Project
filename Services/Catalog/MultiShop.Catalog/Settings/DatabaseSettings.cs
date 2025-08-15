@@ -8,5 +8,6 @@
         public string ProductImageCollectionName { get; set; } // Ürün resim koleksiyonunun adını tutar.
         public string ConnectionString { get; set; } // MongoDB bağlantı dizesini tutar.
         public string DatabaseName { get; set; } // Veritabanı adını tutar.
+        public string FeatureSliderCollectionName { get;  set; } // Özellik kaydırıcı koleksiyonunun adını tutar.
     }
 }
