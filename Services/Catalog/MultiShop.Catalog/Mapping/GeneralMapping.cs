@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Driver.Core.Misc;
 using MultiShop.Catalog.DTOs.CategoryDTOs;
+using MultiShop.Catalog.DTOs.FeatureDTOs;
 using MultiShop.Catalog.DTOs.FeatureSliderDTOs;
 using MultiShop.Catalog.DTOs.ProductDetailDTOs;
 using MultiShop.Catalog.DTOs.ProductDTOs;
@@ -51,6 +52,11 @@ namespace MultiShop.Catalog.Mapping
             CreateMap<SpecialOffer, CreateSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile CreateSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
             CreateMap<SpecialOffer, UpdateSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile UpdateSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
             CreateMap<SpecialOffer, GetByIDSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile GetByIDSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
+
+            CreateMap<Entities.Feature, GetByIDFeatureDTO>().ReverseMap(); // Burada Feature ile GetByIDFeatureDTO arasında çift yönlü eşleme yapılıyor
+            CreateMap<Entities.Feature, ResultFeatureDTO>().ReverseMap(); // Burada Feature ile ResultFeatureDTO arasında çift yönlü eşleme yapılıyor
+            CreateMap<Entities.Feature, CreateFeatureDTO>().ReverseMap(); // Burada Feature ile CreateFeatureDTO arasında çift yönlü eşleme yapılıyor
+            CreateMap<Entities.Feature, UpdateFeatureDTO>().ReverseMap(); // Burada Feature ile UpdateFeatureDTO arasında çift yönlü eşleme yapılıyor
         }
     }
 }

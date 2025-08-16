@@ -10,5 +10,6 @@
         public string DatabaseName { get; set; } // Veritabanı adını tutar.
         public string FeatureSliderCollectionName { get;  set; } // Özellik kaydırıcı koleksiyonunun adını tutar.
         public string SpecialOfferCollectionName { get; set; } // Özel teklif koleksiyonunun adını tutar.
+        public string FeatureCollectionName { get; set; } // Özellik koleksiyonunun adını tutar.
     }
 }
