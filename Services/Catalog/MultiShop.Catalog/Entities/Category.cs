@@ -10,6 +10,7 @@ namespace MultiShop.Catalog.Entities
         [BsonRepresentation(BsonType.ObjectId)] // Bu attribute, MongoDB’deki ObjectId türündeki verilerin string olarak temsil edilmesini sağlar.
         public string CategoryID { get; set; } // MongoDB'de benzersiz kimlik olarak kullanılacak
         public string CategoryName { get; set; } //Kategori Adını Tuttuk.
+        public string CategoryImageURL { get; set; } //Kategori Resim Görselini Tuttuk.
 
     }
 }
