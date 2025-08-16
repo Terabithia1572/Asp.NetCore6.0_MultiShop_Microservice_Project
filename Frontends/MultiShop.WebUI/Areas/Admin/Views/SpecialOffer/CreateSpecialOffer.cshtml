@@ -1,0 +1,36 @@
+﻿@model CreateSpecialOfferDTO
+@{
+    ViewData["Title"] = "CreateSpecialOffer";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>İndirim Ekleme Sayfası</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+                    <form method="post">
+                        <label>İndirim Başlığı</label>
+                        <input type="text" class="form-control" asp-for="SpecialOfferTitle" />
+                        <br />
+                        <label>İndirim Alt Başlığı</label>
+                        <input type="text" class="form-control" asp-for="SpecialOfferSubTitle" />
+                        <br />
+                        <label>İndirim Görseli</label>
+                        <input type="text" class="form-control" asp-for="SpecialOfferImageUrl" />
+                        <br />
+                        <button type="submit" class="btn btn-primary">İndirim Ekle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+
