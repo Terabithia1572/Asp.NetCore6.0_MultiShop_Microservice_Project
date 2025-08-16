@@ -6,20 +6,44 @@
       @foreach (var category in Model)
         {
             <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none" href="@Url.Action("Index", "Category", new { id = category.CategoryID })">
-                    <div class="cat-item d-flex align-items-center mb-4">
-                        <div class="overflow-hidden" style="width: 100px; height: 100px;">
-                            <img class="img-fluid" src="@category.CategoryImageURL" alt="@category.CategoryName">
-                        </div>
-                        <div class="flex-fill pl-3">
-                            <h6>@category.CategoryName</h6>
-                            <small class="text-body">@Model.Count Ürün</small>
-                        </div>
+                <a class="text-decoration-none d-block" href="@Url.Action("Index", "Category", new { id = category.CategoryID })">
+                    <div class="cat-item d-flex align-items-center mb-4 p-2 bg-white rounded shadow-sm">
+                        <div class="thumb flex-shrink-0">
+                            <img class="w-100 h-100" src="@(string.IsNullOrWhiteSpace(category.CategoryImageURL)
+                                                                                                     ? Url.Content("~/multishop/img/placeholder-200x200.jpg")
+                                                                                                     : category.CategoryImageURL)"
+                             alt="@category.CategoryName">
                     </div>
-                </a>
-            </div>
+                    <div class="flex-grow-1 pl-3">
+                        <h6 class="mb-1 text-dark">@category.CategoryName</h6>
+                        <small class="text-body">@category.ProductCount Ürün</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
         }
 
 
     </div>
 </div>
+<style>
+    .cat-item {
+        height: 110px;
+    }
+
+        .cat-item .thumb {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+            .cat-item .thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+</style>
