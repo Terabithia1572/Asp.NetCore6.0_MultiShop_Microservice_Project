@@ -5,6 +5,7 @@ using MultiShop.Catalog.DTOs.FeatureSliderDTOs;
 using MultiShop.Catalog.DTOs.ProductDetailDTOs;
 using MultiShop.Catalog.DTOs.ProductDTOs;
 using MultiShop.Catalog.DTOs.ProductImageDTOs;
+using MultiShop.Catalog.DTOs.SpecialOfferDTOs;
 using MultiShop.Catalog.Entities;
 
 namespace MultiShop.Catalog.Mapping
@@ -45,6 +46,11 @@ namespace MultiShop.Catalog.Mapping
             CreateMap<FeatureSlider, CreateFeatureSliderDTO>().ReverseMap(); // Burada FeatureSlider ile CreateFeatureSliderDTO arasında çift yönlü eşleme yapılıyor
             CreateMap<FeatureSlider, UpdateFeatureSliderDTO>().ReverseMap(); // Burada FeatureSlider ile UpdateFeatureSliderDTO arasında çift yönlü eşleme yapılıyor
             CreateMap<FeatureSlider, GetByIDFeatureSliderDTO>().ReverseMap(); // Burada FeatureSlider ile GetByIDFeatureSliderDTO arasında çift yönlü eşleme yapılıyor
+
+            CreateMap<SpecialOffer, ResultSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile ResultSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
+            CreateMap<SpecialOffer, CreateSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile CreateSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
+            CreateMap<SpecialOffer, UpdateSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile UpdateSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
+            CreateMap<SpecialOffer, GetByIDSpecialOfferDTO>().ReverseMap(); // Burada SpecialOffer ile GetByIDSpecialOfferDTO arasında çift yönlü eşleme yapılıyor
         }
     }
 }

@@ -5,6 +5,7 @@ using MultiShop.Catalog.Services.FeatureSliderServices;
 using MultiShop.Catalog.Services.ProductDetailServices;
 using MultiShop.Catalog.Services.ProductImageServices;
 using MultiShop.Catalog.Services.ProductServices;
+using MultiShop.Catalog.Services.SpecialOfferServices;
 using MultiShop.Catalog.Settings;
 using System.Reflection;
 
@@ -23,6 +24,7 @@ builder.Services.AddScoped<IProductService, ProductService>(); // Her istek için
 builder.Services.AddScoped<IProductImageService, ProductImageService>(); // Her istek için yeni bir ProductImageService örneði oluþturur ve IProductImageService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>(); // Her istek için yeni bir ProductDetailService örneði oluþturur ve IProductDetailService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IFeatureSliderService, FeatureSliderService>(); // Her istek için yeni bir FeatureSliderService örneði oluþturur ve IFeatureSliderService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
+builder.Services.AddScoped<ISpecialOfferService, SpecialOfferService>(); // Her istek için yeni bir SpecialOfferService örneði oluþturur ve ISpecialOfferService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); // Uygulamadaki tüm AutoMapper profillerini yükler ve otomatik eþleme (mapping) iþlemlerinin kullanýlmasýný saðlar.
 
