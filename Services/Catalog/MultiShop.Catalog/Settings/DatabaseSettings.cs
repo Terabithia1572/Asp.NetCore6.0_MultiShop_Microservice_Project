@@ -12,5 +12,6 @@
         public string SpecialOfferCollectionName { get; set; } // Özel teklif koleksiyonunun adını tutar.
         public string FeatureCollectionName { get; set; } // Özellik koleksiyonunun adını tutar.
         public string OfferDiscountCollectionName { get; set; } // Teklif indirim koleksiyonunun adını tutar.
+        public string BrandCollectionName { get; set; } // Marka koleksiyonunun adını tutar.
     }
 }
