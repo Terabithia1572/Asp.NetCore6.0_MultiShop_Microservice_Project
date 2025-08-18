@@ -1,8 +1,48 @@
-﻿
+﻿@model List<ResultBrandDTO>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<h1>Index</h1>
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Marka Listesi</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Marka Adı</th>
+                                <th>Marka Görseli</th>
+                                <th>Sil</th>
+                                <th>Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.BrandName</td>
+                                    <td>@item.BrandImageURL</td>
+                                    <td><a href="/Admin/Brand/DeleteBrand/@item.BrandID" class="btn btn-danger">Sil</a></td>
+                                    <td><a href="/Admin/Brand/UpdateBrand/@item.BrandID" class="btn btn-success">Güncelle</a></td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                    <a href="/Admin/Brand/CreateBrand/" class="btn btn-primary">Yeni Marka Girişi</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
 
