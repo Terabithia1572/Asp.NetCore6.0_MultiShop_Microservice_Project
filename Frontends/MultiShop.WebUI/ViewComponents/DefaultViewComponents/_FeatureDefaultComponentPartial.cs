@@ -16,9 +16,9 @@ namespace MultiShop.WebUI.ViewComponents.DefaultViewComponents
         public async Task< IViewComponentResult> InvokeAsync() //bu metot, bu view component çağrıldığında çalışır.
         {
             ViewBag.v1 = "Ana Sayfa";
-            ViewBag.v2 = "Önce Çıkan Özellikler";
-            ViewBag.v3 = "Önce Çıkan Özellik Listesi";
-            ViewBag.v4 = "Önce Çıkan Özellik İşlemleri";
+            ViewBag.v2 = "Öne Çıkan Özellikler";
+            ViewBag.v3 = "Öne Çıkan Özellik Listesi";
+            ViewBag.v4 = "Öne Çıkan Özellik İşlemleri";
             // Bu ViewBag'ler, view içinde kullanılacak verileri taşır.
 
             var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
