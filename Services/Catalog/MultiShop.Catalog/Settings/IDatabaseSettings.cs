@@ -9,6 +9,7 @@
         public string FeatureSliderCollectionName { get; set; } // Özellik kaydırıcı koleksiyonunun adını tutar.
         public string SpecialOfferCollectionName { get; set; } // Özel teklif koleksiyonunun adını tutar.
         public string FeatureCollectionName { get; set; } // Özellik koleksiyonunun adını tutar.
+        public string OfferDiscountCollectionName { get; set; } // Teklif indirim koleksiyonunun adını tutar.
         public string ConnectionString { get; set; } // MongoDB bağlantı dizesini tutar.
         public string DatabaseName { get; set; } // Veritabanı adını tutar.
     }
