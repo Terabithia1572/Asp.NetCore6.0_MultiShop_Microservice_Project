@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using MultiShop.Catalog.Services.AboutServices;
 using MultiShop.Catalog.Services.BrandServices;
 using MultiShop.Catalog.Services.CategoryServices;
 using MultiShop.Catalog.Services.FeatureServices;
@@ -31,6 +32,7 @@ builder.Services.AddScoped<ISpecialOfferService, SpecialOfferService>(); // Her 
 builder.Services.AddScoped<IFeatureService, FeatureService>(); // Her istek için yeni bir FeatureService örneði oluþturur ve IFeatureService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IOfferDiscountService, OfferDiscountService>(); // Her istek için yeni bir OfferDiscountService örneði oluþturur ve IOfferDiscountService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IBrandService, BrandService>(); // Her istek için yeni bir BrandService örneði oluþturur ve IBrandService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
+builder.Services.AddScoped<IAboutService, AboutService>(); // Her istek için yeni bir AboutService örneði oluþturur ve IAboutService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); // Uygulamadaki tüm AutoMapper profillerini yükler ve otomatik eþleme (mapping) iþlemlerinin kullanýlmasýný saðlar.
 
