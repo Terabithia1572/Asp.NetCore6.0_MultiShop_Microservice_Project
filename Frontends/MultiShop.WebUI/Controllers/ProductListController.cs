@@ -4,8 +4,9 @@ namespace MultiShop.WebUI.Controllers
 {
     public class ProductListController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(string id)
         {
+            ViewBag.id = id; // Bu aksiyon, ürün listesini göstermek için kullanılacak
             return View();
         }
         public IActionResult ProductDetail() //Bu aksin, ürün detaylarını göstermek için kullanılacak

@@ -27,7 +27,7 @@
         <div class="col-lg-9 col-md-8">
             <div class="row pb-3">
                 @await Component.InvokeAsync("_ProductListGetProductCountComponentPartial") <!-- Burada Biz Ürün Sayısı kodlarını _ProductListGetProductCountComponentPartial Tuttuk -->
-                @await Component.InvokeAsync("_ProductListComponentPartial") <!-- Burada Biz Ürün Listesi kodlarını _ProductListComponentPartial Tuttuk -->
+                @await Component.InvokeAsync("_ProductListComponentPartial",new {id=ViewBag.id}) <!-- Burada Biz Ürün Listesi kodlarını _ProductListComponentPartial Tuttuk -->
                 @await Component.InvokeAsync("_ProductListPaginationComponentPartial") <!-- Burada Biz Ürün Sayfalama kodlarını _ProductListPaginationComponentPartial Tuttuk -->
             </div>
         </div>
