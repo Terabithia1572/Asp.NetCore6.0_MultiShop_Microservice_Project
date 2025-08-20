@@ -46,6 +46,21 @@ namespace MultiShop.Catalog.Services.ProductServices
 
         }
 
+        public async Task<List<ResultProductsWithCategoryDTO>> GetProductsWithByCategoryByCategoryIDAsync(string categoryID)
+        {
+            var values = await _productCollection.Find(x => x.CategoryID == categoryID).ToListAsync();
+
+            foreach (var item in values)
+            {
+                item.Category = await _categoryCollection
+                    .Find<Category>(x => x.CategoryID == item.CategoryID)
+                    .FirstOrDefaultAsync(); // kategori yoksa null olur, exception atmaz
+            }
+
+            return _mapper.Map<List<ResultProductsWithCategoryDTO>>(values);
+        }
+
+
         public async Task<List<ResultProductsWithCategoryDTO>> GetProductsWithCategoryAsync()
         {
             var values=await _productCollection.Find(x => true).ToListAsync(); // MongoDB'deki Product koleksiyonundan tüm Product nesnelerini asenkron olarak alır.

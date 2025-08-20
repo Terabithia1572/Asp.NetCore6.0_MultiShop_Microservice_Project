@@ -10,5 +10,6 @@ namespace MultiShop.Catalog.Services.ProductServices
         Task DeleteProductAsync(string id); // Ürünyi siler
         Task<GetByIDProductDTO> GetByIDProductAsync(string id); // ID ile Ürün getirir
         Task<List<ResultProductsWithCategoryDTO>> GetProductsWithCategoryAsync(); // Kategorilerle birlikte Ürünleri getirir
+        Task<List<ResultProductsWithCategoryDTO>> GetProductsWithByCategoryByCategoryIDAsync(string categoryID); // Belirli bir kategori ile Ürünleri getirir
     }
 }

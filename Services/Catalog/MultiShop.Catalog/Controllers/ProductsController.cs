@@ -67,5 +67,16 @@ namespace MultiShop.Catalog.Controllers
             return Ok(values); // Ürünler bulunduysa 200 OK ile birlikte Ürünleri döndürüyoruz
         }
 
+        [HttpGet("ProductListWithCategoryByCategoryID")]
+        public async Task<IActionResult> ProductListWithCategoryByCategoryID(string id)
+        {
+            var values = await _productService.GetProductsWithByCategoryByCategoryIDAsync(id);
+
+            if (values == null || values.Count == 0)
+                return NotFound("Ürün Bulunamadı.");
+
+            return Ok(values);
+        }
+
     }
 }
