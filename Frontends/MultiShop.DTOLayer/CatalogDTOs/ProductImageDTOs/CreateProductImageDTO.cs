@@ -1,6 +1,10 @@
-﻿using MultiShop.Catalog.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MultiShop.Catalog.DTOs.ProductImageDTOs
+namespace MultiShop.DTOLayer.CatalogDTOs.ProductImageDTOs
 {
     public class CreateProductImageDTO
     {
@@ -9,6 +13,6 @@ namespace MultiShop.Catalog.DTOs.ProductImageDTOs
         public string ProductImage3 { get; set; } //Üçüncü resim için
         public string ProductImage4 { get; set; } //Dördüncü resim için
         public string ProductID { get; set; } //Ürün ile ilişkili hale getirmek için ProductID ekledik.
-     //   public Product Product { get; set; } //Product tablosuyla ilişki ekledik.
+                                              //   public Product Product { get; set; } //Product tablosuyla ilişki ekledik.
     }
 }
