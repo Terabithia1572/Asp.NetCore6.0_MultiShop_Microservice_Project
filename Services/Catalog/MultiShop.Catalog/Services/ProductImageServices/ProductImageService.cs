@@ -45,6 +45,12 @@ namespace MultiShop.Catalog.Services.ProductImageServices
             return _mapper.Map<GetByIDProductImageDTO>(values); // Bulunan ProductImage nesnesini GetByIDProductImageDTO tipine mapleyip (dönüştürüp) döner.
         }
 
+        public async Task<List<GetByIDProductImageDTO>> GetByProductIDProductImageAsync(string productId)
+        {
+            var values = await _ProductImageCollection.Find(x => x.ProductID == productId).ToListAsync(); // Verilen productId'ye sahip olan tüm ProductImage nesnelerini MongoDB'deki ProductImage koleksiyonundan asenkron olarak alır.
+            return _mapper.Map<List<GetByIDProductImageDTO>>(values); // Alınan ProductImage nesnelerini GetByIDProductImageDTO tipine dönüştürür ve döner.
+        }
+
         public async Task UpdateProductImageAsync(UpdateProductImageDTO updateProductImageDTO)
         {
             var values = _mapper.Map<ProductImage>(updateProductImageDTO); // updateProductImageDTO nesnesindeki verileri, ProductImage tipindeki yeni bir nesneye dönüştürür.

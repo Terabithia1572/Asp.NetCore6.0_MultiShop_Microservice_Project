@@ -9,5 +9,6 @@ namespace MultiShop.Catalog.Services.ProductImageServices
         Task UpdateProductImageAsync(UpdateProductImageDTO updateProductImageDTO); // Resim yi günceller
         Task DeleteProductImageAsync(string id); // Resim yi siler
         Task<GetByIDProductImageDTO> GetByIDProductImageAsync(string id); // ID ile Resim  getirir
+        Task<List<GetByIDProductImageDTO>> GetByProductIDProductImageAsync(string productId); // Ürün ID ile Resim  getirir
     }
 }
