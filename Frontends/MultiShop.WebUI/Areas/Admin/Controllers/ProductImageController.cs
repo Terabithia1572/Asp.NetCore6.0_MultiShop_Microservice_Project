@@ -2,51 +2,51 @@
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CatalogDTOs.ProductImageDTOs;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("Admin/[controller]/[action]")]
     [AllowAnonymous]
+    [Route("Admin/ProductImage")]
     public class ProductImageController : Controller
     {
-
         private readonly IHttpClientFactory _httpClientFactory;
-
         public ProductImageController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
-
-        [HttpGet("{id}")]
+        [Route("ProductImageDetail/{id}")]
+        [HttpGet]
         public async Task<IActionResult> ProductImageDetail(string id)
         {
             ViewBag.v1 = "Ana Sayfa";
             ViewBag.v2 = "Ürünler";
-            ViewBag.v3 = "Ürün Görsel Güncelleme";
-            ViewBag.v4 = "Ürün İşlemleri";
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var responseMessage = await client.GetAsync($"https://localhost:1002/api/ProductImages/ProductImagesByProductID?id=/{id}"); // API'den kategori verisi alınır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            ViewBag.v3 = "Ürün Görsel Güncelleme Sayfası";
+            ViewBag.v0 = "Ürün Görsel İşlemleri";
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:1002/api/ProductImages/ProductImagesByProductID?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
             {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
-                var values = JsonConvert.DeserializeObject<UpdateProductImageDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
-                return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var values = JsonConvert.DeserializeObject<UpdateProductImageDTO>(jsonData);
+                return View(values);
             }
-            return View(); // Başarısız ise aynı view döndürülür.
+            return View();
         }
-        [HttpPost("{id}")]
-        public async Task<IActionResult> ProductImageDetail(UpdateProductImageDTO updateProductImageDTO)
+        [Route("ProductImageDetail/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> ProductImageDetail(UpdateProductImageDTO updateProductImageDto)
         {
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var jsonData = JsonConvert.SerializeObject(updateProductImageDTO); // DTO nesnesi JSON formatına dönüştürülür.
-            StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
-            var responseMessage = await client.PutAsync("https://localhost:1002/api/ProductImages/", content); // API'ye PUT isteği yapılır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(updateProductImageDto);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client.PutAsync("https://localhost:1002/api/ProductImages", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
             {
-                return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" }); // Kategori listesine yönlendirilir.
+                return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" });
             }
-            return View(); // Başarısız ise aynı view döndürülür.
+            return View();
         }
     }
 }
