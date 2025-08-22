@@ -11,7 +11,7 @@ namespace MultiShop.WebUI.Controllers
         }
         public IActionResult ProductDetail(string id) //Bu aksin, ürün detaylarını göstermek için kullanılacak
         {
-            ViewBag.x = id; // Ürün ID'sini ViewBag'e atıyoruz
+            ViewBag.productID = id; // Ürün ID'sini ViewBag'e atıyoruz
 
             return View(); // Bu aksiyon, ürün detaylarını göstermek için kullanılacak
         }

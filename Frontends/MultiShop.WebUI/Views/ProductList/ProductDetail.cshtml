@@ -17,8 +17,11 @@
 <!-- Shop Detail Start -->
 <div class="container-fluid pb-5">
     <div class="row px-xl-5">
-        @await Component.InvokeAsync("_ProductDetailImageSliderComponentPartial", new { id = ViewBag.x }) <!-- Burada Biz Ürün Detay Resim kodlarını _ProductDetailImageSliderComponentPartial Tuttuk -->
-        @await Component.InvokeAsync("_ProductDetailFeatureComponentPartial",new {id=ViewBag.x}) <!-- Burada Biz Ürün Detay Özellik kodlarını _ProductDetailFeatureComponentPartial Tuttuk -->
+        @await Component.InvokeAsync("_ProductDetailImageSliderComponentPartial", new { id = ViewBag.productID })
+
+        @* Bunu da doğru id ile çağırın. ViewBag.x set edilmediyse productID kullanın veya doğru ViewBag'i atayın *@
+        @await Component.InvokeAsync("_ProductDetailFeatureComponentPartial", new { id = ViewBag.productID })
+
     </div>
     <div class="row px-xl-5">
         <div class="col">

@@ -58,10 +58,7 @@ namespace MultiShop.Catalog.Controllers
         public async Task<IActionResult> ProductImagesByProductID(string id)
         {
             var values = await _productImageService.GetByProductIDProductImageAsync(id); // ProductImage Service üzerinden productId ile Ürün Resmileri alıyoruz
-            if (values == null || !values.Any())
-            {
-                return NotFound("Ürün Resmi Bulunamadı."); // Eğer Ürün Resmi bulunamazsa 404 döndürüyoruz
-            }
+           
             return Ok(values); // Ürün Resmiler bulunduysa 200 OK ile birlikte Ürün Resmileri döndürüyoruz
         }
     }
