@@ -4,16 +4,27 @@ namespace MultiShop.WebUI.Controllers
 {
     public class ProductListController : Controller
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+        public ProductListController(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
         public IActionResult Index(string id)
         {
-            ViewBag.id = id; // Bu aksiyon, ürün listesini göstermek için kullanılacak
+            ViewBag.directory1 = "Ana Sayfa";
+            ViewBag.directory2 = "Ürünler";
+            ViewBag.directory3 = "Ürün Listesi";
+            ViewBag.id = id;
             return View();
         }
-        public IActionResult ProductDetail(string id) //Bu aksin, ürün detaylarını göstermek için kullanılacak
-        {
-            ViewBag.productID = id; // Ürün ID'sini ViewBag'e atıyoruz
 
-            return View(); // Bu aksiyon, ürün detaylarını göstermek için kullanılacak
+        public IActionResult ProductDetail(string id)
+        {
+            ViewBag.directory1 = "Ana Sayfa";
+            ViewBag.directory2 = "Ürün Listesi";
+            ViewBag.directory3 = "Ürün Detayları";
+            ViewBag.x = id;
+            return View();
         }
     }
 }
