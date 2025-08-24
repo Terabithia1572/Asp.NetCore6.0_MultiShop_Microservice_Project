@@ -44,6 +44,12 @@ namespace MultiShop.Catalog.Services.ProductDetailServices
 
         }
 
+        public async Task<GetByIDProductDetailDTO> GetByProductIDDetailAsync(string id)
+        {
+            var values = await _ProductDetailCollection.Find<ProductDetail>(x => x.ProductID == id).FirstOrDefaultAsync(); // Verilen id'ye sahip ilk ProductDetail nesnesini, MongoDB'deki ProductDetail koleksiyonundan asenkron olarak bulur (yoksa null döner).
+            return _mapper.Map<GetByIDProductDetailDTO>(values); // Bulunan ProductDetail nesnesini GetByIDProductDetailDTO tipine mapleyip (dönüştürüp) döner.
+        }
+
         public async Task UpdateProductDetailAsync(UpdateProductDetailDTO updateProductDetailDTO)
         {
             var values = _mapper.Map<ProductDetail>(updateProductDetailDTO); // updateProductDetailDTO nesnesindeki verileri, ProductDetail tipindeki yeni bir nesneye dönüştürür.

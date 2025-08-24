@@ -27,16 +27,25 @@ namespace MultiShop.Catalog.Controllers
             }
             return Ok(values); // Ürün Detaylarıler bulunduysa 200 OK ile birlikte Ürün Detaylarıleri döndürüyoruz
         }
-        [HttpGet("{id}")] // Belirli bir Ürün Detayları için id parametresi alıyoruz 
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetProductDetailByID(string id)
         {
-            var value = await _productDetailService.GetByIDProductDetailAsync(id); // ProductDetail Service üzerinden id ile Ürün Detayları alıyoruz
+            var value = await _productDetailService.GetByIDProductDetailAsync(id);
             if (value == null)
-            {
-                return NotFound("Ürün Detayları Bulunamadı."); // Eğer Ürün Detayları bulunamazsa 404 döndürüyoruz
-            }
-            return Ok(value); // Ürün Detayları bulunduysa 200 OK ile birlikte Ürün Detaylarıyi döndürüyoruz
+                return NotFound("Ürün Detayları Bulunamadı.");
+            return Ok(value);
         }
+
+        // GET api/ProductDetails/by-product/{productId}
+        [HttpGet("by-product/{productId}")]
+        public async Task<IActionResult> GetProductDetailByProductID(string productId)
+        {
+            var value = await _productDetailService.GetByProductIDDetailAsync(productId);
+            if (value == null)
+                return NotFound("Ürün Detayları Bulunamadı.");
+            return Ok(value);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateProductDetail(CreateProductDetailDTO createProductDetailDTO)
         {

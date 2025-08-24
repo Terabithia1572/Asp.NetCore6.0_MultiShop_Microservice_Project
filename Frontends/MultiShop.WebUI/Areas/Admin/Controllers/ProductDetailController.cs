@@ -25,7 +25,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             ViewBag.v3 = "Ürün Detayları Güncelleme";
             ViewBag.v4 = "Ürün Detayları İşlemleri";
             var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var responseMessage = await client.GetAsync($"https://localhost:1002/api/ProductDetails/{id}"); // API'den Ürün Detayları verisi alınır.
+            var responseMessage = await client.GetAsync($"https://localhost:1002/api/ProductDetails/by-product/{id}"); // API'den Ürün Detayları verisi alınır.
             if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
@@ -40,7 +40,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
             var jsonData = JsonConvert.SerializeObject(updateProductDetailDTO); // DTO nesnesi JSON formatına dönüştürülür.
             StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
-            var responseMessage = await client.PutAsync("https://localhost:1002/api/ProductDetails/", content); // API'ye PUT isteği yapılır.
+            var responseMessage = await client.PutAsync("https://localhost:1002/api/ProductDetails/by-product/", content); // API'ye PUT isteği yapılır.
             if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
             {
                 return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" }); // Ürün Detayları listesine yönlendirilir.
