@@ -1,0 +1,40 @@
+﻿@model UpdateCommentDTO
+@{
+    ViewData["Title"] = "UpdateComment";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Öne Çıkan Özellik Güncelleme Sayfası</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+                    <form method="post">
+                        <input type="hidden" asp-for="UserCommentID" />
+                        <label>Kullanıcı Adı</label>
+                        <input type="text" class="form-control" asp-for="UserCommentNameSurname" />
+                        <br />
+                       <label>Yorum Detayı</label>
+                        <input type="text" class="form-control" asp-for="UserCommentDetail" />
+                        <br />
+                        <label>Yorum Durumu</label>
+                        <select class="form-control" asp-for="UserCommentStatus">
+                            <option value="true" selected>Aktif</option>
+                            <option value="false">Pasif</option>
+                        </select>
+                        <br />
+
+                        <button type="submit" class="btn btn-primary">Öne Yorum Güncelle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
