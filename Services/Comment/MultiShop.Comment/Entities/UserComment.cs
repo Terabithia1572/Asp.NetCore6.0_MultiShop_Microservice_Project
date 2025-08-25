@@ -11,5 +11,6 @@ namespace MultiShop.Comment.Entities
         public int UserCommentRating { get; set; } //Kullanıcı Yorum Puan
         public DateTime UserCommentCreatedDate { get; set; } //Kullanıcı Yorum Oluşturma Tarihi
         public bool UserCommentStatus { get; set; } //Kullanıcı Yorum Durum
+        public string ProductID { get; set; } //Ürün ID
     }
 }
