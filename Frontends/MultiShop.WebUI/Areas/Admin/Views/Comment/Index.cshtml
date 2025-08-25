@@ -33,7 +33,7 @@
                                     <th scope="row">@count</th>
                                     <td>@item.UserCommentNameSurname</td>
                                     <td>@item.UserCommentDetail</td>
-                                    <td>@item.UserCommentCreatedDate.ToString("yyyy MM ddd")</td>
+                                    <td>@item.UserCommentCreatedDate</td>
                                     <td>@(item.UserCommentStatus == true ? "Aktif" : "Pasif")</td>
                                     <td><a href="/Admin/Comment/DeleteComment/@item.UserCommentID" class="btn btn-danger">Sil</a></td>
                                     <td><a href="/Admin/Comment/UpdateComment/@item.UserCommentID" class="btn btn-success">Güncelle</a></td>

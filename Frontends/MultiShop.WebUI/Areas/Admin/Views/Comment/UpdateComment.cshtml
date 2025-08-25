@@ -14,11 +14,12 @@
                 <div class="bs-example" data-example-id="bordered-table">
                     <form method="post">
                         <input type="hidden" asp-for="UserCommentID" />
-                        <label>Kullanıcı Adı</label>
+                        <input type="hidden" asp-for="ProductID" />
+                        <label>Kullanıcı Adı Soyadı</label>
                         <input type="text" class="form-control" asp-for="UserCommentNameSurname" />
                         <br />
                        <label>Yorum Detayı</label>
-                        <input type="text" class="form-control" asp-for="UserCommentDetail" />
+                        <textarea class="form-control" asp-for="UserCommentDetail" rows="5"></textarea>
                         <br />
                         <label>Yorum Durumu</label>
                         <select class="form-control" asp-for="UserCommentStatus">
@@ -26,7 +27,18 @@
                             <option value="false">Pasif</option>
                         </select>
                         <br />
-
+                        <label>Yorum Görsel</label>
+                        <input type="text" class="form-control" asp-for="UserCommentImageURL" />
+                        <br />
+                        <label>Email Adresi</label>
+                        <input type="text" class="form-control" asp-for="UserCommentEmail" />
+                        <br />
+                        <label>Yorum Puanı</label>
+                        <input type="number" class="form-control" asp-for="UserCommentRating" /> 
+                        <br />
+                        <label>Yorum Tarihi</label>
+                        <input type="datetime" class="form-control" asp-for="UserCommentCreatedDate" />
+                        <br />
                         <button type="submit" class="btn btn-primary">Öne Yorum Güncelle</button>
                     </form>
                 </div>
