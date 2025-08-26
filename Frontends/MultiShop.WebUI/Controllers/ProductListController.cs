@@ -2,6 +2,7 @@
 using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
 using MultiShop.DTOLayer.CommentDTOs;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace MultiShop.WebUI.Controllers
 {
@@ -30,24 +31,29 @@ namespace MultiShop.WebUI.Controllers
             return View();
         }
         [HttpGet]
-        public async Task <PartialViewResult> AddComment(string id)
+        public PartialViewResult AddComment()
         {
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var responseMessage = await client.GetAsync($"https://localhost:1002/api/Comments/CommentListByProductID?id{id}"); // API'den kategori verisi alınır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
-                var values = JsonConvert.DeserializeObject<UpdateProductDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
-                return PartialView(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
-            }
-           
             return PartialView();
         }
         [HttpPost]
-        public IActionResult AddComment(CreateCommentDTO createCommentDTO)
+        public async Task< IActionResult> AddComment(CreateCommentDTO createCommentDTO)
         {
-            return RedirectToAction("Index","Default");
+            createCommentDTO.UserCommentImageURL = "test";
+            createCommentDTO.UserCommentRating = 1;
+            createCommentDTO.UserCommentCreatedDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+            createCommentDTO.UserCommentStatus = false;
+            createCommentDTO.ProductID = "68a60e7fc36ee1136596a4bd";
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createCommentDTO);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client.PostAsync("https://localhost:7297/api/Comments", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Default");
+            }
+            return View();
         }
+    }
 
     }
-}
+

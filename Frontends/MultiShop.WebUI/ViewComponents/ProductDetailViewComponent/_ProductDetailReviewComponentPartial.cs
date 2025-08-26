@@ -16,16 +16,20 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var responseMessage = await client.GetAsync("https://localhost:7297/api/Comments/GetCommentsByProductId?productId="+id); // API'den yorumlar verilerini almak için GET isteği yapılır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            var client = _httpClientFactory.CreateClient();
+
+            var resp = await client.GetAsync($"https://localhost:7297/api/Comments/GetCommentsByProductId?productId={id}");
+            var list = new List<ResultCommentDTO>();
+
+            if (resp.IsSuccessStatusCode)
             {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
-                var values = JsonConvert.DeserializeObject<List<ResultCommentDTO>>(jsonData); // JSON verisi dinamik bir listeye dönüştürülür.
-                return View(values); // Dönüştürülen liste view'e gönderilir.
+                var json = await resp.Content.ReadAsStringAsync();
+                list = JsonConvert.DeserializeObject<List<ResultCommentDTO>>(json) ?? new List<ResultCommentDTO>();
             }
-            return View();
+
+            ViewData["ProductId"] = id; // id'yi View'e geçir
+            return View(list);          // asla null model dönme
         }
     }
-   
+
 }
