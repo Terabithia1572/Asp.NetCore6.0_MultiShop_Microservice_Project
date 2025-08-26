@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
+using MultiShop.DTOLayer.CommentDTOs;
+using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.Controllers
 {
@@ -26,5 +29,25 @@ namespace MultiShop.WebUI.Controllers
             ViewBag.x = id;
             return View();
         }
+        [HttpGet]
+        public async Task <PartialViewResult> AddComment(string id)
+        {
+            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            var responseMessage = await client.GetAsync($"https://localhost:1002/api/Comments/CommentListByProductID?id{id}"); // API'den kategori verisi alınır.
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
+                var values = JsonConvert.DeserializeObject<UpdateProductDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
+                return PartialView(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
+            }
+           
+            return PartialView();
+        }
+        [HttpPost]
+        public IActionResult AddComment(CreateCommentDTO createCommentDTO)
+        {
+            return RedirectToAction("Index","Default");
+        }
+
     }
 }
