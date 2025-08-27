@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MultiShop.Catalog.Services.AboutServices;
 using MultiShop.Catalog.Services.BrandServices;
 using MultiShop.Catalog.Services.CategoryServices;
+using MultiShop.Catalog.Services.ContactServices;
 using MultiShop.Catalog.Services.FeatureServices;
 using MultiShop.Catalog.Services.FeatureSliderServices;
 using MultiShop.Catalog.Services.OfferDiscountServices;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IFeatureService, FeatureService>(); // Her istek için
 builder.Services.AddScoped<IOfferDiscountService, OfferDiscountService>(); // Her istek için yeni bir OfferDiscountService örneði oluþturur ve IOfferDiscountService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IBrandService, BrandService>(); // Her istek için yeni bir BrandService örneði oluþturur ve IBrandService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IAboutService, AboutService>(); // Her istek için yeni bir AboutService örneði oluþturur ve IAboutService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
+builder.Services.AddScoped<IContactService, ContactService>(); // Her istek için yeni bir ContactService örneði oluþturur ve IContactService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); // Uygulamadaki tüm AutoMapper profillerini yükler ve otomatik eþleme (mapping) iþlemlerinin kullanýlmasýný saðlar.
 
