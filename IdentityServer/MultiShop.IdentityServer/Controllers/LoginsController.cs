@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.IdentityServer.DTOs;
+using MultiShop.IdentityServer.Models;
 using System.Threading.Tasks;
 
 namespace MultiShop.IdentityServer.Controllers
@@ -10,9 +11,9 @@ namespace MultiShop.IdentityServer.Controllers
     [ApiController]
     public class LoginsController : ControllerBase
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public LoginsController(SignInManager<IdentityUser> signInManager)
+        public LoginsController(SignInManager<ApplicationUser> signInManager)
         {
             _signInManager = signInManager;
         }
