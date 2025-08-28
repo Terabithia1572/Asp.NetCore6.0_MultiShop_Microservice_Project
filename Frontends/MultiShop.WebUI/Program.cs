@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MultiShop.WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddHttpContextAccessor(); //HttpContext'e eriþim için
+
+builder.Services.AddScoped<IloginService, LoginService>(); //IloginService arayüzünü LoginService ile iliþkilendiriyoruz
 
 builder.Services.AddHttpClient();
 
