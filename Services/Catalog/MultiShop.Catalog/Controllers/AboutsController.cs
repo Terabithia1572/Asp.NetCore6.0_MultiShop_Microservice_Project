@@ -6,7 +6,8 @@ using MultiShop.Catalog.Services.AboutServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [AllowAnonymous] // Bu controller'a erişim için yetkilendirme gereklidir.
+   // [AllowAnonymous] // Bu controller'a erişim için yetkilendirme gereklidir.
+   [Authorize] // Bu controller'a anonim erişime izin veriyoruz, yani yetkilendirme gerekmiyor.
     [Route("api/[controller]")]
     [ApiController]
 

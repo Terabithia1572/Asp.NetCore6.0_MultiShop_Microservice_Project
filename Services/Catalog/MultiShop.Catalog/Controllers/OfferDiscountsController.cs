@@ -6,7 +6,8 @@ using MultiShop.Catalog.Services.OfferDiscountServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [AllowAnonymous] // Bu controller'a erişim için yetkilendirme gereklidir.
+    [Authorize] // Bu controller'a anonim erişime izin veriyoruz, yani yetkilendirme gerekmiyor.
+                //  [AllowAnonymous] // Bu controller'a erişim için yetkilendirme gereklidir.
     [Route("api/[controller]")]
     [ApiController]
     public class OfferDiscountsController : ControllerBase

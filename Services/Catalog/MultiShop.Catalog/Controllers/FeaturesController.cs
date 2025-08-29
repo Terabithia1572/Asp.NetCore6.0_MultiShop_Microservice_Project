@@ -6,7 +6,8 @@ using MultiShop.Catalog.Services.FeatureServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [AllowAnonymous]
+    [Authorize] // Bu controller'a anonim erişime izin veriyoruz, yani yetkilendirme gerekmiyor.
+                //  [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class FeaturesController : ControllerBase

@@ -6,9 +6,10 @@ using MultiShop.Catalog.Services.ContactServices;
 
 namespace MultiShop.Catalog.Controllers
 {
+    [Authorize] // Bu controller'a anonim erişime izin veriyoruz, yani yetkilendirme gerekmiyor.
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+   // [AllowAnonymous]
     public class ContactsController : ControllerBase
     {
         private readonly IContactService _contactService; // Contact Service için Dependency Injection 

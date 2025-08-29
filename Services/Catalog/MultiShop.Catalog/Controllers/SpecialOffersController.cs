@@ -6,7 +6,8 @@ using MultiShop.Catalog.Services.SpecialOfferServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [AllowAnonymous] // Bu controller'a erişim için yetkilendirme gereklidir.
+    [Authorize] // Bu controller'a anonim erişime izin veriyoruz, yani yetkilendirme gerekmiyor.
+                //    [AllowAnonymous] // Bu controller'a erişim için yetkilendirme gereklidir.
     [Route("api/[controller]")] // API'nin URL yolunu tanımlar, [controller] kısmı bu controller'ın adını alır.
     [ApiController] // Bu sınıfın bir API controller olduğunu belirtir, bu sayede otomatik olarak model doğrulama ve hata işleme gibi özellikler eklenir.
     public class SpecialOffersController : ControllerBase
