@@ -7,16 +7,19 @@ using System.Text.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
+using MultiShop.WebUI.Services;
 
 namespace MultiShop.WebUI.Controllers
 {
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IloginService _loginService; //ILoginService'i ekliyoruz
 
-        public LoginController(IHttpClientFactory httpClientFactory)
+        public LoginController(IHttpClientFactory httpClientFactory, IloginService loginService)
         {
             _httpClientFactory = httpClientFactory;
+            _loginService = loginService;
         }
 
         [HttpGet]
@@ -27,6 +30,7 @@ namespace MultiShop.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CreateLoginDTO createLoginDTO)
         {
+             
             var client = _httpClientFactory.CreateClient(); //HttpClient'ı HttpClientFactory üzerinden alıyoruz
             var content = new StringContent(JsonSerializer.Serialize(createLoginDTO), Encoding.UTF8, "application/json"); //DTO'yu JSON formatına çeviriyoruz
             var response = await client.PostAsync("http://localhost:5001/api/Logins", content); //API'ye POST isteği gönderiyoruz
@@ -53,6 +57,7 @@ namespace MultiShop.WebUI.Controllers
                             IsPersistent = true, //Oturumun kalıcı olup olmadığı
                         };
                         await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties); //Kullanıcıyı oturum açtırıyoruz
+                        var id = _loginService.GetUserID; //Kullanıcı ID'sini alıyoruz  
                         return RedirectToAction("Index", "Default"); //Ana sayfaya yönlendiriyoruz
                     }
                 }
