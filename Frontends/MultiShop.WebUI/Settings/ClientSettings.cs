@@ -2,13 +2,15 @@
 {
     public class ClientSettings
     {
-        public Client MultiShopVisitorClient { get; set; } // Ziyaretçi istemcisi için kimlik bilgileri
-        public Client MultiShopManagerClient { get; set; } // Yönetici istemcisi için kimlik bilgileri
-        public Client MultiShopAdminClient { get; set; } // Admin istemcisi için kimlik bilgileri
+        public Client MultiShopVisitorClient { get; set; } // Ziyaretçi client
+        public Client MultiShopManagerClient { get; set; } // Yönetici client
+        public Client MultiShopAdminClient { get; set; }   // Admin client
+        public string IdentityServerUrl { get; set; }      // EKLENDİ: Discovery adresi
     }
+
     public class Client
     {
-        public string ClientID { get; set; } // İstemci kimliği
-        public string ClientSecret { get; set; } // İstemci güvenlik anahtarı
+        public string ClientID { get; set; }
+        public string ClientSecret { get; set; }
     }
 }

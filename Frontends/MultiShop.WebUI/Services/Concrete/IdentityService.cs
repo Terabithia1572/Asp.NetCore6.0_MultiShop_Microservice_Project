@@ -10,72 +10,114 @@ using System.Security.Claims;
 
 namespace MultiShop.WebUI.Services.Concrete
 {
-    public class IdentityService : IIdentityService // IIdentityService arayüzünü implemente ettik.
+    public class IdentityService : IIdentityService
     {
-        private readonly HttpClient _httpClient; // HTTP istekleri yapmak için HttpClient kullanıyoruz.
-        private readonly IHttpContextAccessor _httpContextAccessor; // HTTP context'e erişim için kullanılır.
-        private readonly ClientSettings _clientSettings; // Uygulama ayarlarını tutan ClientSettings nesnesi. 
-        public IdentityService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IOptions<ClientSettings> clientSettings) // Constructor ile bağımlılıkları alıyoruz.
+        private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ClientSettings _clientSettings;
+
+        public IdentityService(
+            HttpClient httpClient,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<ClientSettings> clientSettings)
         {
-            _httpClient = httpClient; // HttpClient bağımlılığı.
-            _httpContextAccessor = httpContextAccessor; // IHttpContextAccessor bağımlılığı.
-            _clientSettings = clientSettings.Value; // IOptions<ClientSettings> ile gelen ayarları alıyoruz.
+            _httpClient = httpClient;
+            _httpContextAccessor = httpContextAccessor;
+            _clientSettings = clientSettings.Value; // Options binding ile gelir (null ise Program.cs/JSON kontrol et)
         }
 
-        public async Task<bool> SignIn(SignInDTO signInDTO) // SignIn metodu, kullanıcı girişi yapmak için kullanılır.
+        public async Task<bool> SignIn(SignInDTO signInDTO)
         {
-            var discoveryEndpoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest // Kimlik sağlayıcının keşif belgesini alıyoruz.
+            // 1) Discovery
+            var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
-                Address = "https://localhost:5001", // Kimlik sağlayıcının adresi.
-                Policy = new DiscoveryPolicy { RequireHttps = false } // HTTPS gereksinimini devre dışı bırakıyoruz (geliştirme ortamı için).
-            });
-
-            var passwordTokenRequest = new PasswordTokenRequest // Parola tabanlı token isteği oluşturuyoruz.
-            {
-                ClientId = _clientSettings.MultiShopManagerClient.ClientID, // Yönetici istemcisinin kimlik bilgileri
-                ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret, // Yönetici istemcisinin gizli anahtarı
-                UserName = signInDTO.UserName, // Kullanıcı adı
-                Password = signInDTO.Password, // Şifre
-                Address = discoveryEndpoint.TokenEndpoint, // Token endpoint adresi
-            };
-            var token=await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest); // Token isteğini gönderiyoruz.
-            var userInfoRequest = new UserInfoRequest // Kullanıcı bilgisi isteği oluşturuyoruz.
-            {
-                Token = token.AccessToken, // Erişim token'ı
-                Address = discoveryEndpoint.UserInfoEndpoint // Kullanıcı bilgi endpoint adresi
-            };
-            var userInfo = await _httpClient.GetUserInfoAsync(userInfoRequest); // Kullanıcı bilgisi isteğini gönderiyoruz.
-
-            if (token.IsError || userInfo.IsError) // Eğer token veya kullanıcı bilgisi isteğinde hata varsa
-            {
-                return false; // Giriş başarısız
-            }
-            ClaimsIdentity claimsIdentity=new ClaimsIdentity(userInfo.Claims,CookieAuthenticationDefaults.AuthenticationScheme,"name", "role"); // ClaimsIdentity oluşturuyoruz.
-            ClaimsPrincipal claimsPrincipal=new ClaimsPrincipal(claimsIdentity); // ClaimsPrincipal oluşturuyoruz.
-            var authenticationProperties = new AuthenticationProperties(); // Kimlik doğrulama özelliklerini ayarlıyoruz.
-            authenticationProperties.StoreTokens(new List<AuthenticationToken> // Token bilgilerini saklıyoruz.
-            {
-                new AuthenticationToken
+                Address = _clientSettings.IdentityServerUrl, // appsettings'ten
+                Policy = new DiscoveryPolicy
                 {
-                    Name=OpenIdConnectParameterNames.AccessToken, // Erişim token'ı
-                    Value=token.AccessToken // Token değeri
-                },
-                new AuthenticationToken
-                {
-                    Name=OpenIdConnectParameterNames.RefreshToken, // Yenileme token'ı
-                    Value=token.RefreshToken // Token değeri
-                },
-                new AuthenticationToken
-                {
-                    Name=OpenIdConnectParameterNames.ExpiresIn, // Token'ın geçerlilik süresi
-                    Value=DateTime.Now.AddSeconds(token.ExpiresIn).ToString() // Geçerlilik süresi
+                    RequireHttps = false // Dev ortamı için. Prod'da true olmalı.
                 }
             });
-            authenticationProperties.IsPersistent = true; // Oturumun kalıcı olmasını sağlıyoruz.
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties); // Kullanıcıyı oturum açtırıyoruz.
-            return true; // Giriş başarılı
 
+            if (disco.IsError)
+            {
+                // disco.Error'ı logla
+                return false;
+            }
 
+            // 2) Password Grant ile Token Al
+            var token = await _httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = _clientSettings.MultiShopManagerClient.ClientID,
+                ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret,
+                UserName = signInDTO.UserName,
+                Password = signInDTO.Password,
+                // Access token ve UserInfo için openid/profile; refresh istiyorsan offline_access
+                Scope = "openid profile offline_access roles"
+            });
+
+            if (token.IsError || string.IsNullOrEmpty(token.AccessToken))
+            {
+                // token.Error, token.ErrorDescription, token.Raw loglanabilir
+                return false;
+            }
+
+            // 3) UserInfo (Token NULL gönderilmemesi için koruma)
+            var userInfo = await _httpClient.GetUserInfoAsync(new UserInfoRequest
+            {
+                Address = disco.UserInfoEndpoint,
+                Token = token.AccessToken
+            });
+
+            if (userInfo.IsError || userInfo.Claims is null)
+            {
+                // userInfo.Error loglanabilir
+                return false;
+            }
+
+            // 4) Claims & Cookie SignIn
+            var claimsIdentity = new ClaimsIdentity(
+                userInfo.Claims,
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                nameType: "name",
+                roleType: "role");
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            var authProps = new AuthenticationProperties
+            {
+                IsPersistent = true // kalıcı oturum
+            };
+
+            // Tokenları cookie'de sakla (expires_at kullan)
+            authProps.StoreTokens(new List<AuthenticationToken>
+            {
+                new AuthenticationToken
+                {
+                    Name = OpenIdConnectParameterNames.AccessToken,
+                    Value = token.AccessToken
+                },
+                new AuthenticationToken
+                {
+                    Name = OpenIdConnectParameterNames.RefreshToken,
+                    Value = token.RefreshToken ?? "" // offline_access yoksa null olabilir
+                },
+                new AuthenticationToken
+                {
+                    Name = "expires_at",
+                    Value = DateTimeOffset.UtcNow.AddSeconds(token.ExpiresIn).ToString("o")
+                }
+            });
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext is null) return false; // HTTP pipeline dışından çağrıldıysa
+
+            await httpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                claimsPrincipal,
+                authProps);
+
+            return true;
         }
     }
 }

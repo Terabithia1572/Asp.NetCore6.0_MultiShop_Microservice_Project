@@ -7,46 +7,48 @@ using MultiShop.WebUI.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 1) Options binding (ClientSettings)
+builder.Services.Configure<ClientSettings>(builder.Configuration.GetSection("ClientSettings"));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
+// 2) Authentication – Default: Cookie (UI senaryosu)
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
     {
-    opt.LoginPath= "/Login/Index/"; //Giriþ sayfasý yolu
-        opt.LogoutPath= "/Login/Logout/"; //Çýkýþ sayfasý yolu
-        opt.AccessDeniedPath= "/Login/AccessDenied/"; //Eriþim reddedildi sayfasý yolu
-        opt.Cookie.HttpOnly= true; //Cookie'nin sadece HTTP üzerinden eriþilebilir olmasýný saðlar
-        opt.Cookie.SameSite= SameSiteMode.Lax; //Cross-site isteklerde cookie'nin gönderilme davranýþýný belirler
-        opt.Cookie.SecurePolicy= CookieSecurePolicy.SameAsRequest; //Cookie'nin güvenli olup olmadýðýný belirler
-        opt.Cookie.Name= "MultiShopCookie"; //Cookie'nin adý
+        opt.LoginPath = "/Login/Index/";
+        opt.LogoutPath = "/Login/Logout/";
+        opt.AccessDeniedPath = "/Login/AccessDenied/";
+        opt.Cookie.HttpOnly = true;
+        opt.Cookie.SameSite = SameSiteMode.Lax;
+        opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        opt.Cookie.Name = "MultiShopCookie";
+        opt.ExpireTimeSpan = TimeSpan.FromDays(5);
+        opt.SlidingExpiration = true;
+    })
+    // (Ýsteðe baðlý) API'ler Bearer gerektiriyorsa ek þema olarak ekle (default þema Cookie kalýr)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+    {
+        // Geliþtirmede self-signed kullanýyorsan:
+        o.RequireHttpsMetadata = false;
+        // o.Authority = "...";
+        // o.Audience  = "...";
     });
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
-{
-    opt.LoginPath = "/Login/Index/";
-    opt.ExpireTimeSpan = TimeSpan.FromDays(5);
-    opt.Cookie.Name = "MultiShopCookie";
-    opt.SlidingExpiration = true;
+builder.Services.AddAuthorization();
 
-}); //
-
-builder.Services.AddHttpContextAccessor(); //HttpContext'e eriþim için
-
-builder.Services.AddScoped<IloginService, LoginService>(); //IloginService arayüzünü LoginService ile iliþkilendiriyoruz
-builder.Services.AddHttpClient<IIdentityService,IdentityService>(); // 
-
-builder.Services.AddHttpClient();
+// 3) HttpContext + HttpClient + Servisler
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient(); // genel havuz
+builder.Services.AddHttpClient<IIdentityService, IdentityService>(); // IdentityService için typed HttpClient
+builder.Services.AddScoped<IloginService, LoginService>(); // (Arayüz ismi sende "IloginService" ise aynen kalsýn)
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.Configure<ClientSettings>(builder.Configuration.GetSection("ClientSettings")); // appsettings.json dosyasýnda "ClientSettings" adlý bir bölüm varsa, oradaki verileri ClientSettings sýnýfýna map (baðla) ediyor.
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -54,20 +56,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication(); //Kimlik doðrulama ara katmanýný ekliyoruz
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+// 4) Routing – Area + Default route (UseEndpoints yok, .NET 6+ pattern)
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-// Areamýzý tanýmlýyoruz
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-      name: "areas",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
-});
 
 app.Run();
