@@ -22,7 +22,7 @@ namespace MultiShop.WebUI.Services.Concrete
             _clientSettings = clientSettings.Value; // IOptions<ClientSettings> ile gelen ayarları alıyoruz.
         }
 
-        public async Task<bool> SignIn(SignUpDTO signUpDTO) // SignIn metodu, kullanıcı girişi yapmak için kullanılır.
+        public async Task<bool> SignIn(SignInDTO signInDTO) // SignIn metodu, kullanıcı girişi yapmak için kullanılır.
         {
             var discoveryEndpoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest // Kimlik sağlayıcının keşif belgesini alıyoruz.
             {
@@ -32,10 +32,10 @@ namespace MultiShop.WebUI.Services.Concrete
 
             var passwordTokenRequest = new PasswordTokenRequest // Parola tabanlı token isteği oluşturuyoruz.
             {
-                ClientId = _clientSettings.MultiShopManagerID.ClientID, // Yönetici istemcisinin kimlik bilgileri
-                ClientSecret = _clientSettings.MultiShopManagerID.ClientSecret, // Yönetici istemcisinin gizli anahtarı
-                UserName = signUpDTO.UserName, // Kullanıcı adı
-                Password = signUpDTO.Password, // Şifre
+                ClientId = _clientSettings.MultiShopManagerClient.ClientID, // Yönetici istemcisinin kimlik bilgileri
+                ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret, // Yönetici istemcisinin gizli anahtarı
+                UserName = signInDTO.UserName, // Kullanıcı adı
+                Password = signInDTO.Password, // Şifre
                 Address = discoveryEndpoint.TokenEndpoint, // Token endpoint adresi
             };
             var token=await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest); // Token isteğini gönderiyoruz.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiShop.DTOLayer.IdentityDTOs.LoginDTOs
 {
-    public class SignUpDTO
+    public class SignInDTO
     {
         public string UserName { get; set; } // Kullanıcı adı bilgilerini aldık.
         public string Password { get; set; } // Şifre bilgilerini aldık.

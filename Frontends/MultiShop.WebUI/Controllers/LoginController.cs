@@ -68,17 +68,17 @@ namespace MultiShop.WebUI.Controllers
             return View(); //Başarısız ise tekrar giriş sayfasını gösteriyoruz
         }
 
-        [HttpGet]
-        public async Task<IActionResult> SignUp()
+        //[HttpGet]
+        //public async Task<IActionResult> SignIn()
+        //{
+        //    return View();
+        //}
+     //   [HttpPost]
+        public async Task<IActionResult> SignIn(SignInDTO signInDTO)
         {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> SignUp(SignUpDTO signUpDTO)
-        {
-            signUpDTO.UserName = "terabithia1572";
-            signUpDTO.Password = "Yunus6565*";
-            await _identityService.SignIn(signUpDTO); //IdentityService üzerinden SignIn metodunu çağırıyoruz
+            signInDTO.UserName = "terabithia1572";
+            signInDTO.Password = "Yunus6565*";
+            await _identityService.SignIn(signInDTO); //IdentityService üzerinden SignIn metodunu çağırıyoruz
 
             return RedirectToAction("Index","Test"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
         }
