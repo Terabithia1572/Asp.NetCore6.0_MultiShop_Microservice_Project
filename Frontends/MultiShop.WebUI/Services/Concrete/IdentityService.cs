@@ -72,6 +72,8 @@ namespace MultiShop.WebUI.Services.Concrete
                 }
             });
             authenticationProperties.IsPersistent = true; // Oturumun kalıcı olmasını sağlıyoruz.
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties); // Kullanıcıyı oturum açtırıyoruz.
+            return true; // Giriş başarılı
 
 
         }

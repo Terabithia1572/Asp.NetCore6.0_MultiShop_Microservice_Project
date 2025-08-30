@@ -36,6 +36,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Requirements", "Requirements", "{677AA9AA-DFC8-4023-ABDF-939D21C28B1B}"
 	ProjectSection(SolutionItems) = preProject
 		PortsInformation.txt = PortsInformation.txt
+		SimpleCode.txt = SimpleCode.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cargo", "Cargo", "{055DA083-D4EB-4C74-A208-BDAEEAC3F1BB}"
