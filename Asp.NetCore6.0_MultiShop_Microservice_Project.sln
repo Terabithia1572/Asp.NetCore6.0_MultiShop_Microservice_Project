@@ -65,6 +65,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Comment", "Comment", "{8F32
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.Comment", "Services\Comment\MultiShop.Comment\MultiShop.Comment.csproj", "{03098516-3E81-4DE1-B0F0-0980BB39AE31}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{4559744E-564C-4F5A-A64E-E50C905B5D55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RapidApi", "RapidApi", "{5A5197B2-C9F8-4415-BD13-B68D1FD773F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.OcelotGateway", "ApiGateway\MultiShop.OcelotGateway\MultiShop.OcelotGateway.csproj", "{D318E353-5E4B-4596-B243-2BC49DE87BEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +141,10 @@ Global
 		{03098516-3E81-4DE1-B0F0-0980BB39AE31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03098516-3E81-4DE1-B0F0-0980BB39AE31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03098516-3E81-4DE1-B0F0-0980BB39AE31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D318E353-5E4B-4596-B243-2BC49DE87BEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D318E353-5E4B-4596-B243-2BC49DE87BEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D318E353-5E4B-4596-B243-2BC49DE87BEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D318E353-5E4B-4596-B243-2BC49DE87BEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +175,7 @@ Global
 		{699B9F99-5175-4176-B9D4-5CED2A586AD9} = {33966D3C-1962-4679-BC21-DB3BD7CCE2E9}
 		{8F3286BE-EC9A-4ACA-88FD-E40EBF80A69D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{03098516-3E81-4DE1-B0F0-0980BB39AE31} = {8F3286BE-EC9A-4ACA-88FD-E40EBF80A69D}
+		{D318E353-5E4B-4596-B243-2BC49DE87BEF} = {4559744E-564C-4F5A-A64E-E50C905B5D55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDCEDDFD-1452-44EA-BAE9-5F3E694CA49F}

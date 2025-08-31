@@ -1,3 +1,4 @@
+Ocelot---------->localhost:1434 
 IdentityDB------>localhost:1435
 OrderDB--------->localhost:1440
 CargoDB------>localhost:1441
