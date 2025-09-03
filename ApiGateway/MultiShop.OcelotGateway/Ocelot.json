@@ -12,7 +12,11 @@
       ],
       "UpstreamPathTemplate": "/services/catalog/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "CatalogFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
 
     },
     //-----------------------------Discount Mikroservisi----------------------------
@@ -28,7 +32,11 @@
       ],
       "UpstreamPathTemplate": "/services/discount/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "DiscountFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
     },
     //-----------------------------Order Mikroservisi----------------------------
     {
@@ -43,7 +51,11 @@
       ],
       "UpstreamPathTemplate": "/services/order/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "OrderFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
 
     },
     //-----------------------------Kargo Mikroservisi----------------------------
@@ -59,7 +71,11 @@
       ],
       "UpstreamPathTemplate": "/services/cargo/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "CargoFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
 
     },
     //-----------------------------Basket Mikroservisi----------------------------
@@ -75,7 +91,11 @@
       ],
       "UpstreamPathTemplate": "/services/basket/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "BasketFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
 
     },
     //-----------------------------Comment Mikroservisi----------------------------
@@ -91,7 +111,11 @@
       ],
       "UpstreamPathTemplate": "/services/comment/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "CommentFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
 
     },
     //-----------------------------Payment Mikroservisi----------------------------
@@ -107,7 +131,12 @@
       ],
       "UpstreamPathTemplate": "/services/payment/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
-      "UpstreamScheme": "http" // Gateway'e gelen isteklerin beklenen protokolü
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "PaymentFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
+
 
     },
     //-----------------------------Images Mikroservisi----------------------------
@@ -124,7 +153,11 @@
       "UpstreamPathTemplate": "/services/images/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
       "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
-     
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "ImagesFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
+
     }
   ],
   "GlobalConfiguration": {
