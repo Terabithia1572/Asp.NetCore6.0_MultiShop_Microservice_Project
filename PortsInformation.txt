@@ -17,4 +17,3 @@ MultiShop.Discount----> 1003
 MultiShop.WebAPI------>1004
 MultiShop.Cargo.WebAPI------>1005
 MultiShop.Basket.WebAPI------>1006
-MultiShop.Basket.WebAPI------>1007
