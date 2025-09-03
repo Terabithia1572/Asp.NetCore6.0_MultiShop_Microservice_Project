@@ -1,0 +1,133 @@
+    //-----------------------------Discount Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1003 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/discount/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "DiscountFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    },
+    //-----------------------------Order Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1004 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/order/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "OrderFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    },
+    //-----------------------------Kargo Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1005 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/cargo/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "CargoFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    },
+    //-----------------------------Basket Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1006 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/basket/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "BasketFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    },
+    //-----------------------------Comment Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1007 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/comment/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "CommentFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    },
+    //-----------------------------Payment Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1008 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/payment/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "PaymentFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    },
+    //-----------------------------Images Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // Ýstek gateway'den hedef servise giderken kullanýlacak yol þablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1009 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/images/{everything}", // Ýstemcinin gateway'e çaðýracaðý yol þablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodlarý
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doðrulama/izin ayarlarý
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanýmlý auth þemasýnýn adý
+        "AllowedScopes": [ "ImagesFullPermission" ] // Bu route'a eriþmek için gereken OAuth2 scope(lar)ý
+      }
+    }
