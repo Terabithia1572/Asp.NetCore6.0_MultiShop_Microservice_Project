@@ -14,6 +14,9 @@ DiscountDB------>localhost kendi localhost SQL sunucumuzda tuttuk.
 
 MultiShop.Catalog ----> 1002
 MultiShop.Discount----> 1003
-MultiShop.WebAPI------>1004
+MultiShop.Order.WebAPI------>1004
 MultiShop.Cargo.WebAPI------>1005
 MultiShop.Basket.WebAPI------>1006
+MultiShop.Comment.WebAPI------>1007
+MultiShop.Payment.WebAPI------>1008
+MultiShop.Images.WebAPI------>1009
