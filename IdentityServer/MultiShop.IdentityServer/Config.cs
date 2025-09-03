@@ -27,6 +27,7 @@ namespace MultiShop.IdentityServer
             }, // Sipariş API'si için kaynak tanımı
             new ApiResource("ResourceCargo"){Scopes={"CargoFullPermission"}}, // Kargo API'si için kaynak tanımı
             new ApiResource("ResourceBasket"){Scopes={"BasketFullPermission"}}, // Sepet API'si için kaynak tanımı
+            new ApiResource("ResourceOcelot"){Scopes={"OcelotFullPermission"}}, // Sepet API'si için kaynak tanımı
             new ApiResource(IdentityServerConstants.LocalApi.ScopeName) // Local API erişimi için kaynak tanımı
         };
 
@@ -52,6 +53,7 @@ namespace MultiShop.IdentityServer
             new ApiScope("OrderFullPermission", "Full access to the Order API"), // Sipariş API'sine tam erişim izni
             new ApiScope("CargoFullPermission", "Full access to the Cargo API"), // Kargo API'sine tam erişim izni
             new ApiScope("BasketFullPermission", "Full access to the Basket API"), // Sepet API'sine tam erişim izni
+            new ApiScope("OcelotFullPermission", "Full access to the Ocelot API"), // Sepet API'sine tam erişim izni
              new ApiScope(IdentityServerConstants.LocalApi.ScopeName) // Local API erişim izni
         };
 
@@ -66,7 +68,7 @@ namespace MultiShop.IdentityServer
                 ClientName = "MultiShop Visitor User", // İstemcinin açıklayıcı adı.
                 AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doğrulama için kullanılan grant type (client credentials akışı).
                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
-                AllowedScopes = { "CatalogReadPermission" } // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
+                AllowedScopes = { "CatalogReadPermission","CatalogFullPermission", "OcelotFullPermission" } // Bu client yalnızca "CatalogReadPermission" yetkisiyle API'ye erişebilir.
             },
 
             // Katalog yönetici paneli için, kod akışıyla giriş yapan client (kullanıcı kimliğiyle giriş)
@@ -79,7 +81,8 @@ namespace MultiShop.IdentityServer
                 AllowedScopes =
                 {
                     "CatalogReadPermission", // Katalog API'sine okuma izni ile erişebilir.
-                    "CatalogFullPermission"  // Katalog API'sine tam erişim izni ile erişebilir.
+                    "CatalogFullPermission",  // Katalog API'sine tam erişim izni ile erişebilir.
+                    "OcelotFullPermission" // Ocelot API'sine tam erişim izni ile erişebilir.
                 }
             },
 
@@ -98,6 +101,7 @@ namespace MultiShop.IdentityServer
                     "CatalogReadPermission",       // Katalog API'sine okuma erişimi
                     "CargoFullPermission",         // Kargo API'sine tam erişim
                     "BasketFullPermission",        // Sepet API'sine tam erişim
+                    "OcelotFullPermission",        // Ocelot API'sine tam erişim
                     IdentityServerConstants.LocalApi.ScopeName,         // Local API erişimi
                     IdentityServerConstants.StandardScopes.OpenId,      // OpenID kimlik doğrulama
                     IdentityServerConstants.StandardScopes.Profile,     // Kullanıcı profili bilgileri
