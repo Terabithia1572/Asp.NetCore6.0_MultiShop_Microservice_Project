@@ -88,10 +88,10 @@ namespace MultiShop.IdentityServer
                 {
                     "CatalogReadPermission", // Katalog API'sine okuma izni ile erişebilir.
                     "CatalogFullPermission",  // Katalog API'sine tam erişim izni ile erişebilir.
-                    "BasketFullPermission",
-                    "CommentFullPermission",
-                    "PaymentFullPermission",
-                    "ImagesFullPermission",
+                    "BasketFullPermission", // Sipariş API'sine tam erişim izni ile erişebilir.
+                    "CommentFullPermission", //Yorumlar API'sine tam erişim izni ile erişebilir.
+                    "PaymentFullPermission", // Satın Alma API'sine tam erişim izni ile erişebilir.
+                    "ImagesFullPermission", //Resimler API'sine tam erişim izni ile erişebilir.
                     "OcelotFullPermission" // Ocelot API'sine tam erişim izni ile erişebilir.
                 }
             },
@@ -111,9 +111,9 @@ namespace MultiShop.IdentityServer
                     "CatalogReadPermission",       // Katalog API'sine okuma erişimi
                     "CargoFullPermission",         // Kargo API'sine tam erişim
                     "BasketFullPermission",        // Sepet API'sine tam erişim
-                    "CommentFullPermission",
-                    "PaymentFullPermission",
-                    "ImagesFullPermission",
+                    "CommentFullPermission",        // Yorumlar API'sine tam erişim
+                    "PaymentFullPermission",        // Satın Alma API'sine tam erişim
+                    "ImagesFullPermission",        // Resimler API'sine tam erişim
                     "OcelotFullPermission",        // Ocelot API'sine tam erişim
                     IdentityServerConstants.LocalApi.ScopeName,         // Local API erişimi
                     IdentityServerConstants.StandardScopes.OpenId,      // OpenID kimlik doğrulama
