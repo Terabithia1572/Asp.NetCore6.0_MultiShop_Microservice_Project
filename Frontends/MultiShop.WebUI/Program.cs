@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1) Options binding (ClientSettings)
 builder.Services.Configure<ClientSettings>(builder.Configuration.GetSection("ClientSettings"));
+builder.Services.Configure<ServiceApiSettings>(builder.Configuration.GetSection("ServiceApiSettings"));
 
 // 2) Authentication – Default: Cookie (UI senaryosu)
 builder.Services
