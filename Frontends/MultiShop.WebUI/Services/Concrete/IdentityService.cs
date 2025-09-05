@@ -56,12 +56,15 @@ namespace MultiShop.WebUI.Services.Concrete
                 UserName = signInDTO.UserName,
                 Password = signInDTO.Password,
                 // Access token ve UserInfo için openid/profile; refresh istiyorsan offline_access
-                Scope = "openid profile offline_access roles"
+                Scope = "openid profile offline_access roles CatalogFullPermission"
             });
 
             if (token.IsError || string.IsNullOrEmpty(token.AccessToken))
             {
-                // token.Error, token.ErrorDescription, token.Raw loglanabilir
+                // debug için bakın
+                var status = token.HttpStatusCode;      // 400
+                var err = token.Error;               // invalid_scope / invalid_client / invalid_grant ...
+                var raw = token.Raw;                 // ham cevap
                 return false;
             }
 

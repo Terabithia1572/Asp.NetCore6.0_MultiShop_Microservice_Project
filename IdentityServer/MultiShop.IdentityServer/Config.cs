@@ -42,7 +42,9 @@ namespace MultiShop.IdentityServer
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Email(),
-            new IdentityResources.Profile()
+            new IdentityResources.Profile(),
+                new IdentityResource("roles", new[] { "role" })   // <-- EKLENDİ
+
         };
 
         // API'ye erişim kapsamlarını (scopes) tanımlar.
@@ -78,23 +80,31 @@ namespace MultiShop.IdentityServer
             },
 
             // Katalog yönetici paneli için, kod akışıyla giriş yapan client (kullanıcı kimliğiyle giriş)
-            new Client
-            {
-                ClientId = "MultiShopManagerID", // İstemcinin (client) benzersiz kimliği.
-                ClientName = "MultiShop Manager User", // İstemcinin açıklayıcı adı.
-                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Kimlik doğrulama için kullanılan grant type (authorization code akışı).
-                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarı (SHA-256 ile şifrelenmiş).
-                AllowedScopes =
-                {
-                    "CatalogReadPermission", // Katalog API'sine okuma izni ile erişebilir.
-                    "CatalogFullPermission",  // Katalog API'sine tam erişim izni ile erişebilir.
-                    "BasketFullPermission", // Sipariş API'sine tam erişim izni ile erişebilir.
-                    "CommentFullPermission", //Yorumlar API'sine tam erişim izni ile erişebilir.
-                    "PaymentFullPermission", // Satın Alma API'sine tam erişim izni ile erişebilir.
-                    "ImagesFullPermission", //Resimler API'sine tam erişim izni ile erişebilir.
-                    "OcelotFullPermission" // Ocelot API'sine tam erişim izni ile erişebilir.
-                }
-            },
+           new Client
+{
+    ClientId = "MultiShopManagerID",
+    ClientName = "MultiShop Manager User",
+    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+    ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // appsettings ile UYUMLU
+    AllowOfflineAccess = true, // offline_access için şart
+    AllowedScopes =
+    {
+        IdentityServerConstants.StandardScopes.OpenId,
+        IdentityServerConstants.StandardScopes.Profile,
+        "roles",
+        "offline_access",
+
+        // Gateway rotaları bunları istiyorsa ekleyin:
+        "CatalogReadPermission",
+        "CatalogFullPermission",
+        "BasketFullPermission",
+        "CommentFullPermission",
+        "PaymentFullPermission",
+        "ImagesFullPermission",
+        "OcelotFullPermission"
+    }
+},
+
 
             // Yönetici uygulaması için, client credentials ile tam yetkili erişimi olan client
             new Client
@@ -119,6 +129,7 @@ namespace MultiShop.IdentityServer
                     IdentityServerConstants.StandardScopes.OpenId,      // OpenID kimlik doğrulama
                     IdentityServerConstants.StandardScopes.Profile,     // Kullanıcı profili bilgileri
                     IdentityServerConstants.StandardScopes.Email        // Kullanıcı e-posta bilgileri
+
                 },
                 AccessTokenLifetime = 600 // Erişim token'ının ömrü (saniye cinsinden).
             }

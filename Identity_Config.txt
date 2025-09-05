@@ -1,0 +1,120 @@
+ public static class Config
+    {
+        // API kaynaklarýný tanýmlar. Her bir API kaynaðý, eriþim izinlerini (scopes) içerir.
+        // "ResourceCatalog": Katalog API'si için bir kaynak tanýmlanýr.
+        // "ResourceDiscount": Ýndirim API'si için bir kaynak tanýmlanýr.
+        // "ResourceOrder": Sipariþ API'si için bir kaynak tanýmlanýr.
+        // Her kaynak, ilgili eriþim izinlerini (scopes) içerir.
+        public static IEnumerable<ApiResource> ApiResources => new ApiResource[]
+        {
+            new ApiResource("ResourceCatalog")
+            {
+                Scopes = { "CatalogFullPermission", "CatalogReadPermission" }
+            }, // Katalog API'si için kaynak tanýmý
+            new ApiResource("ResourceDiscount")
+            {
+                Scopes = { "DiscountFullPermission" }
+            }, // Ýndirim API'si için kaynak tanýmý
+            new ApiResource("ResourceOrder")
+            {
+                Scopes = { "OrderFullPermission" }
+            }, // Sipariþ API'si için kaynak tanýmý
+            new ApiResource("ResourceCargo"){Scopes={"CargoFullPermission"}}, // Kargo API'si için kaynak tanýmý
+            new ApiResource("ResourceBasket"){Scopes={"BasketFullPermission"}}, // Sepet API'si için kaynak tanýmý
+            new ApiResource("ResourceComment"){Scopes={"CommentFullPermission"}}, // Sepet API'si için kaynak tanýmý
+            new ApiResource("ResourcePayment"){Scopes={"PaymentFullPermission"}}, // Sepet API'si için kaynak tanýmý
+            new ApiResource("ResourceImages"){Scopes={"ImagesFullPermission"}}, // Sepet API'si için kaynak tanýmý
+            new ApiResource("ResourceOcelot"){Scopes={"OcelotFullPermission"}}, // Sepet API'si için kaynak tanýmý
+            new ApiResource(IdentityServerConstants.LocalApi.ScopeName) // Local API eriþimi için kaynak tanýmý
+        };
+
+        // Kimlik doðrulama sýrasýnda kullanýcýnýn kimliðini ve temel bilgilerini içeren standart identity kaynaklarý tanýmlanýr.
+        // OpenId: Kullanýcý kimliðini (id) saðlar. Kimlik doðrulamanýn temelidir ve zorunludur.
+        // Email: Kullanýcýnýn e-posta bilgisini saðlar.
+        // Profile: Kullanýcýnýn profil bilgilerini (ad, soyad, vs.) saðlar.
+        public static IEnumerable<IdentityResource> IdentityResources => new IdentityResource[]
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Email(),
+            new IdentityResources.Profile()
+        };
+
+        // API'ye eriþim kapsamlarýný (scopes) tanýmlar.
+        // "CatalogFullPermission": Katalog API'sine tam yetkili eriþimi temsil eder.
+        // "CatalogReadPermission": Sadece okuma yetkisiyle eriþimi temsil eder.
+        public static IEnumerable<ApiScope> ApiScopes => new ApiScope[]
+        {
+            new ApiScope("CatalogFullPermission", "Full access to the Catalog API"), // Katalog API'sine tam eriþim izni
+            new ApiScope("CatalogReadPermission", "Read access to the Catalog API"), // Katalog API'sine okuma eriþimi izni
+            new ApiScope("DiscountFullPermission", "Full access to the Discount API"), // Ýndirim API'sine tam eriþim izni
+            new ApiScope("OrderFullPermission", "Full access to the Order API"), // Sipariþ API'sine tam eriþim izni
+            new ApiScope("CargoFullPermission", "Full access to the Cargo API"), // Kargo API'sine tam eriþim izni
+            new ApiScope("BasketFullPermission", "Full access to the Basket API"), // Sepet API'sine tam eriþim izni
+            new ApiScope("CommentFullPermission", "Full access to the Comment API"), // Yorum API'sine tam eriþim izni
+            new ApiScope("PaymentFullPermission", "Full access to the Payment API"), // Satýn alma API'sine tam eriþim izni
+            new ApiScope("ImagesFullPermission", "Full access to the Payment API"), // Resimler API'sine tam eriþim izni
+            new ApiScope("OcelotFullPermission", "Full access to the Ocelot API"), // Ocelot API'sine tam eriþim izni
+             new ApiScope(IdentityServerConstants.LocalApi.ScopeName) // Local API eriþim izni
+        };
+
+        // IdentityServer için kullanýlacak istemci (client) uygulamalarý tanýmlanýr.
+        // Her client'ýn hangi grant type'larý ve hangi scope'larý (izinleri) kullanabileceði belirtilir.
+        public static IEnumerable<Client> Clients => new Client[]
+        {
+            // Sadece katalog okuma yetkisine sahip, client credentials ile eriþen client
+            new Client
+            {
+                ClientId = "MultiShopVisitorID", // Ýstemcinin (client) benzersiz kimliði.
+                ClientName = "MultiShop Visitor User", // Ýstemcinin açýklayýcý adý.
+                AllowedGrantTypes = GrantTypes.ClientCredentials, // Kimlik doðrulama için kullanýlan grant type (client credentials akýþý).
+                ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarý (SHA-256 ile þifrelenmiþ).
+                AllowedScopes = { "CatalogReadPermission","CatalogFullPermission", "CommentFullPermission", "OcelotFullPermission", "PaymentFullPermission", "ImagesFullPermission" } // Bu client yalnýzca "CatalogReadPermission" yetkisiyle API'ye eriþebilir.
+            },
+
+            // Katalog yönetici paneli için, kod akýþýyla giriþ yapan client (kullanýcý kimliðiyle giriþ)
+            new Client
+            {
+                ClientId = "MultiShopManagerID", // Ýstemcinin (client) benzersiz kimliði.
+                ClientName = "MultiShop Manager User", // Ýstemcinin açýklayýcý adý.
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Kimlik doðrulama için kullanýlan grant type (authorization code akýþý).
+                 ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarý (SHA-256 ile þifrelenmiþ).
+                AllowedScopes =
+                {
+                    "CatalogReadPermission", // Katalog API'sine okuma izni ile eriþebilir.
+                    "CatalogFullPermission",  // Katalog API'sine tam eriþim izni ile eriþebilir.
+                    "BasketFullPermission", // Sipariþ API'sine tam eriþim izni ile eriþebilir.
+                    "CommentFullPermission", //Yorumlar API'sine tam eriþim izni ile eriþebilir.
+                    "PaymentFullPermission", // Satýn Alma API'sine tam eriþim izni ile eriþebilir.
+                    "ImagesFullPermission", //Resimler API'sine tam eriþim izni ile eriþebilir.
+                    "OcelotFullPermission" // Ocelot API'sine tam eriþim izni ile eriþebilir.
+                }
+            },
+
+            // Yönetici uygulamasý için, client credentials ile tam yetkili eriþimi olan client
+            new Client
+            {
+                ClientId = "MultiShopAdminID", // Ýstemcinin (client) benzersiz kimliði.
+                ClientName = "MultiShop Admin User", // Ýstemcinin açýklayýcý adý.
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // (DÜZELTÝLDÝ) Kimlik doðrulama için client credentials grant type kullanýlýr.
+                ClientSecrets = { new Secret("multishopsecret".Sha256()) }, // Client için güvenlik anahtarý (SHA-256 ile þifrelenmiþ).
+                AllowedScopes =
+                {
+                    "CatalogFullPermission",       // Katalog API'sine tam eriþim
+                    "DiscountFullPermission",      // Ýndirim API'sine tam eriþim
+                    "OrderFullPermission",         // Sipariþ API'sine tam eriþim
+                    "CatalogReadPermission",       // Katalog API'sine okuma eriþimi
+                    "CargoFullPermission",         // Kargo API'sine tam eriþim
+                    "BasketFullPermission",        // Sepet API'sine tam eriþim
+                    "CommentFullPermission",        // Yorumlar API'sine tam eriþim
+                    "PaymentFullPermission",        // Satýn Alma API'sine tam eriþim
+                    "ImagesFullPermission",        // Resimler API'sine tam eriþim
+                    "OcelotFullPermission",        // Ocelot API'sine tam eriþim
+                    IdentityServerConstants.LocalApi.ScopeName,         // Local API eriþimi
+                    IdentityServerConstants.StandardScopes.OpenId,      // OpenID kimlik doðrulama
+                    IdentityServerConstants.StandardScopes.Profile,     // Kullanýcý profili bilgileri
+                    IdentityServerConstants.StandardScopes.Email        // Kullanýcý e-posta bilgileri
+                },
+                AccessTokenLifetime = 600 // Eriþim token'ýnýn ömrü (saniye cinsinden).
+            }
+        };
+    }

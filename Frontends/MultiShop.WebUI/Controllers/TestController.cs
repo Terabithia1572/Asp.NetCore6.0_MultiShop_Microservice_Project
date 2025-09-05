@@ -49,7 +49,7 @@ namespace MultiShop.WebUI.Controllers
             var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var responseMessage = await client.GetAsync("https://localhost:1002/api/Categories"); // API'den kategori verilerini almak için GET isteği yapılır.
+            var responseMessage = await client.GetAsync("http://localhost:1002/api/Categories"); // API'den kategori verilerini almak için GET isteği yapılır.
             if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.

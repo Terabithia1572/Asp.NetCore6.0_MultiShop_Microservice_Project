@@ -1,0 +1,37 @@
+ [HttpPost]
+        public async Task<IActionResult> Index(CreateLoginDTO createLoginDTO)
+        {
+            var client = _httpClientFactory.CreateClient(); //HttpClient'ý HttpClientFactory üzerinden alýyoruz
+            var content = new StringContent(JsonSerializer.Serialize(createLoginDTO), Encoding.UTF8, "application/json"); //DTO'yu JSON formatýna çeviriyoruz
+            var response = await client.PostAsync("http://localhost:5001/api/Logins", content); //API'ye POST isteði gönderiyoruz
+            if (response.IsSuccessStatusCode) //Ýstek baþarýlý ise
+            {
+                var jsonData = await response.Content.ReadAsStringAsync(); //Cevap içeriðini okuyoruz
+                var tokenModel = JsonSerializer.Deserialize<JwtResponseModel>(jsonData, new JsonSerializerOptions //JSON'u JwtResponseModel'e çeviriyoruz
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase, //CamelCase kullanýyoruz
+                });
+                if (tokenModel != null) //TokenModel null deðilse
+                {
+                    JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler(); //JWT token'ý iþlemek için handler oluþturuyoruz
+                    var token = handler.ReadJwtToken(tokenModel.Token); //Token'ý okuyoruz
+                    var claims = token.Claims.ToList(); //Token içindeki claim'leri listeye çeviriyoruz
+
+                    if (tokenModel.Token != null) //Token null deðilse
+                    {
+                        claims.Add(new Claim("multishoptoken", tokenModel.Token)); //Token'ý claim olarak ekliyoruz
+                        var claimsIdentity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme); //ClaimsIdentity oluþturuyoruz
+                        var authProperties = new AuthenticationProperties //Kimlik doðrulama özelliklerini ayarlýyoruz
+                        {
+                            ExpiresUtc = tokenModel.ExpireDate, //Token'ýn geçerlilik süresi
+                            IsPersistent = true, //Oturumun kalýcý olup olmadýðý
+                        };
+                        await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties); //Kullanýcýyý oturum açtýrýyoruz
+                        var id = _loginService.GetUserID; //Kullanýcý ID'sini alýyoruz  
+                        return RedirectToAction("Index", "Default"); //Ana sayfaya yönlendiriyoruz
+                    }
+                }
+            }
+            return View(); //Baþarýsýz ise tekrar giriþ sayfasýný gösteriyoruz
+
+            }

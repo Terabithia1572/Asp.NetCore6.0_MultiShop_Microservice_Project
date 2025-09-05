@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.IdentityServer", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Requirements", "Requirements", "{677AA9AA-DFC8-4023-ABDF-939D21C28B1B}"
 	ProjectSection(SolutionItems) = preProject
+		Identity_Config.txt = Identity_Config.txt
+		LoginController_IndexMethod.txt = LoginController_IndexMethod.txt
 		OcelotCodeExample.txt = OcelotCodeExample.txt
 		PortsInformation.txt = PortsInformation.txt
 		SimpleCode.txt = SimpleCode.txt
