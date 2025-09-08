@@ -67,6 +67,7 @@ namespace MultiShop.WebUI.Services.Concrete
                 new AuthenticationToken
                 { //NULL UPDATE
                     //NULL UPDATE
+                    //NULL UPDATE
                     Name=OpenIdConnectParameterNames.ExpiresIn,
                     Value=DateTime.Now.AddSeconds(token.ExpiresIn).ToString()
                 }
