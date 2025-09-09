@@ -10,17 +10,17 @@ namespace MultiShop.IdentityServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserInfo()
+        public async Task<IActionResult> GetUser()
         {
             var userClaims = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub);
             var user=await _userManager.FindByIdAsync(userClaims.Value);

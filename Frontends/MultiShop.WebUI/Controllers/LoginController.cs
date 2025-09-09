@@ -40,7 +40,7 @@ namespace MultiShop.WebUI.Controllers
             signInDTO.Password = "Yunus6565*";
             await _identityService.SignIn(signInDTO); //IdentityService üzerinden SignIn metodunu çağırıyoruz
 
-            return RedirectToAction("Index","Test"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
+            return RedirectToAction("Index","User"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
         }
     }
 }
