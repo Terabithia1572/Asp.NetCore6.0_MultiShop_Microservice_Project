@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using MultiShop.WebUI.Handlers;
 using MultiShop.WebUI.Services.Concrete;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Settings;
@@ -47,6 +48,14 @@ builder.Services.AddHttpClient("Gateway", (sp, c) =>
 });
 builder.Services.AddHttpClient<IIdentityService, IdentityService>(); // IdentityService için typed HttpClient
 builder.Services.AddScoped<IloginService, LoginService>(); // (Arayüz ismi sende "IloginService" ise aynen kalsýn)
+builder.Services.AddScoped<ResourceOwnerPasswordTokenHandler>();
+
+var values=builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>(); // Doðrudan alým örneði (opsiyonel) 
+builder.Services.AddHttpClient<IUserService, UserService>(opt =>
+{
+   opt.BaseAddress=new Uri(values.IdentityServerUrl); // http://localhost:5001
+   opt.DefaultRequestVersion=new Version(1,1); // opsiyonel: HTTP/1.1 zorla
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
 
 builder.Services.AddControllersWithViews();
 
