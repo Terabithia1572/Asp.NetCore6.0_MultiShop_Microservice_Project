@@ -7,7 +7,6 @@ using System.Text.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
-using MultiShop.WebUI.Services;
 using MultiShop.WebUI.Services.Interfaces;
 
 namespace MultiShop.WebUI.Controllers
