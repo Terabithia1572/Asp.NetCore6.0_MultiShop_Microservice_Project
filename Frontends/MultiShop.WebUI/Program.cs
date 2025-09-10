@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using MultiShop.WebUI.Handlers;
+using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
 using MultiShop.WebUI.Services.Concrete;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Settings;
@@ -40,6 +41,7 @@ builder.Services.AddAuthorization();
 
 // 3) HttpContext + HttpClient + Servisler
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddHttpClient("Gateway", (sp, c) =>
 {
     var svc = sp.GetRequiredService<IOptions<ServiceApiSettings>>().Value;
@@ -56,6 +58,10 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
    opt.BaseAddress=new Uri(values.IdentityServerUrl); // http://localhost:5001
    opt.DefaultRequestVersion=new Version(1,1); // opsiyonel: HTTP/1.1 zorla
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
+}); // CategoryService için typed HttpClient
 
 builder.Services.AddControllersWithViews();
 
