@@ -1,0 +1,45 @@
+﻿using MultiShop.DTOLayer.CatalogDTOs.CategoryDTOs;
+
+namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
+{
+    public class CategoryService : ICategoryService //ICategoryService arayüzünü implemente eden CategoryService sınıfı
+    {
+        private readonly HttpClient _httpClient; //HttpClient nesnesi
+        public CategoryService(HttpClient httpClient) //Dependency Injection ile HttpClient nesnesi alınır
+        {
+            _httpClient = httpClient; //HttpClient nesnesi atanır
+        }
+
+        public async Task CreateCategoryAsync(CreateCategoryDTO createCategoryDTO) //Yeni kategori oluşturur
+        {
+            var response =await _httpClient.PostAsJsonAsync<CreateCategoryDTO>("categories", createCategoryDTO); //HttpClient ile POST isteği gönderilir
+
+        }
+
+        public async Task DeleteCategoryAsync(string id) //Kategoriyi siler
+        {
+           await _httpClient.DeleteAsync("categories?id="+id); //HttpClient ile DELETE isteği gönderilir
+        }
+
+        public async Task<List<ResultCategoryDTO>> GetAllCategoryAsync() //Tüm kategorileri getirir
+        {
+           var response = await _httpClient.GetAsync("categories"); //HttpClient ile GET isteği gönderilir
+              var values = await response.Content.ReadFromJsonAsync<List<ResultCategoryDTO>>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
+
+        }
+
+        public async Task<GetByIDCategoryDTO> GetByIDCategoryAsync(string id) //ID ile kategori getirir
+        {
+            var response = await _httpClient.GetAsync("categories/" + id); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<GetByIDCategoryDTO>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
+        }
+
+        public async Task UpdateCategoryAsync(UpdateCategoryDTO updateCategoryDTO) //Kategoriyi günceller
+        {
+           await _httpClient.PutAsJsonAsync<UpdateCategoryDTO>("categories", updateCategoryDTO); //HttpClient ile PUT isteği gönderilir
+
+        }
+    }
+}
