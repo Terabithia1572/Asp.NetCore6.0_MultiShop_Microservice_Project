@@ -61,7 +61,9 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
-}); // CategoryService için typed HttpClient
+}).AddHttpMessageHandler<ClientCredentialTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddScoped<ClientCredentialTokenHandler>();
+builder.Services.AddHttpClient<IClientCredentialTokenService, ClientCredentialTokenService>(); // ClientCredentialTokenService için typed HttpClient
 
 builder.Services.AddControllersWithViews();
 
