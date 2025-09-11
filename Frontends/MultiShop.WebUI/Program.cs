@@ -65,6 +65,7 @@ builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
 builder.Services.AddScoped<ClientCredentialTokenHandler>();
 builder.Services.AddHttpClient<IClientCredentialTokenService, ClientCredentialTokenService>(); // ClientCredentialTokenService için typed HttpClient
 builder.Services.AddAccessTokenManagement(); // Token yönetimi için
+//NUL UPDATE
 
 builder.Services.AddControllersWithViews();
 
