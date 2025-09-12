@@ -1,4 +1,5 @@
 ﻿using MultiShop.DTOLayer.CatalogDTOs.CategoryDTOs;
+using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
 {
@@ -23,8 +24,19 @@ namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
 
         public async Task<List<ResultCategoryDTO>> GetAllCategoryAsync() //Tüm kategorileri getirir
         {
-           var response = await _httpClient.GetAsync("categories"); //HttpClient ile GET isteği gönderilir
-              var values = await response.Content.ReadFromJsonAsync<List<ResultCategoryDTO>>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            /*
+               
+            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
+                var values = JsonConvert.DeserializeObject<UpdateCategoryDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
+                return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
+            }
+             */
+            var response = await _httpClient.GetAsync("categories"); //HttpClient ile GET isteği gönderilir
+            var jsonData = await response.Content.ReadAsStringAsync(); // JSON verisi okunur.
+                                                                       //var values = await response.Content.ReadFromJsonAsync<List<ResultCategoryDTO>>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            var values = JsonConvert.DeserializeObject<List<ResultCategoryDTO>>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
             return values; //Liste döndürülür
 
         }

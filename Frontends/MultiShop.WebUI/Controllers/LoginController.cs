@@ -30,9 +30,11 @@ namespace MultiShop.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Index(CreateLoginDTO createLoginDTO)
+        public async Task<IActionResult> Index(SignInDTO signInDTO)
         {
-            return View();
+            await _identityService.SignIn(signInDTO); //IdentityService üzerinden SignIn metodunu çağırıyoruz
+
+            return RedirectToAction("Index", "User"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
         }
         public async Task<IActionResult> SignIn(SignInDTO signInDTO)
         {
