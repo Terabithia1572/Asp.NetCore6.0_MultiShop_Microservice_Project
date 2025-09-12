@@ -58,43 +58,45 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteCategory(string id)
         {
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var responseMessage = await client.DeleteAsync($"https://localhost:1002/api/Categories?id=" + id); // API'den kategori silme isteği yapılır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
-            {
+            await _categoryService.DeleteCategoryAsync(id);
+            //var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            //var responseMessage = await client.DeleteAsync($"https://localhost:1002/api/Categories?id=" + id); // API'den kategori silme isteği yapılır.
+            //if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            //{
                 return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
-            }
-            return View(); // Başarısız ise aynı view döndürülür.
+            
+            //return View(); // Başarısız ise aynı view döndürülür.
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> UpdateCategory(string id)
         {
-            ViewBag.v1 = "Ana Sayfa";
-            ViewBag.v2 = "Kategoriler";
-            ViewBag.v3 = "Kategori Güncelleme";
-            ViewBag.v4 = "Kategori İşlemleri";
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var responseMessage = await client.GetAsync($"https://localhost:1002/api/Categories/{id}"); // API'den kategori verisi alınır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
-                var values = JsonConvert.DeserializeObject<UpdateCategoryDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
-                return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
-            }
-            return View(); // Başarısız ise aynı view döndürülür.
+          CategoryViewBagList();
+            var values = await _categoryService.GetByIDCategoryAsync(id);
+
+            //var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            //var responseMessage = await client.GetAsync($"https://localhost:1002/api/Categories/{id}"); // API'den kategori verisi alınır.
+            //if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            //{
+            //    var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur.
+            //    var values = JsonConvert.DeserializeObject<UpdateCategoryDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
+            //    return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
+            //}
+            return View(values); // Başarısız ise aynı view döndürülür.
         }
         [HttpPost("{id}")]
         public async Task<IActionResult> UpdateCategory(UpdateCategoryDTO updateCategoryDTO)
         {
-            var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
-            var jsonData = JsonConvert.SerializeObject(updateCategoryDTO); // DTO nesnesi JSON formatına dönüştürülür.
-            StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
-            var responseMessage = await client.PutAsync("https://localhost:1002/api/Categories/", content); // API'ye PUT isteği yapılır.
-            if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
-            {
-                return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
-            }
-            return View(); // Başarısız ise aynı view döndürülür.
+            await _categoryService.UpdateCategoryAsync(updateCategoryDTO);
+
+            //var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
+            //var jsonData = JsonConvert.SerializeObject(updateCategoryDTO); // DTO nesnesi JSON formatına dönüştürülür.
+            //StringContent content = new StringContent(jsonData, System.Text.Encoding.UTF8, "application/json"); // JSON verisi StringContent olarak hazırlanır.
+            //var responseMessage = await client.PutAsync("https://localhost:1002/api/Categories/", content); // API'ye PUT isteği yapılır.
+            //if (responseMessage.IsSuccessStatusCode) // Eğer istek başarılıysa
+            //{
+            return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
+            
+            //return View(); // Başarısız ise aynı view döndürülür.
         }
         void CategoryViewBagList()
         {

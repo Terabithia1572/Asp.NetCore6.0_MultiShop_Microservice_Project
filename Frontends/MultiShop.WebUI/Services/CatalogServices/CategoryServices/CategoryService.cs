@@ -41,10 +41,10 @@ namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
 
         }
 
-        public async Task<GetByIDCategoryDTO> GetByIDCategoryAsync(string id) //ID ile kategori getirir
+        public async Task<UpdateCategoryDTO> GetByIDCategoryAsync(string id) //ID ile kategori getirir
         {
             var response = await _httpClient.GetAsync("categories/" + id); //HttpClient ile GET isteği gönderilir
-            var values = await response.Content.ReadFromJsonAsync<GetByIDCategoryDTO>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            var values = await response.Content.ReadFromJsonAsync<UpdateCategoryDTO>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
             return values; //Liste döndürülür
         }
 

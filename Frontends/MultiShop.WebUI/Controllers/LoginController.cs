@@ -14,13 +14,11 @@ namespace MultiShop.WebUI.Controllers
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IloginService _loginService; //ILoginService'i ekliyoruz
         private readonly IIdentityService _identityService;
 
-        public LoginController(IHttpClientFactory httpClientFactory, IloginService loginService, IIdentityService identityService)
+        public LoginController(IHttpClientFactory httpClientFactory,IIdentityService identityService)
         {
             _httpClientFactory = httpClientFactory;
-            _loginService = loginService;
             _identityService = identityService;
         }
 
@@ -36,13 +34,6 @@ namespace MultiShop.WebUI.Controllers
 
             return RedirectToAction("Index", "User"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
         }
-        public async Task<IActionResult> SignIn(SignInDTO signInDTO)
-        {
-            signInDTO.UserName = "terabithia1572";
-            signInDTO.Password = "Yunus6565*";
-            await _identityService.SignIn(signInDTO); //IdentityService üzerinden SignIn metodunu çağırıyoruz
-
-            return RedirectToAction("Index","User"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
-        }
+      
     }
 }
