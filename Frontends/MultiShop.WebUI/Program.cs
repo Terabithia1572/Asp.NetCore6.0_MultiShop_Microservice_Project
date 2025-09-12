@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using MultiShop.WebUI.Handlers;
 using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
+using MultiShop.WebUI.Services.CatalogServices.ProductServices;
 using MultiShop.WebUI.Services.Concrete;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Settings;
@@ -59,6 +60,10 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
    opt.DefaultRequestVersion=new Version(1,1); // opsiyonel: HTTP/1.1 zorla
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
+}).AddHttpMessageHandler<ClientCredentialTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<IProductService, ProductService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
 }).AddHttpMessageHandler<ClientCredentialTokenHandler>(); // HttpClient'a delegating handler ekle

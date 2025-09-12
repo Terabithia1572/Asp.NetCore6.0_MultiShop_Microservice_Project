@@ -13,7 +13,7 @@ namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
 
         public async Task CreateCategoryAsync(CreateCategoryDTO createCategoryDTO) //Yeni kategori oluşturur
         {
-            var response =await _httpClient.PostAsJsonAsync<CreateCategoryDTO>("categories", createCategoryDTO); //HttpClient ile POST isteği gönderilir
+            await _httpClient.PostAsJsonAsync<CreateCategoryDTO>("categories", createCategoryDTO); //HttpClient ile POST isteği gönderilir
 
         }
 
