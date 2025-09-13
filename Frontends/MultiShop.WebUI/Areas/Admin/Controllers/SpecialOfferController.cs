@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
-    [AllowAnonymous]
+  //  [AllowAnonymous]
     [Area("Admin")] // Bu Area'nın adı "Admin" olarak ayarlanır. yani URL'de /Admin/ ile başlayacak.
     [Route("Admin/[controller]/[action]")] // Bu controller için rota ayarlanır. Örneğin: /Admin/SpecialOffer/Index
     public class SpecialOfferController : Controller
