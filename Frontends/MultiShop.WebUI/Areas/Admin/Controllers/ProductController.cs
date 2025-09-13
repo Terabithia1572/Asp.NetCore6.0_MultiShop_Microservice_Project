@@ -63,18 +63,21 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         public async Task<IActionResult> CreateProduct()
         {
             ProductViewBagList();
+            var categories = await _categoryService.GetAllCategoryAsync();
             //var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
             //// Ürün ekleme sayfası için gerekli veriler burada hazırlanabilir.
             //var responseMessage =await client.GetAsync("https://localhost:1002/api/Categories"); // Ürünleri almak için API'ye GET isteği yapılır.
             //var jsonData = responseMessage.Content.ReadAsStringAsync().Result; // JSON verisi okunur.
             //var categories = JsonConvert.DeserializeObject<List<ResultCategoryDTO>>(jsonData); // JSON verisi dinamik bir listeye dönüştürülür.
-            //List<SelectListItem> categoryList = (from x in categories
-            //                                     select new SelectListItem
-            //                                     {
-            //                                         Text = x.CategoryName, // Kategori adını Text olarak alır.
-            //                                         Value = x.CategoryID.ToString() // Kategori ID'sini Value olarak alır.
-            //                                     }).ToList(); // Kategoriler SelectListItem listesine dönüştürülür.
-            //ViewBag.CategoryList = categoryList; // Kategori listesi ViewBag'e eklenir, böylece view içinde kullanılabilir.
+            List<SelectListItem> categoryList = (from x in categories
+                                                 select new SelectListItem
+                                                 {
+                                                     Text = x.CategoryName, // Kategori adını Text olarak alır.
+                                                     Value = x.CategoryID.ToString() // Kategori ID'sini Value olarak alır.
+                                                 }).ToList(); // Kategoriler SelectListItem listesine dönüştürülür.
+            ViewBag.CategoryList = categoryList; // Kategori listesi ViewBag'e eklenir, böylece view içinde kullanılabilir.
+
+
             return View(); // Ürün ekleme sayfası için view döndürülür.
         }
         [HttpPost]
@@ -116,13 +119,14 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //var responseMessage2 = await client1.GetAsync("https://localhost:1002/api/Categories"); // Ürünleri almak için API'ye GET isteği yapılır.
             //var jsonData1 = responseMessage2.Content.ReadAsStringAsync().Result; // JSON verisi okunur.
             //var categories1 = JsonConvert.DeserializeObject<List<ResultCategoryDTO>>(jsonData1); // JSON verisi dinamik bir listeye dönüştürülür.
-            //List<SelectListItem> categoryList1 = (from x in categories1
-            //                                     select new SelectListItem
-            //                                     {
-            //                                         Text = x.CategoryName, // Kategori adını Text olarak alır.
-            //                                         Value = x.CategoryID.ToString() // Kategori ID'sini Value olarak alır.
-            //                                     }).ToList(); // Kategoriler SelectListItem listesine dönüştürülür.
-            //ViewBag.CategoryList = categoryList1; // Kategori listesi ViewBag'e eklenir, böylece view içinde kullanılabilir.
+            var categories1 = await _categoryService.GetAllCategoryAsync();
+            List<SelectListItem> categoryList1 = (from x in categories1
+                                                  select new SelectListItem
+                                                  {
+                                                      Text = x.CategoryName, // Kategori adını Text olarak alır.
+                                                      Value = x.CategoryID.ToString() // Kategori ID'sini Value olarak alır.
+                                                  }).ToList(); // Kategoriler SelectListItem listesine dönüştürülür.
+            ViewBag.CategoryList = categoryList1; // Kategori listesi ViewBag'e eklenir, böylece view içinde kullanılabilir.
 
             //var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.
             //var responseMessage = await client.GetAsync($"https://localhost:1002/api/Products/{id}"); // API'den kategori verisi alınır.
@@ -132,9 +136,9 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //    var values = JsonConvert.DeserializeObject<UpdateProductDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
             //    return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
             //}
-            ProductViewBagList();
+           var productValues=await _productService.GetByIDProductAsync(id);
 
-            return View(); // Başarısız ise aynı view döndürülür.
+            return View(productValues); // Başarısız ise aynı view döndürülür.
         }
         [HttpPost("{id}")]
         public async Task<IActionResult> UpdateProduct(UpdateProductDTO updateProductDTO)
