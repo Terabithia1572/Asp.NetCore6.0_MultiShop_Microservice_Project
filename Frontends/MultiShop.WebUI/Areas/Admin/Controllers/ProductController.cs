@@ -55,6 +55,8 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //    var values = JsonConvert.DeserializeObject<List<ResultProductWithCategoryDTO>>(jsonData); // JSON verisi dinamik bir listeye dönüştürülür.
             //    return View(values); // Dönüştürülen liste view'e gönderilir.
             //}
+
+
             return View(); // Eğer istek başarısızsa, boş bir view döndürülür.
         }
         [HttpGet]
@@ -86,7 +88,9 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //{
             //    return RedirectToAction("Index", "Product", new { area = "Admin" }); // Ürün listesine yönlendirilir.
             //}
-            return View(); // Başarısız ise aynı view döndürülür.
+            await _productService.CreateProductAsync(createProductDTO);
+            return RedirectToAction("Index", "Product", new { area = "Admin" }); // Ürün listesine yönlendirilir.
+            //return View(); // Başarısız ise aynı view döndürülür.
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteProduct(string id)
@@ -97,7 +101,10 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //{
             //    return RedirectToAction("Index", "Product", new { area = "Admin" }); // Kategori listesine yönlendirilir.
             //}
-            return View(); // Başarısız ise aynı view döndürülür.
+
+            await _productService.DeleteProductAsync(id);
+            return RedirectToAction("Index", "Product", new { area = "Admin" }); // Ürün listesine yönlendirilir.
+            //return View(); // Başarısız ise aynı view döndürülür.
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> UpdateProduct(string id)
@@ -125,6 +132,8 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //    var values = JsonConvert.DeserializeObject<UpdateProductDTO>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
             //    return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
             //}
+            ProductViewBagList();
+
             return View(); // Başarısız ise aynı view döndürülür.
         }
         [HttpPost("{id}")]
@@ -138,7 +147,9 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //{
             //    return RedirectToAction("Index", "Product", new { area = "Admin" }); // Kategori listesine yönlendirilir.
             //}
-            return View(); // Başarısız ise aynı view döndürülür.
+            await _productService.UpdateProductAsync(updateProductDTO);
+            return RedirectToAction("Index", "Product", new { area = "Admin" }); // Ürün listesine yönlendirilir.
+            //return View(); // Başarısız ise aynı view döndürülür.
         }
         void ProductViewBagList()
         {

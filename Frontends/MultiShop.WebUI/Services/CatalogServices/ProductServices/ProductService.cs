@@ -37,6 +37,19 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
             return values; //Liste döndürülür
         }
 
+        public Task<List<ResultProductWithCategoryDTO>> GetProductsWithByCategoryByCategoryIDAsync(string categoryID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<ResultProductWithCategoryDTO>> GetProductsWithCategoryAsync()
+        {
+            var responseMessage=await _httpClient.GetAsync("products/ProductListWithCategory"); //HttpClient ile GET isteği gönderilir
+            var jsonData = await responseMessage.Content.ReadAsStringAsync(); // JSON verisi okunur. 
+            var values=JsonConvert.DeserializeObject<List<ResultProductWithCategoryDTO>>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
+            return values; //Liste döndürülür
+        }
+
         public async Task UpdateProductAsync(UpdateProductDTO updateProductDTO)
         {
             await _httpClient.PutAsJsonAsync<UpdateProductDTO>("products", updateProductDTO); //HttpClient ile PUT isteği gönderilir
