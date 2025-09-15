@@ -33,8 +33,8 @@ namespace MultiShop.WebUI.ViewComponents.ProductListViewComponents
             //    return View(values); // Dönüştürülen liste view'e gönderilir.
             //}
             //return View();
-            var values=await _productService.GetProductsWithByCategoryByCategoryIDAsync(id);
-            return View(values);
+            var values=await _productService.GetProductsWithByCategoryByCategoryIDAsync(id); // API'den kategori verilerini almak için GET isteği yapılır.
+            return View(values); // Liste döndürülür
         }
     }
 }

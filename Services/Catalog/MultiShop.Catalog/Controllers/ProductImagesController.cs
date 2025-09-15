@@ -56,7 +56,7 @@ namespace MultiShop.Catalog.Controllers
             await _productImageService.UpdateProductImageAsync(updateProductImageDTO); // ProductImage Service üzerinden güncelleme işlemi yapıyoruz
             return Ok("Ürün Resmi Başarıyla Güncellendi."); // Ürün Resmi başarıyla güncellendiyse 200 OK ile birlikte mesaj döndürüyoruz
         }
-        [HttpGet("ProductImagesByProductID")]
+        [HttpGet("ProductImagesByProductID/{id}")]
         public async Task<IActionResult> ProductImagesByProductID(string id)
         {
             var values = await _productImageService.GetByProductIDProductImageAsync(id); // ProductImage Service üzerinden productId ile Ürün Resmileri alıyoruz

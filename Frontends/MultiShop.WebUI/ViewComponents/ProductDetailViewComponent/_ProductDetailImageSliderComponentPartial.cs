@@ -1,42 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
 using MultiShop.DTOLayer.CatalogDTOs.ProductImageDTOs;
+using MultiShop.WebUI.Services.CatalogServices.ProductImageServices;
 using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
 {
     public class _ProductDetailImageSliderComponentPartial : ViewComponent
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        public _ProductDetailImageSliderComponentPartial(IHttpClientFactory httpClientFactory)
+        //private readonly IHttpClientFactory _httpClientFactory;
+        //public _ProductDetailImageSliderComponentPartial(IHttpClientFactory httpClientFactory)
+        //{
+        //    _httpClientFactory = httpClientFactory;
+        //}
+        private readonly IProductImageService _productImageService;
+
+        public _ProductDetailImageSliderComponentPartial(IProductImageService productImageService)
         {
-            _httpClientFactory = httpClientFactory;
+            _productImageService = productImageService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                return View(new GetByIDProductImageDTO()); // boş model gönder
+            //if (string.IsNullOrWhiteSpace(id))
+            //    return View(new GetByIDProductImageDTO()); // boş model gönder
 
-            var client = _httpClientFactory.CreateClient();
+            //var client = _httpClientFactory.CreateClient();
 
-            // FAZLA / KALDIRILDI
-            var response = await client.GetAsync(
-                $"https://localhost:1002/api/ProductImages/ProductImagesByProductID?id={id}");
+            //// FAZLA / KALDIRILDI
+            //var response = await client.GetAsync(
+            //    $"https://localhost:1002/api/ProductImages/ProductImagesByProductID?id={id}");
 
-            if (!response.IsSuccessStatusCode)
-                return View(new GetByIDProductImageDTO()); // null gönderme
+            //if (!response.IsSuccessStatusCode)
+            //    return View(new GetByIDProductImageDTO()); // null gönderme
 
-            var json = await response.Content.ReadAsStringAsync();
+            //var json = await response.Content.ReadAsStringAsync();
 
-            // Eğer endpoint liste döndürüyorsa şu iki satırı değiştirin:
-            // var list = JsonConvert.DeserializeObject<List<GetByIDProductImageDTO>>(json);
-            // var value = list?.FirstOrDefault() ?? new GetByIDProductImageDTO();
+            //// Eğer endpoint liste döndürüyorsa şu iki satırı değiştirin:
+            //// var list = JsonConvert.DeserializeObject<List<GetByIDProductImageDTO>>(json);
+            //// var value = list?.FirstOrDefault() ?? new GetByIDProductImageDTO();
 
-            var value = JsonConvert.DeserializeObject<GetByIDProductImageDTO>(json)
-                        ?? new GetByIDProductImageDTO(); // yine null olmasın
+            //var value = JsonConvert.DeserializeObject<GetByIDProductImageDTO>(json)
+            //            ?? new GetByIDProductImageDTO(); // yine null olmasın
 
-            return View(value);
+            //return View(value);
+          var value = await _productImageService.GetByProductIDProductImageAsync(id);
+            return View(value ?? new GetByIDProductImageDTO()); // null gönderme
         }
     }
 }

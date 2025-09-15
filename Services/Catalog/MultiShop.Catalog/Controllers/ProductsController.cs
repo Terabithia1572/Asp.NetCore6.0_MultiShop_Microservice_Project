@@ -67,7 +67,7 @@ namespace MultiShop.Catalog.Controllers
             return Ok(values); // Ürünler bulunduysa 200 OK ile birlikte Ürünleri döndürüyoruz
         }
 
-        [HttpGet("ProductListWithCategoryByCategoryID")]
+        [HttpGet("ProductListWithCategoryByCategoryID/{id}")]
         public async Task<IActionResult> ProductListWithCategoryByCategoryID(string id)
         {
             var values = await _productService.GetProductsWithByCategoryByCategoryIDAsync(id);
