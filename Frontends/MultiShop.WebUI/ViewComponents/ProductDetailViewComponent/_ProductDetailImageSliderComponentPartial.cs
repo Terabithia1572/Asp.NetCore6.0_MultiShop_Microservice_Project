@@ -45,7 +45,7 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
 
             //return View(value);
           var value = await _productImageService.GetByProductIDProductImageAsync(id);
-            return View(value ?? new GetByIDProductImageDTO()); // null gönderme
+            return View(value); // null gönderme
         }
     }
 }
