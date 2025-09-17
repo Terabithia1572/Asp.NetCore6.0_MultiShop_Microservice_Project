@@ -44,10 +44,10 @@ namespace MultiShop.WebUI.Services.CommentServices
 
         public async Task<List<ResultCommentDTO>> GetCommentsByProductId(string id)
         {
-            var response = await _httpClient.GetAsync("comments/GetCommentsByProductId/" + id); //HttpClient ile GET isteği gönderilir
-            var jsonData = await response.Content.ReadAsStringAsync(); // JSON verisi okunur.
-            var values = JsonConvert.DeserializeObject<List<ResultCommentDTO>>(jsonData); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
-            return values; //Liste döndürülür
+            var responseMessage = await _httpClient.GetAsync($"comments/GetCommentsByProductId/{id}");
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultCommentDTO>>(jsonData);
+            return values;
         }
 
         public async Task UpdateCommentAsync(UpdateCommentDTO updateCommentDTO) //Kategoriyi günceller

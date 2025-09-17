@@ -53,9 +53,9 @@ namespace MultiShop.Comment.Controllers
             return Ok("Yorum başarıyla güncellendi.."); //İşlemin başarılı olduğunu belirtiyoruz.
         }
         [HttpGet("GetCommentsByProductId/{id}")]
-        public IActionResult GetCommentsByProductId(string productId)
+        public IActionResult GetCommentsByProductId(string id)
         {
-            var values = _context.UserComments.Where(x => x.ProductID == productId).ToList(); //Belirli bir ürüne ait yorumları çekiyoruz.
+            var values = _context.UserComments.Where(x => x.ProductID == id).ToList(); //Belirli bir ürüne ait yorumları çekiyoruz.
             return Ok(values); //Yorumları döndürüyoruz.
         }
     }

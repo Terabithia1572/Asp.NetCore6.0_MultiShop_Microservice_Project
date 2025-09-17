@@ -7,14 +7,19 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
 {
     public class _ProductDetailReviewComponentPartial:ViewComponent //bu sınıf ViewComponent sınıfından türetilir 
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        //private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICommentService _commentService;
 
-        public _ProductDetailReviewComponentPartial(IHttpClientFactory httpClientFactory, ICommentService commentService)
+        public _ProductDetailReviewComponentPartial(ICommentService commentService)
         {
-            _httpClientFactory = httpClientFactory;
             _commentService = commentService;
         }
+
+        //public _ProductDetailReviewComponentPartial(IHttpClientFactory httpClientFactory, ICommentService commentService)
+        //{
+        //    _httpClientFactory = httpClientFactory;
+        //    _commentService = commentService;
+        //}
 
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
@@ -30,10 +35,10 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
             //    list = JsonConvert.DeserializeObject<List<ResultCommentDTO>>(json) ?? new List<ResultCommentDTO>();
             //}
 
-            //ViewData["ProductId"] = id; // id'yi View'e geçir
+            // ViewData["ProductId"] = id; // id'yi View'e geçir
             //return View(list);          // asla null model dönme
-            var values=await _commentService.GetCommentsByProductId(id); //id'ye göre yorumları getir
-            return View(values); //yorumları View'e gönder
+            var values = await _commentService.GetCommentsByProductId(id);
+            return View(values);
         }
     }
 
