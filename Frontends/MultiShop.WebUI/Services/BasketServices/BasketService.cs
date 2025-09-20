@@ -11,9 +11,22 @@ namespace MultiShop.WebUI.Services.BasketServices
             _httpClient = httpClient;
         }
 
-        public Task AddBasketItem(BasketItemDTO basketItemDTO)
+        public async Task AddBasketItem(BasketItemDTO basketItemDTO)
         {
-            throw new NotImplementedException();
+           var values=await GetBasket(); // mevcut sepeti al
+            if (values != null) // eğer sepet boş değilse
+            {
+                if(!values.BasketItems.Any(x=>x.ProductID==basketItemDTO.ProductID)) // eğer sepette aynı ürün yoksa
+                {
+                    values.BasketItems.Add(basketItemDTO); // yeni ürünü sepete ekle
+                }
+                else
+                {
+                    values=new BasketTotalDTO(); // yeni bir sepet oluştur
+                    values.BasketItems.Add(basketItemDTO); // ürünü yeni sepete ekle
+                }
+            }
+            await SaveBasket(values); // güncellenmiş sepeti kaydet
         }
 
         public Task DeleteBasket(string UserID)
@@ -21,7 +34,7 @@ namespace MultiShop.WebUI.Services.BasketServices
             throw new NotImplementedException();
         }
 
-        public async Task<BasketTotalDTO> GetBasket(string UserID)
+        public async Task<BasketTotalDTO> GetBasket()
         {
             var responseMessage = await _httpClient.GetAsync("baskets"); // "baskets" endpoint'ine GET isteği gönder
             var values=await responseMessage.Content.ReadFromJsonAsync<BasketTotalDTO>(); // gelen cevabı BasketTotalDTO türüne dönüştür
