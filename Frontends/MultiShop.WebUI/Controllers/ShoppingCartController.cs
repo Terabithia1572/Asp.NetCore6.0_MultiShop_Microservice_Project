@@ -16,10 +16,12 @@ namespace MultiShop.WebUI.Controllers
             _basketService = basketService; // Sepet hizmeti atanıyor
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var values = await _basketService.GetBasket(); // Sepeti getir
-            return View(values); // Sepet görünümünü döndür
+            ViewBag.directory1 = "Ana Sayfa";
+            ViewBag.directory2 = "Ürünler";
+            ViewBag.directory3 = "Sepetim";
+            return View();
         }
         public async Task<IActionResult> AddBasketItem(string productID)
         {

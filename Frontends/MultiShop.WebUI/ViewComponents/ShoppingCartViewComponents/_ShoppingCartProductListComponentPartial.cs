@@ -1,12 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MultiShop.WebUI.Services.BasketServices;
 
 namespace MultiShop.WebUI.ViewComponents.ShoppingCartViewComponents
 {
     public class _ShoppingCartProductListComponentPartial: ViewComponent //bu sınıf ViewComponent sınıfından türetilmiştir
     {
-        public IViewComponentResult Invoke() //Invoke metodu, ViewComponent'ın çağrıldığında ne yapacağını belirler
+        private readonly IBasketService _basketService; // Sepet servisi için bir alan tanımlanır
+
+        public _ShoppingCartProductListComponentPartial(IBasketService basketService)
         {
-            return View(); //View() metodu, varsayılan olarak "_ShoppingCartProductListComponentPartial.cshtml" dosyasını render eder
+            _basketService = basketService;
+        }
+
+        public async Task< IViewComponentResult> InvokeAsync() //Invoke metodu, ViewComponent'ın çağrıldığında ne yapacağını belirler
+        {
+            var values = await _basketService.GetBasket(); // Sepeti getir
+            return View(values); // Sepet görünümünü döndür
+            //return View(); //View() metodu, varsayılan olarak "_ShoppingCartProductListComponentPartial.cshtml" dosyasını render eder
         }
     }
 }

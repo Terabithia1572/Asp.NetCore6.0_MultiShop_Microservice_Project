@@ -1,4 +1,4 @@
-﻿
+﻿@model List<BasketItemDTO>
 <div class="col-lg-8 table-responsive mb-5">
     <table class="table table-light table-borderless table-hover text-center mb-0 cart-table">
         <thead class="thead-dark">
@@ -11,116 +11,33 @@
             </tr>
         </thead>
         <tbody class="align-middle">
-            <tr>
-                <td class="align-middle">
-                    <div class="product-cell">
-                        <img src="~/multishop/img/product-1.jpg" alt="Kablosuz Kulaklık">
-                        <span class="name">Kablosuz Kulaklık</span>
-                    </div>
-                </td>
-                <td class="align-middle currency">750₺</td>
-                <td class="align-middle">
-                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="align-middle">
+                        <div class="product-cell">
+                            <img src="#" alt="@item.ProductName">
+                            <span class="name">@item.ProductName</span>
                         </div>
-                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
+                    </td>
+                    <td class="align-middle currency">@item.ProductPrice ₺</td>
+                    <td class="align-middle">
+                        <div class="input-group quantity mx-auto" style="width: 100px;">
+                            <div class="input-group-btn">
+                                <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
+                            </div>
+                            <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                            <div class="input-group-btn">
+                                <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td class="align-middle currency">750₺</td>
-                <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-            </tr>
-            <tr>
-                <td class="align-middle">
-                    <div class="product-cell">
-                        <img src="~/multishop/img/product-2.jpg" alt="Akıllı Saat">
-                        <span class="name">Akıllı Saat</span>
-                    </div>
-                </td>
-                <td class="align-middle currency">1.250₺</td>
-                <td class="align-middle">
-                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
-                        </div>
-                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="2">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                </td>
-                <td class="align-middle currency">2.500₺</td>
-                <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-            </tr>
-            <tr>
-                <td class="align-middle">
-                    <div class="product-cell">
-                        <img src="~/multishop/img/product-3.jpg" alt="Bluetooth Hoparlör">
-                        <span class="name">Bluetooth Hoparlör</span>
-                    </div>
-                </td>
-                <td class="align-middle currency">450₺</td>
-                <td class="align-middle">
-                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
-                        </div>
-                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                </td>
-                <td class="align-middle currency">450₺</td>
-                <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-            </tr>
-            <tr>
-                <td class="align-middle">
-                    <div class="product-cell">
-                        <img src="~/multishop/img/product-4.jpg" alt="Oyun Klavyesi">
-                        <span class="name">Oyun Klavyesi</span>
-                    </div>
-                </td>
-                <td class="align-middle currency">980₺</td>
-                <td class="align-middle">
-                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
-                        </div>
-                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                </td>
-                <td class="align-middle currency">980₺</td>
-                <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-            </tr>
-            <tr>
-                <td class="align-middle">
-                    <div class="product-cell">
-                        <img src="~/multishop/img/product-5.jpg" alt="Taşınabilir Şarj Cihazı">
-                        <span class="name">Taşınabilir Şarj Cihazı</span>
-                    </div>
-                </td>
-                <td class="align-middle currency">320₺</td>
-                <td class="align-middle">
-                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
-                        </div>
-                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="3">
-                        <div class="input-group-btn">
-                            <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                </td>
-                <td class="align-middle currency">960₺</td>
-                <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-            </tr>
+                    </td>
+                    <td class="align-middle currency">@item.ProductPrice ₺</td>
+                    <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                </tr>
+            }
+         
+           
         </tbody>
     </table>
 </div>
