@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using MultiShop.WebUI.Handlers;
+using MultiShop.WebUI.Services.BasketServices;
 using MultiShop.WebUI.Services.CatalogServices.AboutServices;
 using MultiShop.WebUI.Services.CatalogServices.BrandServices;
 using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
@@ -68,6 +69,11 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {
    opt.BaseAddress=new Uri(values.IdentityServerUrl); // http://localhost:5001
    opt.DefaultRequestVersion=new Version(1,1); // opsiyonel: HTTP/1.1 zorla
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<IBasketService, BasketService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Basket.Path}"); // http://localhost:5001
+    opt.DefaultRequestVersion = new Version(1, 1); // opsiyonel: HTTP/1.1 zorla
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
 {
