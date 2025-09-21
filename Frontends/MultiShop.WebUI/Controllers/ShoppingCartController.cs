@@ -23,9 +23,10 @@ namespace MultiShop.WebUI.Controllers
             ViewBag.directory3 = "Sepetim";
             return View();
         }
-        public async Task<IActionResult> AddBasketItem(string productID)
+        
+        public async Task<IActionResult> AddBasketItem(string id)
         {
-            var values = await _productService.GetByIDProductAsync(productID); // Ürünü ID ile getir
+            var values = await _productService.GetByIDProductAsync(id); // Ürünü ID ile getir
             var items = new BasketItemDTO
             { // Sepet öğesi oluştur
                 ProductID = values.ProductID,

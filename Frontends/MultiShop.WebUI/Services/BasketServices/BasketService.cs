@@ -1,59 +1,66 @@
-﻿using MultiShop.DTOLayer.BasketDTOs;
+﻿
+using MultiShop.DTOLayer.BasketDTOs;
 
 namespace MultiShop.WebUI.Services.BasketServices
 {
     public class BasketService : IBasketService
     {
         private readonly HttpClient _httpClient;
-
         public BasketService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
-
-        public async Task AddBasketItem(BasketItemDTO basketItemDTO)
+        public async Task AddBasketItem(BasketItemDTO basketItemDto)
         {
-           var values=await GetBasket(); // mevcut sepeti al
-            if (values != null) // eğer sepet boş değilse
+            var values = await GetBasket();
+
+            if (values == null)
             {
-                if(!values.BasketItems.Any(x=>x.ProductID==basketItemDTO.ProductID)) // eğer sepette aynı ürün yoksa
+                values = new BasketTotalDTO
                 {
-                    values.BasketItems.Add(basketItemDTO); // yeni ürünü sepete ekle
-                }
-                else
-                {
-                    values=new BasketTotalDTO(); // yeni bir sepet oluştur
-                    values.BasketItems.Add(basketItemDTO); // ürünü yeni sepete ekle
-                }
+                    BasketItems = new List<BasketItemDTO>()
+                };
             }
-            await SaveBasket(values); // güncellenmiş sepeti kaydet
+
+            var existingItem = values.BasketItems.FirstOrDefault(x => x.ProductID == basketItemDto.ProductID);
+
+            if (existingItem == null)
+            {
+                values.BasketItems.Add(basketItemDto);
+            }
+            else
+            {
+                existingItem.ProductQuantity += basketItemDto.ProductQuantity; // miktarı artır
+            }
+
+            await SaveBasket(values);
         }
 
-        public Task DeleteBasket(string UserID)
+
+        public Task DeleteBasket(string userId)
         {
             throw new NotImplementedException();
         }
 
         public async Task<BasketTotalDTO> GetBasket()
         {
-            var responseMessage = await _httpClient.GetAsync("baskets"); // "baskets" endpoint'ine GET isteği gönder
-            var values=await responseMessage.Content.ReadFromJsonAsync<BasketTotalDTO>(); // gelen cevabı BasketTotalDTO türüne dönüştür
-            return values; // dönüştürülen veriyi döndür
+            var responseMessage = await _httpClient.GetAsync("baskets");
+            var values = await responseMessage.Content.ReadFromJsonAsync<BasketTotalDTO>();
+            return values;
         }
 
-        public async Task<bool> RemoveBasketItem(string ProductID)
+        public async Task<bool> RemoveBasketItem(string productId)
         {
-            var values=await GetBasket(); // mevcut sepeti al
-            var deletedItem=values.BasketItems.FirstOrDefault(x=>x.ProductID==ProductID); // silinecek ürünü bul
-            var result=values.BasketItems.Remove(deletedItem); // ürünü sepetten çıkar
-            await SaveBasket(values); // güncellenmiş sepeti kaydet
-            return true; // işlemin başarılı olduğunu döndür
-
+            var values = await GetBasket();
+            var deletedItem = values.BasketItems.FirstOrDefault(x => x.ProductID == productId);
+            var result = values.BasketItems.Remove(deletedItem);
+            await SaveBasket(values);
+            return true;
         }
 
-        public async Task SaveBasket(BasketTotalDTO basketTotalDTO)
+        public async Task SaveBasket(BasketTotalDTO basketTotalDto)
         {
-            await _httpClient.PostAsJsonAsync<BasketTotalDTO>("baskets", basketTotalDTO); // "baskets" endpoint'ine POST isteği gönder ve basketTotalDTO'yu JSON olarak ekle
+            await _httpClient.PostAsJsonAsync<BasketTotalDTO>("baskets", basketTotalDto);
         }
     }
 }
