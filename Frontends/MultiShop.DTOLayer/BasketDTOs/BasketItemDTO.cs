@@ -12,5 +12,7 @@ namespace MultiShop.DTOLayer.BasketDTOs
         public string ProductName { get; set; } //Ürün Adı
         public int ProductQuantity { get; set; } //Ürün Miktarı
         public decimal ProductPrice { get; set; } //Ürün Fiyatı
+        public string ProductImageURL { get; set; } //Ürün Resim URL'si
+
     }
 }

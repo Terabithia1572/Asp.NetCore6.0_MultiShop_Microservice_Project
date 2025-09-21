@@ -32,7 +32,8 @@ namespace MultiShop.WebUI.Controllers
                 ProductID = values.ProductID,
                 ProductName = values.ProductName,
                 ProductPrice = values.ProductPrice,
-                ProductQuantity = 1
+                ProductQuantity = 1,
+                ProductImageURL= values.ProductImageURL
             };
             await _basketService.AddBasketItem(items); // Sepete ürün ekle
             return RedirectToAction("Index"); // Sepet sayfasına yönlendir
