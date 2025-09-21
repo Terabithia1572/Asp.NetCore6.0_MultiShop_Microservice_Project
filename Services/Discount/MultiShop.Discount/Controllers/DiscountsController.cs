@@ -33,6 +33,16 @@ namespace MultiShop.Discount.Controllers
             return Ok(result);
             // Sonucu HTTP 200 OK ile döner.
         }
+
+        [HttpGet("GetCodeDetailByCodeAsync")]
+        public async Task<IActionResult> GetCodeDetailByCodeAsync(string couponCode)
+        {
+            var result = await _discountService.GetCodeDetailByCodeAsync(couponCode); // belirtilen kupon koduna sahip kuponu alır.
+            // Belirtilen ID'ye sahip kuponu almak için DiscountService üzerinden asenkron çağrı yapar.
+            return Ok(result);
+            // Sonucu HTTP 200 OK ile döner.
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateDiscountCoupon(CreateDiscountCouponDTO createCouponDTO)
         {
