@@ -2,6 +2,7 @@
 using MultiShop.DTOLayer.BasketDTOs;
 using MultiShop.WebUI.Services.BasketServices;
 using MultiShop.WebUI.Services.CatalogServices.ProductServices;
+using MultiShop.WebUI.Services.DiscountServices;
 
 namespace MultiShop.WebUI.Controllers
 {
@@ -14,13 +15,16 @@ namespace MultiShop.WebUI.Controllers
         {
             _productService = productService; // Ürün hizmeti atanıyor
             _basketService = basketService; // Sepet hizmeti atanıyor
+          
         }
 
-        public IActionResult Index()
+        public async Task< IActionResult> Index()
         {
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
             ViewBag.directory3 = "Sepetim";
+            var values = await _basketService.GetBasket(); // Sepet bilgilerini aldık
+            ViewBag.total = values.TotalPrice; // Toplam tutarı ViewBag ile view'a gönderiyoruz
             return View();
         }
         
