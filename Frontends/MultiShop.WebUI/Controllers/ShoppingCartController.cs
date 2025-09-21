@@ -25,6 +25,10 @@ namespace MultiShop.WebUI.Controllers
             ViewBag.directory3 = "Sepetim";
             var values = await _basketService.GetBasket(); // Sepet bilgilerini aldık
             ViewBag.total = values.TotalPrice; // Toplam tutarı ViewBag ile view'a gönderiyoruz
+            var totalPriceWithTax = values.TotalPrice+ values.TotalPrice / 100 * 10; // KDV dahil toplam tutar
+            var tax=values.TotalPrice / 100 * 10; // KDV tutarı
+            ViewBag.tax = tax; // KDV tutarını ViewBag ile view'a gönderiyoruz
+            ViewBag.totalPriceWithTax = totalPriceWithTax; // KDV dahil toplam tutarı ViewBag ile view'a gönderiyoruz
             return View();
         }
         
