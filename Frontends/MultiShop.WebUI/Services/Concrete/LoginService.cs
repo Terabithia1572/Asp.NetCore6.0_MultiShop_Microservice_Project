@@ -1,17 +1,15 @@
-﻿using MultiShop.WebUI.Services.Interfaces;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using MultiShop.WebUI.Services.Interfaces;
 
 namespace MultiShop.WebUI.Services.Concrete
 {
     public class LoginService : IloginService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public LoginService(IHttpContextAccessor httpContextAccessor)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public LoginService(IHttpContextAccessor contextAccessor)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _contextAccessor = contextAccessor;
         }
-
-        public string GetUserID =>_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        public string GetUserID => _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
     }
 }

@@ -22,23 +22,22 @@ namespace MultiShop.IdentityServer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserLogin(UserLoginDTO userLoginDTO)
+        public async Task<IActionResult> UserLogin(UserLoginDTO userLoginDto)
         {
-            var result = await _signInManager.PasswordSignInAsync(userLoginDTO.Username, userLoginDTO.Password, false, false);
-            var user=await _userManager.FindByNameAsync(userLoginDTO.Username);
-            if (!result.Succeeded)
+            var result = await _signInManager.PasswordSignInAsync(userLoginDto.Username, userLoginDto.Password, false, false);
+            var user = await _userManager.FindByNameAsync(userLoginDto.Username);
+
+            if (result.Succeeded)
             {
-                return BadRequest("Giriş işlemi başarısız.");
+                GetCheckAppUserViewModel model = new GetCheckAppUserViewModel();
+                model.UserName = userLoginDto.Username;
+                model.ID = user.Id;
+                var token = JwtTokenGenerator.GenerateToken(model);
+                return Ok(token);
             }
             else
             {
-                GetCheckAppUserViewModel getCheckAppUserViewModel = new GetCheckAppUserViewModel();
-                getCheckAppUserViewModel.UserName= userLoginDTO.Username;
-                getCheckAppUserViewModel.ID= user.Id; //Kullanıcı ID'si burada atanmalı
-                var token = JwtTokenGenerator.GenerateToken(getCheckAppUserViewModel);
-
-                return Ok(token);
-
+                return Ok("Kullanıcı Adı veya Şifre Hatalı");
             }
         }
     }
