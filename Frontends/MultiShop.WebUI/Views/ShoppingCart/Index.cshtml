@@ -10,7 +10,8 @@
 <div class="container-fluid">
     <div class="row px-xl-5">
         @await Component.InvokeAsync("_ShoppingCartProductListComponentPartial") <!-- Burada Biz Alışveriş Kartı kodlarını _ShoppingCartProductListComponentPartial Tuttuk -->
-        @await Component.InvokeAsync("_ShoppingCartDiscountCouponComponentPartial") <!-- Burada Biz Alışveriş Kartı İndirim Kuponu kodlarını _ShoppingCartDiscountCouponComponentPartial Tuttuk -->
+        @* @await Component.InvokeAsync("_ShoppingCartDiscountCouponComponentPartial") <!-- Burada Biz Alışveriş Kartı İndirim Kuponu kodlarını _ShoppingCartDiscountCouponComponentPartial Tuttuk --> *@
+        @await Html.PartialAsync("~/Views/Discount/ConfirmDiscountCoupon.cshtml") <!-- Burada Biz Alışveriş Kartı İndirim Kuponu kodlarını _ShoppingCartDiscountCouponPartial Tuttuk -->
     </div>
 </div>
 <!-- Cart End -->
