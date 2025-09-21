@@ -37,9 +37,9 @@ namespace MultiShop.WebUI.Controllers
             await _basketService.AddBasketItem(items); // Sepete ürün ekle
             return RedirectToAction("Index"); // Sepet sayfasına yönlendir
         }
-        public async Task<IActionResult> RemoveBasketItem(string productID)
+        public async Task<IActionResult> RemoveBasketItem(string id)
         {
-            await _basketService.RemoveBasketItem(productID); // Sepetten ürünü çıkar
+            await _basketService.RemoveBasketItem(id); // Sepetten ürünü çıkar
             return RedirectToAction("Index"); // Sepet sayfasına yönlendir
         }
     }

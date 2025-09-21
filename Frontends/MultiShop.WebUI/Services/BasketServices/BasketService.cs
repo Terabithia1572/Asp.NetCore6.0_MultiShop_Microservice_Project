@@ -49,10 +49,10 @@ namespace MultiShop.WebUI.Services.BasketServices
             return values;
         }
 
-        public async Task<bool> RemoveBasketItem(string productId)
+        public async Task<bool> RemoveBasketItem(string id)
         {
             var values = await GetBasket();
-            var deletedItem = values.BasketItems.FirstOrDefault(x => x.ProductID == productId);
+            var deletedItem = values.BasketItems.FirstOrDefault(x => x.ProductID == id);
             var result = values.BasketItems.Remove(deletedItem);
             await SaveBasket(values);
             return true;
