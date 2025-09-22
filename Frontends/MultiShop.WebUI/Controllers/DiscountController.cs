@@ -47,9 +47,9 @@ namespace MultiShop.WebUI.Controllers
             var totalNewPriceWithDiscount= totalPriceWithTax - (totalPriceWithTax / 100 * values); // İndirim sonrası toplam tutar
             ViewBag.totalAfterDiscount = totalNewPriceWithDiscount; // İndirim sonrası toplam tutarı ViewBag ile view'a gönderiyoruz
 
-            return RedirectToAction("Index", "ShoppingCart",new {couponCode=couponCode}); // Sepet sayfasına yönlendir ve kupon kodunu gönder
+            return RedirectToAction("Index", "ShoppingCart",new {couponCode=couponCode,discountRate=values}); // Sepet sayfasına yönlendir ve kupon kodunu gönder
 
-            return View();
+           
         }
     }
 }
