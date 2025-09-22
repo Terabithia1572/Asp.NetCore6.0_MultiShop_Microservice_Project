@@ -20,6 +20,7 @@ namespace MultiShop.WebUI.Controllers
 
         public async Task< IActionResult> Index()
         {
+            // NULL UPDATE
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
             ViewBag.directory3 = "Sepetim";
