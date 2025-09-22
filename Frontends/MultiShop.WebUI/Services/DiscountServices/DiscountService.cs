@@ -17,5 +17,12 @@ namespace MultiShop.WebUI.Services.DiscountServices
             var values=await responseMessage.Content.ReadFromJsonAsync<GetDiscountCodeDetailByCode>(); //Aldığımız kupon detaylarını GetDiscountCodeDetailByCode DTO'suna map ettik.
             return values;
         }
+
+        public async Task<int> GetDiscountCouponCountRate(string couponCode)
+        {
+            var responseMessage =await _httpClient.GetAsync("http://localhost:1003/api/Discounts/GetDiscountCouponCountRate?couponCode=" + couponCode); //Kupon koduna göre kupon oranını aldık.
+            var values = await responseMessage.Content.ReadFromJsonAsync<int>(); //Aldığımız kupon oranını int tipine map ettik.
+            return values; //Kupon oranını döndük.
+        }
     }
 }
