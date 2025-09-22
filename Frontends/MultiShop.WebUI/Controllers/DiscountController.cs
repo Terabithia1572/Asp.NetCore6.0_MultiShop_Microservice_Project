@@ -45,9 +45,9 @@ namespace MultiShop.WebUI.Controllers
             var basketValues = await _basketService.GetBasket(); // Sepet bilgilerini aldık
             var totalPriceWithTax = basketValues.TotalPrice + basketValues.TotalPrice / 100 * 10; // KDV dahil toplam tutar
             var totalNewPriceWithDiscount= totalPriceWithTax - (totalPriceWithTax / 100 * values); // İndirim sonrası toplam tutar
-            ViewBag.totalAfterDiscount = totalNewPriceWithDiscount; // İndirim sonrası toplam tutarı ViewBag ile view'a gönderiyoruz
+         //   ViewBag.totalAfterDiscount = totalNewPriceWithDiscount; // İndirim sonrası toplam tutarı ViewBag ile view'a gönderiyoruz
 
-            return RedirectToAction("Index", "ShoppingCart",new {couponCode=couponCode,discountRate=values}); // Sepet sayfasına yönlendir ve kupon kodunu gönder
+            return RedirectToAction("Index", "ShoppingCart",new {couponCode=couponCode,discountRate=values, totalAfterDiscount = totalNewPriceWithDiscount }); // Sepet sayfasına yönlendir ve kupon kodunu gönder
 
            
         }
