@@ -103,6 +103,20 @@ namespace MultiShop.Discount.Services.DiscountService
             }
         }
 
+        public int GetDiscountCouponCountRate(string couponCode)
+        {
+            string query = "select CouponRate from Coupons where CouponCode=@couponCode"; // Kupon koduna göre kupon detaylarını almak için gerekli olan SQL sorgusunu tanımlar.
+            var parameters = new DynamicParameters();
+            parameters.Add("@couponCode", couponCode); // Alınacak kupon kodunu parametrelere ekler.
+            using (var connection = _context.CreateConnection())
+            {
+                // DapperContext üzerinden yeni bir veritabanı bağlantısı oluşturur.
+                var values = connection.QueryFirstOrDefault<int>(query, parameters); //
+                // Sorguyu çalıştırarak ResultDiscountCouponDTO tipinde sonucu alır.
+                return values; // Sonucu geri döner. Eğer kupon bulunamazsa null dönecektir.
+            }
+        }
+
         public async Task UpdateDiscountCouponAsync(UpdateDiscountCouponDTO updateCouponDTO)
         {
             string query="update Coupons set CouponCode=@couponCode,CouponRate=@couponRate," +

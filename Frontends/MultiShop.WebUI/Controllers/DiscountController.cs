@@ -26,6 +26,7 @@ namespace MultiShop.WebUI.Controllers
         {
             //couponCode = "merhaba"; // Test amaçlı sabit bir kupon kodu atandı
             var values = _discountService.GetDiscountCode(couponCode); // Kupon koduna göre kupon detaylarını aldık
+
             var basketValues =await _basketService.GetBasket(); // Sepet bilgilerini aldık
             var totalPriceWithTax = basketValues.TotalPrice + basketValues.TotalPrice / 100 * 10; // KDV dahil toplam tutar
             var tax = basketValues.TotalPrice / 100 * 10; // KDV tutarı

@@ -67,6 +67,14 @@ namespace MultiShop.Discount.Controllers
             return Ok("Kupon Başarıyla Güncellendi..");
             // İşlem başarılı ise HTTP 200 OK ile döner.
         }
-
+        [HttpGet("GetDiscountCouponCountRate")]
+        public  IActionResult GetDiscountCouponCountRate(string couponCode)
+        {
+            var result = _discountService.GetDiscountCouponCountRate(couponCode); // belirtilen kupon koduna sahip kuponu alır.
+            // Belirtilen ID'ye sahip kuponu almak için DiscountService üzerinden asenkron çağrı yapar.
+            return Ok(result);
+            // Sonucu HTTP 200 OK ile döner.
+        }
     }
 }
+//GetDiscountCouponCountRate
