@@ -46,6 +46,9 @@ namespace MultiShop.WebUI.Controllers
             var totalPriceWithTax = basketValues.TotalPrice + basketValues.TotalPrice / 100 * 10; // KDV dahil toplam tutar
             var totalNewPriceWithDiscount= totalPriceWithTax - (totalPriceWithTax / 100 * values); // İndirim sonrası toplam tutar
             ViewBag.totalAfterDiscount = totalNewPriceWithDiscount; // İndirim sonrası toplam tutarı ViewBag ile view'a gönderiyoruz
+
+            return RedirectToAction("Index", "ShoppingCart",new {couponCode=couponCode}); // Sepet sayfasına yönlendir ve kupon kodunu gönder
+
             return View();
         }
     }

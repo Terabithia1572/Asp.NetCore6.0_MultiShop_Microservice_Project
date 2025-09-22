@@ -18,9 +18,11 @@ namespace MultiShop.WebUI.Controllers
           
         }
 
-        public async Task< IActionResult> Index()
+        public async Task< IActionResult> Index(string couponCode)
         {
-            
+            ViewBag.couponCode= couponCode; // Kupon kodunu ViewBag ile view'a gönderiyoruz
+
+
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
             ViewBag.directory3 = "Sepetim";
