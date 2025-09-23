@@ -26,7 +26,7 @@ namespace MultiShop.Order.Application.Features.CQRS.Handlers.AddressHandlers
                 throw new Exception("Adres bulunamadı"); // Hata fırlat
             }
 
-            address.AddressDetail = updateAddressCommand.AddressDetail; // Adres detayını güncelle
+            address.AddressDetail1 = updateAddressCommand.AddressDetail; // Adres detayını güncelle
             address.AddressCity = updateAddressCommand.AddressCity; // Şehir bilgisini güncelle
             address.AddressDistrict = updateAddressCommand.AddressDistrict; // İlçe bilgisini güncelle
             address.AddressUserID = updateAddressCommand.AddressUserID; // Kullanıcı ID'sini güncelle

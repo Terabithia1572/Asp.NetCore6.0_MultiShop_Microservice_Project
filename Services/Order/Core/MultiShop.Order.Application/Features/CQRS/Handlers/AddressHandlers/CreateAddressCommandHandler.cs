@@ -29,7 +29,16 @@ namespace MultiShop.Order.Application.Features.CQRS.Handlers.AddressHandlers
                 AddressUserID = createAddressCommand.AddressUserID,       // Kullanıcı ID'si atanır.
                 AddressDistrict = createAddressCommand.AddressDistrict,   // İlçe bilgisi atanır.
                 AddressCity = createAddressCommand.AddressCity,           // Şehir bilgisi atanır.
-                AddressDetail = createAddressCommand.AddressDetail        // Adres detayı atanır.
+                AddressDetail1 = createAddressCommand.AddressDetail1,        // Adres detayı atanır.
+                AddressDetail2 = createAddressCommand.AddressDetail2,        // Adres detayı atanır.
+                AddressDescription = createAddressCommand.AddressDescription, // Adres açıklaması atanır.
+                AddressZipCode = createAddressCommand.AddressZipCode,       // Posta kodu atanır.
+                Country = createAddressCommand.Country,                   // Ülke bilgisi atanır.
+                Email = createAddressCommand.Email,                       // E-posta adresi atanır.
+                Name = createAddressCommand.Name,                         // Adı atanır.
+                Surname = createAddressCommand.Surname,                   // Soyadı atanır.
+                PhoneNumber = createAddressCommand.PhoneNumber            // Telefon numarası atanır.
+
             });
             // Oluşturulan yeni Address nesnesi asenkron olarak veri tabanına kaydedilir.
         }

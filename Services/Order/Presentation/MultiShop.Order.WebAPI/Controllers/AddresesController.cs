@@ -7,7 +7,7 @@ using MultiShop.Order.Application.Features.CQRS.Queries.AddressQueries;
 
 namespace MultiShop.Order.WebAPI.Controllers
 {
-    [Authorize] // Bu controller'a erişim için kimlik doğrulama gereklidir.
+    [AllowAnonymous] // Bu controller'a erişim için kimlik doğrulama gereklidir.
     [Route("api/[controller]")]
     [ApiController]
     public class AddresesController : ControllerBase

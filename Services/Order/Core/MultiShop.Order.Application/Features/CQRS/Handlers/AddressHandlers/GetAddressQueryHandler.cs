@@ -24,7 +24,7 @@ namespace MultiShop.Order.Application.Features.CQRS.Handlers.AddressHandlers
             {
                 AddressID = x.AddressID, // Adres ID'si
                 AddressCity = x.AddressCity, // Şehir bilgisi
-                AddressDetail = x.AddressDetail, // Detay bilgisi
+                AddressDetail = x.AddressDetail1, // Detay bilgisi
                 AddressDistrict = x.AddressDistrict, // İlçe bilgisi
                 AddressUserID = x.AddressUserID // Kullanıcı ID'si
             }).ToList(); // Sonuçlar listeye dönüştürülür
