@@ -7,7 +7,7 @@ using MultiShop.Order.Application.Features.Mediator.Queries.OrderingQueries;
 
 namespace MultiShop.Order.WebAPI.Controllers
 {
-    [AllowAnonymous] // Bu controller'a erişim için kimlik doğrulama gereklidir.
+    [Authorize] // Bu controller'a erişim için kimlik doğrulama gereklidir.
     [Route("api/[controller]")]
     [ApiController]
     public class OrderingsController : ControllerBase

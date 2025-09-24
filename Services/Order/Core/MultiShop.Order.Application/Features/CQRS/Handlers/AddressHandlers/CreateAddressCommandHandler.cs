@@ -37,8 +37,7 @@ namespace MultiShop.Order.Application.Features.CQRS.Handlers.AddressHandlers
                 Email = createAddressCommand.Email,                       // E-posta adresi atanır.
                 Name = createAddressCommand.Name,                         // Adı atanır.
                 Surname = createAddressCommand.Surname,                   // Soyadı atanır.
-                PhoneNumber = createAddressCommand.PhoneNumber            // Telefon numarası atanır.
-
+                PhoneNumber = createAddressCommand.PhoneNumber            // Telefon numarası atan
             });
             // Oluşturulan yeni Address nesnesi asenkron olarak veri tabanına kaydedilir.
         }

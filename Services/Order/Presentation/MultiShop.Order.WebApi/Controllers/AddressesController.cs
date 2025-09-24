@@ -7,10 +7,10 @@ using MultiShop.Order.Application.Features.CQRS.Queries.AddressQueries;
 
 namespace MultiShop.Order.WebAPI.Controllers
 {
-    [AllowAnonymous] // Bu controller'a erişim için kimlik doğrulama gereklidir.
+    [Authorize] // Bu controller'a erişim için kimlik doğrulama gereklidir.
     [Route("api/[controller]")]
     [ApiController]
-    public class AddresesController : ControllerBase
+    public class AddressesController : ControllerBase
     {
         private readonly GetAddressQueryHandler _getAddressQueryHandler;
         // Tüm adres kayıtlarını listeleyen sorgu (query) işlemlerini yöneten handler nesnesi.
@@ -27,7 +27,7 @@ namespace MultiShop.Order.WebAPI.Controllers
         private readonly RemoveAddressCommandHandler _removeAddressCommandHandler;
         // Adres silme (remove) işlemlerini yöneten handler nesnesi.
 
-        public AddresesController(
+        public AddressesController(
             GetAddressQueryHandler getAddressQueryHandler,
             GetAddressByIDQueryHandler getAddressByIDQueryHandler,
             CreateAddressCommandHandler createAddressCommandHandler,
