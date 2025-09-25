@@ -22,6 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Requirements", "Requirement
 		Identity_Config.txt = Identity_Config.txt
 		LoginController_IndexMethod.txt = LoginController_IndexMethod.txt
 		OcelotCodeExample.txt = OcelotCodeExample.txt
+		OrderHtml.txt = OrderHtml.txt
 		PortsInformation.txt = PortsInformation.txt
 		SimpleCode.txt = SimpleCode.txt
 	EndProjectSection
