@@ -1,8 +1,88 @@
-﻿
+﻿@model List<ResultSendboxMessageDTO>
 @{
     ViewData["Title"] = "Sendbox";
     Layout = "~/Areas/User/Views/UserLayout/Index.cshtml";
+    int count = 0;
 }
 
-<h1>Sendbox</h1>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Giden Mesajlar</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            #
+                                        </th>
+                                        <th>
+                                            Görsel
+                                        </th>
+                                        <th>
+                                            Gönderen
+                                        </th>
+                                        <th>
+                                            Konu
+                                        </th>
+                                        <th>
+                                            Tarih
+                                        </th>
+                                        <th>
+                                            Durum
+                                        </th>
+                                        <th>
+                                            Sil
+                                        </th>
+                                        <th>
+                                            Mesajı Aç
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td>
+                                                @count
+                                            </td>
+                                            <td class="py-1">
+                                                <img src="~/spica/images/faces/face1.jpg" alt="image" />
+                                            </td>
+                                            <td>
+                                                @item.MessageSenderID
+                                            </td>
+                                            <td>
+                                                @item.MessageSubject
+                                            </td>
+                                            <td>
+                                                @(((DateTime)item.MessageDate).ToString("dd MMM yyyy"))
+                                            </td>
+                                            <td>
+                                                @item.MessageStatus
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btn btn-danger">Sil</a>
+                                            </td>
+                                              <td>
+                                                 <a href="#" class="btn btn-info">Mesajı Aç</a>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
