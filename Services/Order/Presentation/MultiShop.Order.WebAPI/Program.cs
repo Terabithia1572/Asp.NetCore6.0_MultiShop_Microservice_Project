@@ -55,7 +55,7 @@ builder.Services.AddDbContext<OrderContext>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // IRepository arayüzünü uygulayan tüm s?n?flar için DI konteynerine ekler.
 builder.Services.AddApplicationServices(builder.Configuration); // Uygulama katman?ndaki servislerin DI konteynerine eklenmesi için kullan?l?r. Bu, uygulama katman?ndaki tüm servislerin Dependency Injection ile kullan?labilmesini sa?lar.
-
+builder.Services.AddScoped(typeof(IOrderingRepository),typeof(OrderingRepository)); // IOrderingRepository arayüzünü uygulayan OrderingRepository s?n?f?n? DI konteynerine ekler. Bu, IOrderingRepository kullan?ld???nda OrderingRepository'nin enjekte edilmesini sa?lar.
 #region
 
 builder.Services.AddScoped<GetAddressByIDQueryHandler>();

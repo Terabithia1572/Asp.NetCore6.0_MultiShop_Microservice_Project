@@ -66,6 +66,13 @@ namespace MultiShop.Order.WebAPI.Controllers
             // Var olan bir siparişi güncellemek için komutu MediatR aracılığıyla handler'a gönderir.
             return Ok("Sipariş Başarıyla Güncellendi..");
         }
+        [HttpGet("GetOrderingsByUserID/{userID}")]
+        public async Task<IActionResult> GetOrderingsByUserID(string userID)
+        {
+            var values = await _mediator.Send(new GetOrderingByUserIDQuery(userID));
+            // Belirtilen kullanıcı ID'sine sahip siparişleri getirmek için MediatR üzerinden sorgu gönderir.
+            return Ok(values);
+        }
 
     }
 }
