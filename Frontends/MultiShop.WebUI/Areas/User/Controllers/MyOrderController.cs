@@ -18,7 +18,9 @@ namespace MultiShop.WebUI.Areas.User.Controllers
 
         public async Task< IActionResult> MyOrderList()
         {
-            var userID = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+             var userID = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+            // var userID = await _userService.GetUserInfo();
+            //var values =await _orderOrderingService.GetOrderingByUserID(userID.ID); böylede getirir ID'yi
             var values =await _orderOrderingService.GetOrderingByUserID(userID);
             return View(values);
         }
