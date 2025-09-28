@@ -1,13 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MultiShop.WebUI.Services.Interfaces;
+using MultiShop.WebUI.Services.OrderServices.OrderOrderingServices;
 
 namespace MultiShop.WebUI.Areas.User.Controllers
 {
     [Area("User")] // User alanını belirtir
     public class MyOrderController : Controller
     {
-        public IActionResult MyOrderList()
+        private readonly IOrderOrderingService _orderOrderingService;
+        private readonly IUserService _userService;
+
+        public MyOrderController(IOrderOrderingService orderOrderingService, IUserService userService)
         {
-            return View();
+            _orderOrderingService = orderOrderingService;
+            _userService = userService;
+        }
+
+        public async Task< IActionResult> MyOrderList()
+        {
+            var userID = User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+            var values =await _orderOrderingService.GetOrderingByUserID(userID);
+            return View(values);
         }
     }
 }
