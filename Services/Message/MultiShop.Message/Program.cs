@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using MultiShop.Message.DAL.Context;
 using MultiShop.Message.Services;
@@ -5,7 +6,13 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // JWT Bearer kimlik doðrulamasýný kullanýr.
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"]; // IdentityServer URL'sini yapýlandýrma dosyasýndan alýr.
+        options.Audience = "ResourceMessage"; // Bu API'nin Audience'ýný tanýmlar.
+        options.RequireHttpsMetadata = false; // HTTPS gereksinimini devre dýþý býrakýr (geliþtirme ortamýnda kullanýlabilir).
+    });
 
 builder.Services.AddEntityFrameworkNpgsql()
     .AddDbContext<MessageContext>(options =>
@@ -28,7 +35,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication(); // Kimlik doðrulama middleware'ini kullanýr, bu middleware JWT Bearer token'larýný doðrular.
 app.UseAuthorization();
 
 app.MapControllers();

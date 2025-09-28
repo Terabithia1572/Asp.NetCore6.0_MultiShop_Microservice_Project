@@ -20,3 +20,4 @@ MultiShop.Basket.WebAPI------>1006
 MultiShop.Comment.WebAPI------>1007
 MultiShop.Payment.WebAPI------>1008
 MultiShop.Images.WebAPI------>1009
+MultiShop.Messages.WebAPI------>1010

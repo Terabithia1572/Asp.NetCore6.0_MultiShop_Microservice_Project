@@ -98,6 +98,26 @@
       }
 
     },
+    //-----------------------------Mesaj Mikroservisi----------------------------
+    {
+
+      "DownstreamPathTemplate": "/api/{everything}", // İstek gateway'den hedef servise giderken kullanılacak yol şablonu (wildcard: {everything})
+      "DownstreamScheme": "http", // Hedef (downstream) servisin protokolü
+      "DownstreamHostAndPorts": [ // Hedef servisin host ve port bilgileri
+        {
+          "Host": "localhost", // Hedef servis adresi
+          "Port": 1010 // Hedef servis portu (örn: Catalog API)
+        }
+      ],
+      "UpstreamPathTemplate": "/services/message/{everything}", // İstemcinin gateway'e çağıracağı yol şablonu
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ], // Bu route için izin verilen HTTP metodları
+      "UpstreamScheme": "http", // Gateway'e gelen isteklerin beklenen protokolü
+      "AuthenticationOptions": { // Bu route için kimlik doğrulama/izin ayarları
+        "AuthenticationProviderKey": "OcelotAuthenticationScheme", // Gateway'de tanımlı auth şemasının adı
+        "AllowedScopes": [ "MessageFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
+      }
+
+    },
     //-----------------------------Comment Mikroservisi----------------------------
     {
 
