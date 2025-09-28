@@ -3,6 +3,8 @@
     ViewData["Title"] = "MyOrderList";
     Layout = "~/Areas/User/Views/UserLayout/Index.cshtml";
     int count = 0;
+    string tableRowColor = "";
+    string btnColor = "";
 }
 <div class="main-panel">
     <div class="content-wrapper">
@@ -10,9 +12,9 @@
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Sipariş Bilgileri</h4>
-                        <div class="table-responsive">
-                            <table class="table">
+                        <h4 class="card-title">Sipariş Geçmişim</h4>
+                        <div class="table-responsive pt-3">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -24,16 +26,22 @@
                                 <tbody>
                                     @foreach (var item in Model)
                                     {
+
                                         count++;
-                                        <tr>
-                                            <td>@count</td>
+                                        if (count == 1) { tableRowColor = "table-info";btnColor = "btn-info"; }
+                                        if (count == 2) { tableRowColor = "table-warning"; btnColor = "btn-warning"; }
+                                        if (count == 3) { tableRowColor = "table-danger"; btnColor = "btn-danger"; }
+                                        if (count == 4) { tableRowColor = "table-success"; btnColor = "btn-success"; }
+                                        if (count == 5) { tableRowColor = "table-primary"; btnColor = "btn-primary"; }
+                                        if (count == 6) { tableRowColor = "table-dark"; btnColor = "btn-dark"; }
+                                        if (count == 7) { tableRowColor = "table-secondary"; btnColor = "btn-secondary"; }
+                                        <tr class="@tableRowColor">
+                                            <th>@count</th>
                                             <td>@item.OrderingTotalPrice</td>
                                             <td>@(((DateTime)item.OrderingDate).ToString("dd MMM yyyy"))</td>
-                                            <td><a href="#" class="btn btn-warning">Sipariş Detayları</a></td>
+                                            <td><a href="#" class="btn @btnColor">Sipariş Detayları</a></td>
                                         </tr>
                                     }
-                                    
-
                                 </tbody>
                             </table>
                         </div>
