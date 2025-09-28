@@ -20,6 +20,13 @@ namespace MultiShop.Order.Application.Features.Mediator.Handlers.OrderingHandler
         //    _orderingRepository = orderingRepository;
         //}
 
+        private readonly IOrderingRepository _orderingRepository;
+
+        public GetOrderingByUserIDQueryHandler(IOrderingRepository orderingRepository)
+        {
+            _orderingRepository = orderingRepository;
+        }
+
         public async Task<List<GetOrderingByUserIDQueryResult>> Handle(GetOrderingByUserIDQuery request, CancellationToken cancellationToken)
         {
             //var values =await _orderingRepository.GetByIDAsync(request.);
@@ -30,7 +37,17 @@ namespace MultiShop.Order.Application.Features.Mediator.Handlers.OrderingHandler
             //    OrderingTotalPrice = values.OrderingTotalPrice,
             //    OrderingUserID = values.OrderingUserID
             //};
+            var values = _orderingRepository.GetOrderingsByUserID(request.UserID);
+            return values.Select(x => new GetOrderingByUserIDQueryResult
+            {
+                OrderingDate = x.OrderingDate,
+                OrderingID = x.OrderingID,
+                OrderingTotalPrice = x.OrderingTotalPrice,
+                OrderingUserID = x.OrderingUserID
+            }).ToList();
         }
+
     }
 }
+
 
