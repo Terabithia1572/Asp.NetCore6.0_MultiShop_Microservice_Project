@@ -1,7 +1,7 @@
-﻿
+﻿@model List<ResultInboxMessageDTO>
 @{
     ViewData["Title"] = "Inbox";
-    Layout = "~/Areas/User/Views/UserLayout/Inbox.cshtml";
+    Layout = "~/Areas/User/Views/UserLayout/Index.cshtml";
     int count = 0;
 }
 
@@ -20,19 +20,28 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            User
+                                            #
                                         </th>
                                         <th>
-                                            First name
+                                            Görsel
                                         </th>
                                         <th>
-                                            Progress
+                                            Gönderen
                                         </th>
                                         <th>
-                                            Amount
+                                            Konu
                                         </th>
                                         <th>
-                                            Deadline
+                                            Tarih
+                                        </th>
+                                        <th>
+                                            Durum
+                                        </th>
+                                        <th>
+                                            Sil
+                                        </th>
+                                        <th>
+                                            Mesajı Aç
                                         </th>
                                     </tr>
                                 </thead>
@@ -41,26 +50,33 @@
                                     {
                                         count++;
                                         <tr>
+                                            <td>
+                                                @count
+                                            </td>
                                             <td class="py-1">
                                                 <img src="~/spica/images/faces/face1.jpg" alt="image" />
                                             </td>
                                             <td>
-                                                Herman Beck
+                                                @item.MessageSenderID
                                             </td>
                                             <td>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
+                                                @item.MessageSubject
                                             </td>
                                             <td>
-                                                $ 77.99
+                                                @(((DateTime)item.MessageDate).ToString("dd MMM yyyy")))
                                             </td>
                                             <td>
-                                                May 15, 2015
+                                                @item.MessageStatus
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btn btn-danger">Sil</a>
+                                            </td>
+                                              <td>
+                                                 <a href="#" class="btn btn-info">Mesajı Aç</a>
                                             </td>
                                         </tr>
                                     }
-                                   
+
 
                                 </tbody>
                             </table>
@@ -68,7 +84,7 @@
                     </div>
                 </div>
             </div>
-          
+
         </div>
     </div>
 </div>
