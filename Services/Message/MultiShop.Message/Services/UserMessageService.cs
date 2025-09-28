@@ -6,63 +6,73 @@ using MultiShop.Message.DTOs;
 
 namespace MultiShop.Message.Services
 {
-    public class UserMessageService : IUserMessageService
+    public class UserMessageService : IUserMessageService //Mesaj işlemlerini gerçekleştiren servis sınıfı
     {
-        private readonly MessageContext _messageContext;
-        private readonly IMapper _mapper;
+        private readonly MessageContext _messageContext; //Veritabanı işlemleri için kullanılan DbContext
+        private readonly IMapper _mapper; //DTO ve Entity dönüşümleri için kullanılan AutoMapper arayüzü
 
-        public UserMessageService(MessageContext messageContext, IMapper mapper)
+        public UserMessageService(MessageContext messageContext, IMapper mapper) //Dependency Injection ile MessageContext ve IMapper örneklerini alır
         {
-            _messageContext = messageContext;
-            _mapper = mapper;
+            _messageContext = messageContext; //DbContext örneğini sınıf değişkenine atar
+            _mapper = mapper; //AutoMapper örneğini sınıf değişkenine atar
         }
 
-        public async Task CreateMessageAsync(CreateMessageDTO createmessageDTO)
+        public async Task CreateMessageAsync(CreateMessageDTO createmessageDTO) //Yeni mesaj ekleme metodu
         {
-            var values = _mapper.Map<UserMessage>(createmessageDTO);
-            await _messageContext.UserMessages.AddAsync(values);
+            var values = _mapper.Map<UserMessage>(createmessageDTO); //CreateMessageDTO nesnesini UserMessage entity'sine dönüştürür 
+            await _messageContext.UserMessages.AddAsync(values); //Dönüştürülen entity'yi DbSet'e ekler
+            await _messageContext.SaveChangesAsync(); //Değişiklikleri veritabanına kaydeder (eksikti, eklendi)
         }
 
-        public async Task DeleteMessageAsync(int messageID)
+        public async Task DeleteMessageAsync(int messageID) //Mesaj silme metodu
         {
-           var values = await _messageContext.FindAsync<UserMessage>(messageID);
-              if(values != null)
-              {
-                _messageContext.UserMessages.Remove(values);
-                await _messageContext.SaveChangesAsync();
+            var values = await _messageContext.FindAsync<UserMessage>(messageID); //Verilen ID'ye sahip mesajı veritabanında arar
+            if (values != null) //Eğer mesaj bulunursa
+            {
+                _messageContext.UserMessages.Remove(values); //Mesajı DbSet'ten kaldırır
+                await _messageContext.SaveChangesAsync(); //Değişiklikleri veritabanına kaydeder
             }
-
         }
 
-        public async Task<List<ResultMessageDTO>> GetAllMessageAsync()
+        public async Task<List<ResultMessageDTO>> GetAllMessageAsync() //Tüm mesajları listeleme metodu
         {
-           var values=await _messageContext.UserMessages.ToListAsync();
-            return _mapper.Map<List<ResultMessageDTO>>(values);
-
+            var values = await _messageContext.UserMessages.AsNoTracking().ToListAsync(); //DbSet'teki tüm mesajları liste olarak alır (AsNoTracking performans için)
+            return _mapper.Map<List<ResultMessageDTO>>(values); //Alınan mesaj listesini ResultMessageDTO tipine dönüştürüp döner
         }
 
-        public Task<GetByIDMessageDTO> GetByIDMessageAsync(int messageID)
+        public async Task<GetByIDMessageDTO> GetByIDMessageAsync(int messageID) //ID'ye göre mesaj getirme metodu
         {
-            var values =  _messageContext.UserMessages.FindAsync(messageID);
-            return _mapper.Map<Task<GetByIDMessageDTO>>(values);
+            var values = await _messageContext.UserMessages.FindAsync(messageID); //Verilen ID'ye sahip mesajı veritabanında arar
+            return _mapper.Map<GetByIDMessageDTO>(values); //Bulunan mesajı GetByIDMessageDTO tipine dönüştürüp döner (Task yerine async-await kullanıldı)
         }
 
-        public Task<List<ResultInboxMessageDTO>> GetInboxMessageAsync(string messageID)
+        public async Task<List<ResultInboxMessageDTO>> GetInboxMessageAsync(string messageID) //Gelen kutusu mesajlarını listeleme metodu
         {
-            var values =  _messageContext.UserMessages.Where(x => x.MessageReceiverID == messageID).ToListAsync();
-            return _mapper.Map<Task<List<ResultInboxMessageDTO>>>(values);
+            var values = await _messageContext.UserMessages
+                .Where(x => x.MessageReceiverID == messageID) //Alıcısı belirtilen kullanıcı olan mesajları filtreler
+                .ToListAsync(); //Sonuçları listeye dönüştürür
+
+            return _mapper.Map<List<ResultInboxMessageDTO>>(values); //Alınan mesaj listesini ResultInboxMessageDTO tipine dönüştürüp döner
         }
 
-        public Task<List<ResultSendboxMessageDTO>> GetSendboxMessageAsync(string messageID)
+        public async Task<List<ResultSendboxMessageDTO>> GetSendboxMessageAsync(string messageID) //Giden kutusu mesajlarını listeleme metodu
         {
-            var values =  _messageContext.UserMessages.Where(x => x.MessageSenderID == messageID).ToListAsync();
-            return _mapper.Map<Task<List<ResultSendboxMessageDTO>>>(values);
+            var values = await _messageContext.UserMessages
+                .Where(x => x.MessageSenderID == messageID) //Göndericisi belirtilen kullanıcı olan mesajları filtreler
+                .ToListAsync(); //Sonuçları listeye dönüştürür
+
+            return _mapper.Map<List<ResultSendboxMessageDTO>>(values); //Alınan mesaj listesini ResultSendboxMessageDTO tipine dönüştürüp döner
         }
 
-        public async Task UpdateMessageAsync(UpdateMessageDTO updatemessageDTO)
+        public async Task UpdateMessageAsync(UpdateMessageDTO updatemessageDTO) //Mevcut mesajı güncelleme metodu
         {
-            var values=await _messageContext.UserMessages.FindAsync(updatemessageDTO.UserMessageID);
-             _messageContext.UserMessages.Update(values);
+            var values = await _messageContext.UserMessages.FindAsync(updatemessageDTO.UserMessageID); //Verilen ID'ye sahip mesajı veritabanında arar
+            if (values != null) //Eğer mesaj bulunursa
+            {
+                _mapper.Map(updatemessageDTO, values); //DTO içindeki güncel bilgileri entity üzerine uygular
+                _messageContext.UserMessages.Update(values); //Bulunan mesajı DbSet'te günceller
+                await _messageContext.SaveChangesAsync(); //Değişiklikleri veritabanına kaydeder (eksikti, eklendi)
+            }
         }
     }
 }
