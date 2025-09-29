@@ -1,13 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MultiShop.WebUI.Services.CargoServices.CargoCompanyServices;
+using System.Threading.Tasks;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")] // Bu Area'nın "Admin Area" olduğunu belirtir
     public class CargoController : Controller
     {
-        public IActionResult CargoList()
+        private readonly ICargoCompanyService _cargoCompanyService; // ICargoCompanyService arayüzü için bir alan
+
+        public CargoController(ICargoCompanyService cargoCompanyService)
         {
-            return View();
+            _cargoCompanyService = cargoCompanyService;
+        }
+
+        public async Task<IActionResult> CargoCompanyList()
+        {
+            var values=await _cargoCompanyService.GetAllCargoCompanyAsync();
+            return View(values);
         }
     }
 }

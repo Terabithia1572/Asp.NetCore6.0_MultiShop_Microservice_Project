@@ -1,32 +1,46 @@
 ﻿using MultiShop.DTOLayer.CargoDTOs.CargoCompanyDTOs;
+using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.Services.CargoServices.CargoCompanyServices
 {
     public class CargoCompanyService : ICargoCompanyService
     {
-        public Task CreateCargoCompanyAsync(CreateCargoCompanyDTO createCargoCompanyDTO)
+        private readonly HttpClient _httpClient; //HttpClient nesnesi
+        public CargoCompanyService(HttpClient httpClient) //Dependency Injection ile HttpClient nesnesi alınır
         {
-            throw new NotImplementedException();
+            _httpClient = httpClient; //HttpClient nesnesi atanır
         }
 
-        public Task DeleteCargoCompanyAsync(string id)
+        public async Task CreateCargoCompanyAsync(CreateCargoCompanyDTO createCargoCompanyDTO)
         {
-            throw new NotImplementedException();
+           await _httpClient.PostAsJsonAsync<CreateCargoCompanyDTO>("cargocompanies", createCargoCompanyDTO);
         }
 
-        public Task<List<ResultCargoCompanyDTO>> GetAllCargoCompanyAsync()
+        public async Task DeleteCargoCompanyAsync(string id)
         {
-            throw new NotImplementedException();
+            await _httpClient.DeleteAsync("cargocompanies?id=" + id);
         }
 
-        public Task<UpdateCargoCompanyDTO> GetByIDCargoCompanyAsync(string id)
+        public async Task<List<ResultCargoCompanyDTO>> GetAllCargoCompanyAsync()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("cargocompanies"); //HttpClient ile GET isteği gönderilir
+            var jsonData = await response.Content.ReadAsStringAsync(); // JSON verisi okunur.
+                                                                       //var values = await response.Content.ReadFromJsonAsync<List<ResultAboutDTO>>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            var values = JsonConvert.DeserializeObject<List<ResultCargoCompanyDTO>>(jsonData); // JSON verisi DTO nesnesine dönüştürülür.
+            return values; //Liste döndürülür
+
         }
 
-        public Task UpdateCargoCompanyAsync(UpdateCargoCompanyDTO updateCargoCompanyDTO)
+        public async Task<UpdateCargoCompanyDTO> GetByIDCargoCompanyAsync(string id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("cargocompanies/" + id); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<UpdateCargoCompanyDTO>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
+        }
+
+        public async Task UpdateCargoCompanyAsync(UpdateCargoCompanyDTO updateCargoCompanyDTO)
+        {
+            await _httpClient.PutAsJsonAsync<UpdateCargoCompanyDTO>("cargocompanies", updateCargoCompanyDTO);
         }
     }
 }
