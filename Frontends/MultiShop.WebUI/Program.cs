@@ -21,6 +21,7 @@ using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Services.MessageServices;
 using MultiShop.WebUI.Services.OrderServices.OrderAddressServices;
 using MultiShop.WebUI.Services.OrderServices.OrderOrderingServices;
+using MultiShop.WebUI.Services.UserIdentityServices;
 using MultiShop.WebUI.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +74,11 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {
    opt.BaseAddress=new Uri(values.IdentityServerUrl); // http://localhost:5001
    opt.DefaultRequestVersion=new Version(1,1); // opsiyonel: HTTP/1.1 zorla
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<IUserIdentityService, UserIdentityService>(opt =>
+{
+    opt.BaseAddress = new Uri(values.IdentityServerUrl); // http://localhost:5001
+    opt.DefaultRequestVersion = new Version(1, 1); // opsiyonel: HTTP/1.1 zorla
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
 builder.Services.AddHttpClient<IBasketService, BasketService>(opt =>
 {
