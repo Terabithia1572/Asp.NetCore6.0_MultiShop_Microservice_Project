@@ -11,13 +11,13 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
 
         public CargoController(ICargoCompanyService cargoCompanyService)
         {
-            _cargoCompanyService = cargoCompanyService;
+            _cargoCompanyService = cargoCompanyService; // Arayüzü yapıcıya enjekte et
         }
 
         public async Task<IActionResult> CargoCompanyList()
         {
-            var values=await _cargoCompanyService.GetAllCargoCompanyAsync();
-            return View(values);
+            var values=await _cargoCompanyService.GetAllCargoCompanyAsync(); // Tüm kargo şirketlerini asenkron olarak al
+            return View(values); // Değerleri görünüme gönder
         }
     }
 }
