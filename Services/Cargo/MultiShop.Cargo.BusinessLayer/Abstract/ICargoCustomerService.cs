@@ -9,5 +9,6 @@ namespace MultiShop.Cargo.BusinessLayer.Abstract
 {
     public interface ICargoCustomerService:IGenericService<CargoCustomer> // Kargo müşteri işlemleri için generic servis arayüzü
     {
+        CargoCustomer TGetCargoCustomerByID(string id); // Kullanıcı ID'sine göre kargo müşterisi getirme metodu
     }
 }
