@@ -1,6 +1,8 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using MultiShop.Catalog.Entities;
 using MultiShop.Catalog.Settings;
+using System.Threading.Tasks;
 
 namespace MultiShop.Catalog.Services.StatisticServices
 {
@@ -34,9 +36,19 @@ namespace MultiShop.Catalog.Services.StatisticServices
             return await _productCollection.CountDocumentsAsync(FilterDefinition<Product>.Empty); // Burada bizim toplam Ürün sayımızı döndürüyor
         }
 
-        public decimal GetProductAvgPrice()
+        public async Task<decimal> GetProductAvgPrice()
         {
-            throw new NotImplementedException();
+            var pipeline = new BsonDocument[]
+            {
+                new BsonDocument($"group",new BsonDocument
+                {
+                    {"id",null },
+                    {"averagePrice",new BsonDocument("$avg","$ProductPrice") }
+                })
+            };
+            var result = await _productCollection.AggregateAsync<BsonDocument>(pipeline);
+            var values = result.FirstOrDefault().GetValue("averagePrice", decimal.Zero).AsDecimal;
+            return values;
         }
     }
 }
