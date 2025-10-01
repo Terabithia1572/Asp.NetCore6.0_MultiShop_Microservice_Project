@@ -7,7 +7,7 @@ namespace MultiShop.WebUI.Services.CargoServices.CargoCompanyServices
         Task<List<ResultCargoCompanyDTO>> GetAllCargoCompanyAsync(); // Tüm kategorileri getirir
         Task CreateCargoCompanyAsync(CreateCargoCompanyDTO createCargoCompanyDTO); // Yeni kategori oluşturur
         Task UpdateCargoCompanyAsync(UpdateCargoCompanyDTO updateCargoCompanyDTO); // Kategoriyi günceller
-        Task DeleteCargoCompanyAsync(string id); // Kategoriyi siler
-        Task<UpdateCargoCompanyDTO> GetByIDCargoCompanyAsync(string id); // ID ile kategori getirir
+        Task DeleteCargoCompanyAsync(int id); // Kategoriyi siler
+        Task<UpdateCargoCompanyDTO> GetByIDCargoCompanyAsync(int id); // ID ile kategori getirir
     }
 }
