@@ -39,16 +39,20 @@ namespace MultiShop.Catalog.Services.StatisticServices
         public async Task<decimal> GetProductAvgPrice()
         {
             var pipeline = new BsonDocument[]
-            {
-                new BsonDocument($"group",new BsonDocument
-                {
-                    {"id",null },
-                    {"averagePrice",new BsonDocument("$avg","$ProductPrice") }
-                })
-            };
+  {
+    new BsonDocument("$group", new BsonDocument
+    {
+        { "_id", BsonNull.Value },
+        { "averagePrice", new BsonDocument("$avg", "$ProductPrice") }
+    })
+  };
+
             var result = await _productCollection.AggregateAsync<BsonDocument>(pipeline);
-            var values = result.FirstOrDefault().GetValue("averagePrice", decimal.Zero).AsDecimal;
-            return values;
+            var values = result.FirstOrDefault()?.GetValue("averagePrice", BsonDecimal128.Create(0)).AsDecimal ?? 0m;
+
+            // 2 ondalık hane
+            return Math.Round(values, 2);
+
         }
     }
 }
