@@ -10,7 +10,7 @@ namespace MultiShop.Catalog.Services.StatisticServices
         private readonly IMongoCollection<Category> _categoryCollection; // MongoDB'deki Category koleksiyonuna erişim sağlar.
         private readonly IMongoCollection<Brand> _brandCollection; // MongoDB'deki Markalar koleksiyonuna erişim sağlar.
 
-        public StatisticService(IMongoCollection<Product> productCollection, IMongoCollection<Category> categoryCollection, IMongoCollection<Brand> brandCollection,IDatabaseSettings _databaseSettings)
+        public StatisticService(IDatabaseSettings _databaseSettings)
         {
             var client = new MongoClient(_databaseSettings.ConnectionString); // MongoDB ile bağlantı kurmak için istemci oluşturuluyor.
             var database = client.GetDatabase(_databaseSettings.DatabaseName); // Bağlantı kurulan MongoDB'de kullanılacak veritabanı seçiliyor.
