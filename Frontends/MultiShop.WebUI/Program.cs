@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using MultiShop.WebUI.Handlers;
 using MultiShop.WebUI.Services.BasketServices;
 using MultiShop.WebUI.Services.CargoServices.CargoCompanyServices;
+using MultiShop.WebUI.Services.CargoServices.CargoCustomerServices;
 using MultiShop.WebUI.Services.CatalogServices.AboutServices;
 using MultiShop.WebUI.Services.CatalogServices.BrandServices;
 using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
@@ -87,6 +88,11 @@ builder.Services.AddHttpClient<IBasketService, BasketService>(opt =>
     opt.DefaultRequestVersion = new Version(1, 1); // opsiyonel: HTTP/1.1 zorla
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
 builder.Services.AddHttpClient<ICargoCompanyService, CargoCompanyService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Cargo.Path}"); // http://localhost:5001
+    opt.DefaultRequestVersion = new Version(1, 1); // opsiyonel: HTTP/1.1 zorla
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<ICargoCustomerService, CargoCustomerService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Cargo.Path}"); // http://localhost:5001
     opt.DefaultRequestVersion = new Version(1, 1); // opsiyonel: HTTP/1.1 zorla

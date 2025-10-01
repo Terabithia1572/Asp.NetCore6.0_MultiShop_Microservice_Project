@@ -7,12 +7,12 @@ namespace MultiShop.WebUI.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly ICargoCustomerService _cargoCustomerService;
+       
 
-        public UserController(IUserService userService, ICargoCustomerService cargoCustomerService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _cargoCustomerService = cargoCustomerService;
+           
         }
 
         public async Task< IActionResult> Index()
@@ -20,10 +20,6 @@ namespace MultiShop.WebUI.Controllers
             var values = await _userService.GetUserInfo();
             return View(values);
         }
-        public async Task<IActionResult> UserAddressInfo(string id)
-        {
-            var values = await _cargoCustomerService.GetByIDCargoCustomerInfoAsync(id);
-            return View(values);
-        }
+       
     }
 }

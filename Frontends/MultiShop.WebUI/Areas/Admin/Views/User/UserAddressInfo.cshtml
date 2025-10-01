@@ -1,0 +1,70 @@
+﻿@model GetCargoCustomerByIDDTO
+@{
+    ViewData["Title"] = "UserAddressInfo";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+
+@if (Model == null)
+{
+    <div class="alert alert-warning mt-3">
+        Adres bilgisi bulunamadı.
+    </div>
+}
+else
+{
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                        <!-- Sol taraf: Avatar -->
+                        <div class="col-md-4 bg-primary d-flex align-items-center justify-content-center">
+                            <div class="text-center text-white">
+                                <div class="rounded-circle bg-white text-primary fw-bold fs-1 d-flex align-items-center justify-content-center mx-auto mb-3"
+                                     style="width: 100px; height: 100px;">
+                                    @Model.CargoCustomerName.Substring(0,1).ToUpper()
+                                </div>
+                                <h5 class="fw-bold">@Model.CargoCustomerName @Model.CargoCustomerSurname</h5>
+                                <small>@Model.CargoCustomerEmail</small>
+                            </div>
+                        </div>
+
+                        <!-- Sağ taraf: Detaylar -->
+                        <div class="col-md-8 bg-light">
+                            <div class="card-body p-4">
+                                <h5 class="card-title text-secondary mb-4">Müşteri Bilgileri</h5>
+
+                                <p class="mb-2">
+                                    <i class="bi bi-telephone-fill text-primary me-2"></i>
+                                    <b>Telefon:</b> @Model.CargoCustomerPhone
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                                    <b>Adres:</b> @Model.CargoCustomerAddress
+                                    , @Model.CargoCustomerDistrict / @Model.CargoCustomerCity
+                                </p>
+                                <p class="mb-0 text-muted">
+                                    <i class="bi bi-person-badge-fill me-2"></i>
+                                    <small><b>Kullanıcı ID:</b> @Model.UserCustomerID</small>
+                                </p>
+                            </div>
+                            <div class="card-footer bg-white border-0 text-end">
+                                <a href="/User/Index" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-arrow-left-circle"></i> Geri Dön
+                                </a>
+                                <a href="/User/Edit/@Model.UserCustomerID" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-fill"></i> Düzenle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+

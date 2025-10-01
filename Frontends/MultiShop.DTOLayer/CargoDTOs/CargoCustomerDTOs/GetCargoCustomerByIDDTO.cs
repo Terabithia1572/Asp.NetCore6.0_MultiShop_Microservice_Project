@@ -8,15 +8,14 @@ namespace MultiShop.DTOLayer.CargoDTOs.CargoCustomerDTOs
 {
     public class GetCargoCustomerByIDDTO
     {
-        public string cargoCustomerName { get; set; } // Kargo Müşteri Adı
-        public string cargoCustomerSurname { get; set; } // Kargo Müşteri Soyadı
-        public string cargoCustomerEmail { get; set; } // Kargo Müşteri E-posta
-        public string cargoCustomerPhone { get; set; } // Kargo Müşteri Telefon
-        public string cargoCustomerCity { get; set; } // Kargo Müşteri Şehir
-        public string cargoCustomerDistrict { get; set; } // Kargo Müşteri İlçe
-        public string cargoCustomerAddress { get; set; } // Kargo Müşteri Adres
-        public string userCustomerID { get; set; }  // Kullanıcı Müşteri ID
-
-
+        public string CargoCustomerName { get; set; }
+        public string CargoCustomerSurname { get; set; }
+        public string CargoCustomerEmail { get; set; }
+        public string CargoCustomerPhone { get; set; }
+        public string CargoCustomerCity { get; set; }
+        public string CargoCustomerDistrict { get; set; }
+        public string CargoCustomerAddress { get; set; }
+        public string UserCustomerID { get; set; }
     }
+
 }

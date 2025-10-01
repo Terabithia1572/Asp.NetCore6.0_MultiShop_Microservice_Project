@@ -13,9 +13,14 @@ namespace MultiShop.WebUI.Services.CargoServices.CargoCustomerServices
 
         public async Task<GetCargoCustomerByIDDTO> GetByIDCargoCustomerInfoAsync(string id)
         {
-            var response = await _httpClient.GetAsync("cargocustomers/getcargocustomerbyuserID/" + id); //HttpClient ile GET isteği gönderilir
-            var values = await response.Content.ReadFromJsonAsync<GetCargoCustomerByIDDTO>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
-            return values; //Liste döndürülür
+            var response = await _httpClient.GetAsync("CargoCustomers/GetCargoCustomerByUserID/" + id);
+
+            if (!response.IsSuccessStatusCode)
+                return null; // 404 vs. gelirse null dön
+
+            return await response.Content.ReadFromJsonAsync<GetCargoCustomerByIDDTO>();
         }
+
+
     }
 }

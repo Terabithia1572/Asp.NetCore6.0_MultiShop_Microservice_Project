@@ -76,8 +76,13 @@ namespace MultiShop.Cargo.WebAPI.Controllers
         [HttpGet("GetCargoCustomerByUserID/{id}")]
         public IActionResult GetCargoCustomerByUserID(string id)
         {
-            var values = _cargoCustomerService.TGetCargoCustomerByID(id); // Verilen kullanıcı ID'sine sahip kargo müşterisini getirir
-            return Ok(values); // HTTP 200 OK ile sonucu döner
+            var values = _cargoCustomerService.TGetCargoCustomerByID(id);
+
+            if (values == null)
+                return NotFound(new { message = "Kullanıcı bulunamadı" }); // 404 + JSON döner
+
+            return Ok(values); // JSON döner
         }
+
     }
 }
