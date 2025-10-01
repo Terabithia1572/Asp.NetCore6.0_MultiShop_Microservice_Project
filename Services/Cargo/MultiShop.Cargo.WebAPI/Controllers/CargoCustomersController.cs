@@ -42,7 +42,8 @@ namespace MultiShop.Cargo.WebAPI.Controllers
                 CargoCustomerEmail = createCargoCustomerDTO.CargoCustomerEmail, // DTO'dan alınan kargo müşteri e-posta adresini kullanır
                 CargoCustomerCity = createCargoCustomerDTO.CargoCustomerCity, // DTO'dan alınan kargo müşteri şehrini kullanır
                 CargoCustomerDistrict = createCargoCustomerDTO.CargoCustomerDistrict, // DTO'dan alınan kargo müşteri ilçesini kullanır
-                CargoCustomerAddress = createCargoCustomerDTO.CargoCustomerAddress // DTO'dan alınan kargo müşteri adresini kullanır
+                CargoCustomerAddress = createCargoCustomerDTO.CargoCustomerAddress, // DTO'dan alınan kargo müşteri adresini kullanır
+                UserCustomerID = createCargoCustomerDTO.UserCustomerID // DTO'dan alınan kargo müşteri kullanıcı ID'sini kullanır
             };
             _cargoCustomerService.TInsert(cargoCustomer); // Yeni kargo müşterisi ekler
             return Ok("Kargo Müşterisi Başarıyla Eklendi.."); // Yeni kargo müşteri oluşturma işlemi için HTTP 200 OK döner
@@ -66,7 +67,8 @@ namespace MultiShop.Cargo.WebAPI.Controllers
                 CargoCustomerEmail = updateCargoCustomerDTO.CargoCustomerEmail, // DTO'dan alınan kargo müşteri e-posta adresini kullanır
                 CargoCustomerCity = updateCargoCustomerDTO.CargoCustomerCity, // DTO'dan alınan kargo müşteri şehrini kullanır
                 CargoCustomerDistrict = updateCargoCustomerDTO.CargoCustomerDistrict, // DTO'dan alınan kargo müşteri ilçesini kullanır
-                CargoCustomerAddress = updateCargoCustomerDTO.CargoCustomerAddress // DTO'dan alınan kargo müşteri adresini kullanır
+                CargoCustomerAddress = updateCargoCustomerDTO.CargoCustomerAddress, // DTO'dan alınan kargo müşteri adresini kullanır
+                UserCustomerID = updateCargoCustomerDTO.UserCustomerID // DTO'dan alınan kargo müşteri kullanıcı ID'sini kullanır
             };
             _cargoCustomerService.TUpdate(cargoCustomer); // Kargo müşterisini günceller
             return Ok("Kargo Müşterisi Başarıyla Güncellendi.."); // Kargo müşteri güncelleme işlemi için HTTP 200 OK döner

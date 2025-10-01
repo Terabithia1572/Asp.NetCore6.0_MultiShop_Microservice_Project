@@ -16,5 +16,6 @@ namespace MultiShop.Cargo.DTOLayer.DTOs.CargoCustomerDTOs
         public string CargoCustomerCity { get; set; } // Kargo Müşteri Şehri
         public string CargoCustomerDistrict { get; set; } // Kargo Müşteri İlçesi
         public string CargoCustomerAddress { get; set; } // Kargo Müşteri Adresi
+        public string UserCustomerID { get; set; } // Kargo Müşteri Kullanıcı ID'si
     }
 }
