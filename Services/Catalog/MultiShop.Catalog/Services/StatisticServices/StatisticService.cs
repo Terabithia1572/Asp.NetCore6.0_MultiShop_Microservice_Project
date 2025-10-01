@@ -19,17 +19,17 @@ namespace MultiShop.Catalog.Services.StatisticServices
             _brandCollection=database.GetCollection<Brand>(_databaseSettings.BrandCollectionName); // Brand koleksiyonu üzerinden işlem yapabilmek için referans alınıyor.
         }
 
-        public int GetBrandsCount()
+        public long GetBrandsCount()
+        {
+            return _brandCollection.CountDocuments(FilterDefinition<Brand>.Empty); // Toplam Brands Sayısını Getirir
+        }
+
+        public long GetCategoryCount()
         {
             throw new NotImplementedException();
         }
 
-        public int GetCategoryCount()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetProduceCount()
+        public long GetProduceCount()
         {
             throw new NotImplementedException();
         }
