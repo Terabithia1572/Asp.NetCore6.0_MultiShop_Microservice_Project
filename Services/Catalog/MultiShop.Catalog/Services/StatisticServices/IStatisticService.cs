@@ -2,9 +2,9 @@
 {
     public interface IStatisticService
     {
-        long GetCategoryCount(); // Bize Kategori Sayısını Verecek
-        long GetProduceCount(); // Ürün Sayısını vericek
-        long GetBrandsCount(); // Markaların sayısını vericek
+        Task<long> GetCategoryCount(); // Bize Kategori Sayısını Verecek
+        Task<long> GetProduceCount(); // Ürün Sayısını vericek
+        Task<long> GetBrandCount(); // Markaların sayısını vericek
         decimal GetProductAvgPrice(); // Toplam Ürün Fiyatını verecek
     }
 }

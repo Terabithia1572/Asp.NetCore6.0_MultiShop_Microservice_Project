@@ -19,19 +19,19 @@ namespace MultiShop.Catalog.Services.StatisticServices
             _brandCollection=database.GetCollection<Brand>(_databaseSettings.BrandCollectionName); // Brand koleksiyonu üzerinden işlem yapabilmek için referans alınıyor.
         }
 
-        public long GetBrandsCount()
+        public async Task<long> GetBrandCount()
         {
-            return _brandCollection.CountDocuments(FilterDefinition<Brand>.Empty); // Toplam Brands Sayısını Getirir
+            return await _brandCollection.CountDocumentsAsync(FilterDefinition<Brand>.Empty); // 
         }
 
-        public long GetCategoryCount()
+        public async Task<long> GetCategoryCount()
         {
-            throw new NotImplementedException();
+            return await _categoryCollection.CountDocumentsAsync(FilterDefinition<Category>.Empty); // 
         }
 
-        public long GetProduceCount()
+        public async Task<long> GetProduceCount()
         {
-            throw new NotImplementedException();
+            return await _productCollection.CountDocumentsAsync(FilterDefinition<Product>.Empty); // Burada bizim toplam Ürün sayımızı döndürüyor
         }
 
         public decimal GetProductAvgPrice()

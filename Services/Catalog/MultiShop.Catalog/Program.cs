@@ -36,7 +36,7 @@ builder.Services.AddScoped<IOfferDiscountService, OfferDiscountService>(); // He
 builder.Services.AddScoped<IBrandService, BrandService>(); // Her istek için yeni bir BrandService örneði oluþturur ve IBrandService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IAboutService, AboutService>(); // Her istek için yeni bir AboutService örneði oluþturur ve IAboutService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
 builder.Services.AddScoped<IContactService, ContactService>(); // Her istek için yeni bir ContactService örneði oluþturur ve IContactService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir.
-//builder.Services.AddScoped<IStatisticService, StatisticService>(); //  Her istek için yeni bir StatisticService örneði oluþturur ve IStatisticService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir. 
+builder.Services.AddScoped<IStatisticService, StatisticService>(); //  Her istek için yeni bir StatisticService örneði oluþturur ve IStatisticService arayüzüne baðýmlýlýklarý bu sýnýfa yönlendirir. 
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); // Uygulamadaki tüm AutoMapper profillerini yükler ve otomatik eþleme (mapping) iþlemlerinin kullanýlmasýný saðlar.
 
