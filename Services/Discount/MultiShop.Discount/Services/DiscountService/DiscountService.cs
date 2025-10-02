@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MultiShop.Discount.Context;
 using MultiShop.Discount.DTOs.DiscountCouponDTOs;
+using MultiShop.Discount.Entites;
 
 namespace MultiShop.Discount.Services.DiscountService
 {
@@ -100,6 +101,20 @@ namespace MultiShop.Discount.Services.DiscountService
                 var values = await connection.QueryFirstOrDefaultAsync<ResultDiscountCouponDTO>(query, parameters);
                 // Sorguyu çalıştırarak ResultDiscountCouponDTO tipinde sonucu alır.
                 return values; // Sonucu geri döner. Eğer kupon bulunamazsa null dönecektir.
+            }
+        }
+
+        public async Task< int> GetDiscountCouponCount()
+        {
+            string query = "select Count (*) from Coupons";
+            // Belirli bir kuponu ID'sine göre almak için gerekli olan SQL sorgusunu tanımlar.
+            // Alınacak kuponun ID'sini parametrelere ekler.
+            using (var connection = _context.CreateConnection())
+            {
+                // DapperContext üzerinden yeni bir veritabanı bağlantısı oluşturur.
+                var result = await connection.QueryFirstOrDefaultAsync<int>(query);
+                // Sorguyu çalıştırarak GetByIDCouponDTO tipinde sonucu alır.
+                return result; // Sonucu geri döner. Eğer kupon bulunamazsa null dönecektir.
             }
         }
 
