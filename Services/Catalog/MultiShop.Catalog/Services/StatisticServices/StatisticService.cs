@@ -31,6 +31,32 @@ namespace MultiShop.Catalog.Services.StatisticServices
             return await _categoryCollection.CountDocumentsAsync(FilterDefinition<Category>.Empty); // 
         }
 
+        public async Task<string> GetMaximumPriceProductName()
+        {
+            var filter = Builders<Product>.Filter.Empty;
+            var sort = Builders<Product>.Sort.Descending(x => x.ProductPrice); // 
+            var projection = Builders<Product>.Projection.Include(y => y.ProductName)
+                .Exclude("ProductID");
+            var product=await _productCollection.Find(filter)
+                .Sort(sort)
+                .Project(projection)
+                .FirstOrDefaultAsync();
+            return product.GetValue("ProductName").AsString; // 
+        }
+
+        public async Task<string> GetMinimumPriceProductName()
+        {
+            var filter = Builders<Product>.Filter.Empty;
+            var sort = Builders<Product>.Sort.Ascending(x => x.ProductPrice); // 
+            var projection = Builders<Product>.Projection.Include(y => y.ProductName)
+                .Exclude("ProductID");
+            var product = await _productCollection.Find(filter)
+                .Sort(sort)
+                .Project(projection)
+                .FirstOrDefaultAsync();
+            return product.GetValue("ProductName").AsString; // 
+        }
+
         public async Task<long> GetProduceCount()
         {
             return await _productCollection.CountDocumentsAsync(FilterDefinition<Product>.Empty); // Burada bizim toplam Ürün sayımızı döndürüyor
