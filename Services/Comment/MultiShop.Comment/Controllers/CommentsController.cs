@@ -58,5 +58,23 @@ namespace MultiShop.Comment.Controllers
             var values = _context.UserComments.Where(x => x.ProductID == id).ToList(); //Belirli bir ürüne ait yorumları çekiyoruz.
             return Ok(values); //Yorumları döndürüyoruz.
         }
+        [HttpGet("GetActiveCommentCount")]
+        public IActionResult GetActiveCommentCount() // Aktif Yorum Sayısını getirir
+        {
+            int value=  _context.UserComments.Where(x=>x.UserCommentStatus==true).Count(); // User Comment Statusu true olanlaarı getirir
+            return Ok(value);
+        }
+        [HttpGet("GetPassiveCommentCount")]
+        public IActionResult GetPassiveCommentCount() // Pasif yorum sayısını getirir.
+        {
+            int value=_context.UserComments.Where(x=>x.UserCommentStatus==false).Count(); // User Comment Statusu false olanları getirir
+            return Ok(value);
+        }
+        [HttpGet("GetTotalCommentCount")]
+        public IActionResult GetTotalCommentCount() // Toplam Yorum Sayısını Getirir
+        {
+            int value = _context.UserComments.Count(); // UserCommentsteki toplam yorum sayısını getirir.
+            return Ok(value);
+        }
     }
 }
