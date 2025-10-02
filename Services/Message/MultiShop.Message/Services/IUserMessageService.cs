@@ -11,6 +11,7 @@ namespace MultiShop.Message.Services
         Task UpdateMessageAsync(UpdateMessageDTO updatemessageDTO); //Mevcut mesajı güncelleyen metot
         Task DeleteMessageAsync(int messageID); //Mesajı silen metot
         Task<GetByIDMessageDTO> GetByIDMessageAsync(int messageID); //ID'ye göre mesajı getiren metot
+        Task<int> GetTotalMessageCount();
 
     }
 }

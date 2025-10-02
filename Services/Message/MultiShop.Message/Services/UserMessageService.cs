@@ -64,6 +64,12 @@ namespace MultiShop.Message.Services
             return _mapper.Map<List<ResultSendboxMessageDTO>>(values); //Alınan mesaj listesini ResultSendboxMessageDTO tipine dönüştürüp döner
         }
 
+        public async Task<int> GetTotalMessageCount()
+        {
+            int values = await _messageContext.UserMessages.CountAsync();
+            return values;
+        }
+
         public async Task UpdateMessageAsync(UpdateMessageDTO updatemessageDTO) //Mevcut mesajı güncelleme metodu
         {
             var values = await _messageContext.UserMessages.FindAsync(updatemessageDTO.UserMessageID); //Verilen ID'ye sahip mesajı veritabanında arar
