@@ -32,7 +32,7 @@ namespace MultiShop.Catalog.Controllers
         [HttpGet("GetProductCount")]
         public async Task<IActionResult> GetProductCount()
         {
-            var values= await _statisticService.GetProduceCount();
+            var values= await _statisticService.GetProductCount();
             return Ok(values);
         }
         [HttpGet("GetProductAvgPrice")]

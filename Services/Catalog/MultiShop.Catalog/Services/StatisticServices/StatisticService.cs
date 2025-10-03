@@ -57,7 +57,7 @@ namespace MultiShop.Catalog.Services.StatisticServices
             return product.GetValue("ProductName").AsString; // 
         }
 
-        public async Task<long> GetProduceCount()
+        public async Task<long> GetProductCount()
         {
             return await _productCollection.CountDocumentsAsync(FilterDefinition<Product>.Empty); // Burada bizim toplam Ürün sayımızı döndürüyor
         }
