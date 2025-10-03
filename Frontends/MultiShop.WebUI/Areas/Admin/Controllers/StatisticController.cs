@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.WebUI.Services.StatisticServices.CatalogStatisticServices;
+using MultiShop.WebUI.Services.StatisticServices.UserStatisticServices;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
@@ -7,10 +8,12 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     public class StatisticController : Controller
     {
         private readonly ICatalogStatisticService _catalogStatisticService;
+        private readonly IUserStatisticService _userStatisticService;
 
-        public StatisticController(ICatalogStatisticService catalogStatisticService)
+        public StatisticController(ICatalogStatisticService catalogStatisticService, IUserStatisticService userStatisticService)
         {
             _catalogStatisticService = catalogStatisticService;
+            _userStatisticService = userStatisticService;
         }
 
         public async Task< IActionResult> Index()
