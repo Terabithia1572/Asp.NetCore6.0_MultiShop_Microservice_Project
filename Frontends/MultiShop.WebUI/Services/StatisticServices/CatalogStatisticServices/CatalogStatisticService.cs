@@ -18,29 +18,39 @@ namespace MultiShop.WebUI.Services.StatisticServices.CatalogStatisticServices
             return values; //Liste döndürülür
         }
 
-        public Task<long> GetCategoryCount()
+        public async Task<long> GetCategoryCount()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("statistics/GetCategoryCount"); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<long>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
         }
 
-        public Task<string> GetMaximumPriceProductName()
+        public async Task<string> GetMaximumPriceProductName()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("statistics/GetMaximumPriceProductName"); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<string>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
         }
 
-        public Task<string> GetMinimumPriceProductName()
+        public async Task<string> GetMinimumPriceProductName()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("statistics/GetMinimumPriceProductName"); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<string>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
         }
 
-        public Task<long> GetProduceCount()
+        public async Task<long> GetProduceCount()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("statistics/GetProduceCount"); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<long>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
         }
 
-        public Task<decimal> GetProductAvgPrice()
+        public async Task<decimal> GetProductAvgPrice()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync("statistics/GetProductAvgPrice"); //HttpClient ile GET isteği gönderilir
+            var values = await response.Content.ReadFromJsonAsync<decimal>(); //Gelen cevap JSON formatında okunur ve listeye dönüştürülür
+            return values; //Liste döndürülür
         }
     }
 }
