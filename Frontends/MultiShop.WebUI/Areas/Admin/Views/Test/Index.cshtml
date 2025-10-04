@@ -7,6 +7,9 @@
     <div class="alert alert-primary mt-4">
         Bağlantının Durumu: <strong id="connstatus"></strong>
     </div>
+    <div class="alert alert-success mt-4">
+        Yorum Sayısı: <strong id="commentcount"></strong>
+    </div>
 </div>
 
 @section Scripts {
@@ -22,11 +25,15 @@
             connection.start()
                 .then(() => {
                     $("#connstatus").text(connection.state);
+                    connection.invoke("SendStatisticCount");
                     console.log("✅ SignalR bağlantısı başarılı!");
                 })
                 .catch((err) => {
                     console.error("❌ Bağlantı hatası:", err);
                     $("#connstatus").text("Bağlantı hatası");
+                });
+                connection.on("ReceiveCommentCount",(value)=>{
+                    $("#commentcount").text(value);
                 });
         });
     </script>
