@@ -70,6 +70,12 @@ namespace MultiShop.Message.Services
             return values;
         }
 
+        public async Task<int> GetTotalMessageCountByReceiverID(string id)
+        {
+            var values =await _messageContext.UserMessages.Where(x => x.MessageReceiverID == id).CountAsync(); // 
+            return values;
+        }
+
         public async Task UpdateMessageAsync(UpdateMessageDTO updatemessageDTO) //Mevcut mesajı güncelleme metodu
         {
             var values = await _messageContext.UserMessages.FindAsync(updatemessageDTO.UserMessageID); //Verilen ID'ye sahip mesajı veritabanında arar
