@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using MultiShop.SignalRRealTimeAPI.HUBs;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // CORS (Cross-Origin Resource Sharing) ayarlarını ekliyoruz.
@@ -30,7 +32,7 @@ builder.Services.AddCors(opt =>
 // 🔹 SetIsOriginAllowed((host) => true) -> Tüm domainlerden gelen isteklere izin verir (geliştirme ortamı için uygundur).
 // 🔹 AllowCredentials -> Çerez, kimlik doğrulama gibi bilgilerin paylaşılmasına izin verir.
 // ⚠️ Production ortamında “(host) => true” yerine belirli domain(ler) tanımlanmalıdır!
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -50,5 +52,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<SignalRHub>("/signalrhub");
 
 app.Run();
