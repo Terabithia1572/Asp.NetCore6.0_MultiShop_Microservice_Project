@@ -20,11 +20,11 @@ namespace MultiShop.RabbitMQMessageAPI.Controllers
 
             var channel = connection.CreateModel();
             
-            channel.QueueDeclare("Kuyruk1",false,false,false,arguments:null);
+            channel.QueueDeclare("Kuyruk2",false,false,false,arguments:null);
 
-            var messageContent = "Merhaba bu bir RabbitMQ Kuyruk mesajıdır..";
+            var messageContent = "Merhaba bugün hava çok soğuk..";
             var byteMessageContent=Encoding.UTF8.GetBytes(messageContent);
-            channel.BasicPublish(exchange:"",routingKey:"Kuyruk1",basicProperties:null,body:byteMessageContent);
+            channel.BasicPublish(exchange:"",routingKey:"Kuyruk2",basicProperties:null,body:byteMessageContent);
 
             return Ok("Mesajınız Kuyruğa Alınmıştır..");
         }
