@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
+using System.Text;
 
 namespace MultiShop.RabbitMQMessageAPI.Controllers
 {
@@ -19,6 +20,11 @@ namespace MultiShop.RabbitMQMessageAPI.Controllers
 
             var channel = connection.CreateModel();
             
+            channel.QueueDeclare("Kuyruk1",false,false,false,arguments:null);
+
+            var messageContent = "Merhaba bu bir RabbitMQ Kuyruk mesajıdır..";
+            var byteMessageContent=Encoding.UTF8.GetBytes(messageContent);
+            channel.BasicPublish(exchange:"",routingKey:"Kuyruk1",basicProperties:null,body:byteMessageContent);
 
             return Ok("Mesajınız Kuyruğa Alınmıştır..");
         }
