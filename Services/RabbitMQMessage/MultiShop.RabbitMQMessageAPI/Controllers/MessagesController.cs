@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
 
 namespace MultiShop.RabbitMQMessageAPI.Controllers
 {
@@ -7,9 +8,18 @@ namespace MultiShop.RabbitMQMessageAPI.Controllers
     [ApiController]
     public class MessagesController : ControllerBase
     {
-        [HttpGet]
+        [HttpPost]
         public IActionResult CreateMessage()
         {
+            var connectionFactory = new ConnectionFactory()
+            {
+                HostName = "localhost"
+            };
+            var connection = connectionFactory.CreateConnection();
+
+            var channel = connection.CreateModel();
+            
+
             return Ok("Mesajınız Kuyruğa Alınmıştır..");
         }
     }
