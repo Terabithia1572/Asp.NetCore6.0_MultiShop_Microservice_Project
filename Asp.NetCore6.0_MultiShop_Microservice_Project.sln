@@ -93,6 +93,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.SignalRRealTimeAP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.Images.WebUI", "Services\Images\MultiShop.Images.WebUI\MultiShop.Images.WebUI.csproj", "{09119349-58E1-4D93-BBA9-B21F514118B1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMQMessage", "RabbitMQMessage", "{EC2D006E-8F2E-41D0-B433-4BF720041629}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.RabbitMQMessageAPI", "Services\RabbitMQMessage\MultiShop.RabbitMQMessageAPI\MultiShop.RabbitMQMessageAPI.csproj", "{DAABCBE3-275B-4A4D-A456-DD6ACA8A052A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +191,10 @@ Global
 		{09119349-58E1-4D93-BBA9-B21F514118B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09119349-58E1-4D93-BBA9-B21F514118B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09119349-58E1-4D93-BBA9-B21F514118B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAABCBE3-275B-4A4D-A456-DD6ACA8A052A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAABCBE3-275B-4A4D-A456-DD6ACA8A052A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAABCBE3-275B-4A4D-A456-DD6ACA8A052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAABCBE3-275B-4A4D-A456-DD6ACA8A052A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,6 +235,8 @@ Global
 		{D2E3A925-C5A4-48F1-ADB0-D098264B6E61} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{288DA59E-151C-4F67-B3AE-9D68CD990980} = {D2E3A925-C5A4-48F1-ADB0-D098264B6E61}
 		{09119349-58E1-4D93-BBA9-B21F514118B1} = {CE6FB8E2-B0FE-4604-8E12-E14125CFA489}
+		{EC2D006E-8F2E-41D0-B433-4BF720041629} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{DAABCBE3-275B-4A4D-A456-DD6ACA8A052A} = {EC2D006E-8F2E-41D0-B433-4BF720041629}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDCEDDFD-1452-44EA-BAE9-5F3E694CA49F}
