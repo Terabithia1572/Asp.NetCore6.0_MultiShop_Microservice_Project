@@ -1,6 +1,11 @@
+using MultiShop.Images.WebUI.Services;
+using MultiShop.Images.WebUI.Utils.ConfigOptions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<GCSConfigOptions>(builder.Configuration);
+builder.Services.AddSingleton<ICloudStorageService, CloudStorageService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
