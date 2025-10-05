@@ -29,6 +29,9 @@ namespace MultiShop.RabbitMQMessageAPI.Controllers
 
             return Ok("Mesajınız Kuyruğa Alınmıştır..");
         }
+
+        private static string message;
+
         [HttpGet]
         public IActionResult ReadMessage()
         {
@@ -37,7 +40,7 @@ namespace MultiShop.RabbitMQMessageAPI.Controllers
             var connection = connectionFactory.CreateConnection();
             var channel = connection.CreateModel();
             var consumer =new EventingBasicConsumer(channel);
-            string message="";
+            
             consumer.Received += (model, body) =>
             {
                 var byteMessage = body.Body.ToArray();
@@ -45,11 +48,17 @@ namespace MultiShop.RabbitMQMessageAPI.Controllers
              
             };
 
-            channel.BasicConsume(queue: "Kuyruk1", autoAck: false, consumer: consumer);
+            channel.BasicConsume(queue: "Kuyruk2", autoAck: false, consumer: consumer);
 
+            if(string.IsNullOrEmpty(message))
+            {
+                return NoContent();
+            }
 
-            return Ok(message);
-
+            else
+            {
+                return Ok(message);
+            }
            
         }
     }
