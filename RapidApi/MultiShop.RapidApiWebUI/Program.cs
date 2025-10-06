@@ -1,4 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews(); //  en önemli satýr bu
+
+
 
 // Add services to the container.
 
@@ -19,6 +22,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+//  Bu satýr olmazsa MVC controller'larýn View'larý bulunmaz
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Default}/{action=WeatherDetail}/{id?}");
 
 app.MapControllers();
 
