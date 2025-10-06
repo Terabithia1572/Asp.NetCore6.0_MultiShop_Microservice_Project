@@ -24,8 +24,8 @@ namespace MultiShop.RapidApiWebUI.Controllers
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
                
-                var values=JsonConvert.DeserializeObject<WeatherViewModel>(body);
-                ViewBag.cityTemp = values.temp;
+                var values=JsonConvert.DeserializeObject<WeatherViewModel.Rootobject>(body);
+                ViewBag.cityTemp = values.data.temp;
                 return View();
             }    
         }

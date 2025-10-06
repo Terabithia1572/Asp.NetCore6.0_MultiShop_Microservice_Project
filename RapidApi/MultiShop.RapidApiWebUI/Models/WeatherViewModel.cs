@@ -2,6 +2,15 @@
 {
     public class WeatherViewModel
     {
+
+        public class Rootobject
+        {
+            public bool success { get; set; }
+            public Data data { get; set; }
+        }
+
+        public class Data
+        {
             public string city { get; set; }
             public string current_weather { get; set; }
             public string temp { get; set; }
@@ -17,7 +26,7 @@
             public string aqi_description { get; set; }
             public string last_update { get; set; }
             public string bg_image { get; set; }
-        
+        }
 
     }
 }
