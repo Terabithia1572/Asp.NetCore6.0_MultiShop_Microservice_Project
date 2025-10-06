@@ -1,12 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MultiShop.RapidApiWebUI.Models;
+using Newtonsoft.Json;
 
 namespace MultiShop.RapidApiWebUI.Controllers
 {
     public class DefaultController : Controller
     {
-        public IActionResult Index()
+        public async Task< IActionResult> WeatherDetail()
         {
-            return View();
+            var client = new HttpClient(); // 
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://the-weather-api.p.rapidapi.com/api/weather/Van"),
+                Headers =
+    {
+        { "x-rapidapi-key", "" },
+        { "x-rapidapi-host", "the-weather-api.p.rapidapi.com" },
+    },
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+               
+                var values=JsonConvert.DeserializeObject<WeatherViewModel>(body);
+                ViewBag.cityTemp = values.temp;
+                return View();
+            }    
         }
     }
 }
