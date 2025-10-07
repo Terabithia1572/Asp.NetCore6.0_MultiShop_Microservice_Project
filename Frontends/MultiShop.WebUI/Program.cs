@@ -235,8 +235,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var supportedCultures = new[] { "en", "fr", "de", "tr" };
-var locazitaionOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[3]).AddSupportedCultures(supportedCultures)
+var supportedCultures = new[] { "en", "fr", "de","it", "tr" };
+var locazitaionOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[4]).AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 app.UseRequestLocalization(locazitaionOptions);
 // 4) Routing – Area + Default route (UseEndpoints yok, .NET 6+ pattern)
