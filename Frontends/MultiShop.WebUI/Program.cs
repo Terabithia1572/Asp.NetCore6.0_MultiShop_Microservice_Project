@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using MultiShop.WebUI.Handlers;
 using MultiShop.WebUI.Services.BasketServices;
@@ -209,6 +210,15 @@ builder.Services.AddAccessTokenManagement(); // Token yönetimi için
 
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddLocalization(opt =>
+{
+    opt.ResourcesPath = "Resources";
+});
+
+builder.Services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -225,6 +235,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+var supportedCultures = new[] { "en", "fr", "de", "tr" };
+var locazitaionOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[3]).AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+app.UseRequestLocalization(locazitaionOptions);
 // 4) Routing – Area + Default route (UseEndpoints yok, .NET 6+ pattern)
 app.MapControllerRoute(
     name: "areas",
