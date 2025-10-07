@@ -117,19 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Ana Sayfa" xml:space="preserve">
+    <value>Home Page</value>
+  </data>
   <data name="Bugün" xml:space="preserve">
     <value>Oggi</value>
+  </data>
+  <data name="Giriş Yap" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Günün Fırsatı" xml:space="preserve">
+    <value>Deal of the Day</value>
   </data>
   <data name="Hava" xml:space="preserve">
     <value>tempo atmosferico</value>
   </data>
+  <data name="Kategoriler" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="Kayıt Ol" xml:space="preserve">
+    <value>Register</value>
+  </data>
   <data name="Merhaba" xml:space="preserve">
     <value>Ciao</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Sayfalar</value>
+  </data>
+  <data name="Sepetim" xml:space="preserve">
+    <value>Cart</value>
   </data>
   <data name="Sıcak" xml:space="preserve">
     <value>Caldo</value>
   </data>
   <data name="Çok" xml:space="preserve">
     <value>Molto</value>
+  </data>
+  <data name="Ödeme" xml:space="preserve">
+    <value>Checkout</value>
+  </data>
+  <data name="Ürün Detayları" xml:space="preserve">
+    <value>Product Details</value>
+  </data>
+  <data name="Ürünler" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="İletişim" xml:space="preserve">
+    <value>Contact</value>
   </data>
 </root>
