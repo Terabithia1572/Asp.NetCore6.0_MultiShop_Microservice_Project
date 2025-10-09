@@ -178,7 +178,20 @@
         "AllowedScopes": [ "ImagesFullPermission" ] // Bu route'a erişmek için gereken OAuth2 scope(lar)ı
       }
 
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/GetProductsWithDiscount",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 1002
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/products-with-discount",
+      "UpstreamHttpMethod": [ "Get" ]
     }
+
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000" // Gateway'in dış dünyaya açıldığı temel adres
