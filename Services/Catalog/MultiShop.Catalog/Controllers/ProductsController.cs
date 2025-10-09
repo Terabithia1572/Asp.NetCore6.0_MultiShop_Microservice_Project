@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MultiShop.Catalog.DTOs.DiscountDTOs;
 using MultiShop.Catalog.DTOs.ProductDTOs;
 using MultiShop.Catalog.Services.ProductServices;
+using Newtonsoft.Json;
 
 namespace MultiShop.Catalog.Controllers
 {
@@ -77,6 +79,17 @@ namespace MultiShop.Catalog.Controllers
 
             return Ok(values);
         }
+
+        [AllowAnonymous] // 🔓 Gateway'den tokensiz test kolaylığı
+        [HttpGet("GetProductsWithDiscount")]
+        public async Task<IActionResult> GetProductsWithDiscount()
+        {
+            // ✅ Ürün + aktif product-discount listesi
+            var values = await _productService.GetAllProductWithDiscountAsync();
+            return Ok(values);
+        }
+
+
 
     }
 }

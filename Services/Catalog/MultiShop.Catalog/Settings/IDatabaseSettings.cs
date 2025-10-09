@@ -13,6 +13,7 @@
         public string BrandCollectionName { get; set; } // Marka koleksiyonunun adını tutar.
         public string AboutCollectionName { get; set; } // Hakkında koleksiyonunun adını tutar.
         public string ContactCollectionName { get; set; } // İletişim koleksiyonunun adını tutar.
+        string ProductDiscountCollectionName { get; set; } // Ürün indirim koleksiyonunun adını tutar.
         public string ConnectionString { get; set; } // MongoDB bağlantı dizesini tutar.
         public string DatabaseName { get; set; } // Veritabanı adını tutar.
     }

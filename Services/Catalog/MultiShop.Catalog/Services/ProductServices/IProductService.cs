@@ -11,5 +11,10 @@ namespace MultiShop.Catalog.Services.ProductServices
         Task<GetByIDProductDTO> GetByIDProductAsync(string id); // ID ile Ürün getirir
         Task<List<ResultProductsWithCategoryDTO>> GetProductsWithCategoryAsync(); // Kategorilerle birlikte Ürünleri getirir
         Task<List<ResultProductsWithCategoryDTO>> GetProductsWithByCategoryByCategoryIDAsync(string categoryID); // Belirli bir kategori ile Ürünleri getirir
+
+        // 🔥 Yeni metod (ürünleri indirim oranlarıyla birlikte getirir)
+        Task<List<ResultProductWithDiscountDTO>> GetAllProductWithDiscountAsync();
+        // ✅ Yeni: Ürün + aktif product-discount ile birleşik liste
+        
     }
 }
