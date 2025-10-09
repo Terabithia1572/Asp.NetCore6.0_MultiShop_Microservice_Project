@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace MultiShop.WebUI.ViewComponents.DefaultViewComponents
 {
-    public class _FeatureProductsDefaultComponentPartial:ViewComponent
+    public class _FeatureProductsDefaultComponentPartial : ViewComponent
     {
         //private readonly IHttpClientFactory _httpClientFactory;
 
@@ -14,7 +14,7 @@ namespace MultiShop.WebUI.ViewComponents.DefaultViewComponents
         //    _httpClientFactory = httpClientFactory;
         //}
 
-        private readonly IProductService _productService;
+        private readonly IProductService _productService; // Ürün verilerine erişim sağlayan servis (Dependency Injection ile gelir)
 
         public _FeatureProductsDefaultComponentPartial(IProductService productService)
         {
@@ -32,7 +32,20 @@ namespace MultiShop.WebUI.ViewComponents.DefaultViewComponents
             //    return View(values); // Dönüştürülen liste view'e gönderilir.
             //}
             //return View(); // Eğer istek başarısızsa, boş bir view döndürülür.
-            var values = await _productService.GetAllProductAsync();
+
+            // 🟢 Burada hangi veriyi göstermek istiyorsak onu seçiyoruz:
+            // GetAllProductAsync() → sadece ürünleri getirir
+            // GetAllProductWithDiscountAsync() → ürün + indirim oranlarını getirir
+
+            // ✅ Yeni metod: indirimli ürünlerle birlikte tüm ürünleri getirir
+            var values = await _productService.GetAllProductAsync(); // 🔥
+            if (values == null || !values.Any())
+            {
+                // Fallback (istersen)
+                // var fallback = await _productService.GetAllProductAsync();
+                // return View(fallback);
+                return View(values);
+            }
             return View(values);
         }
     }
