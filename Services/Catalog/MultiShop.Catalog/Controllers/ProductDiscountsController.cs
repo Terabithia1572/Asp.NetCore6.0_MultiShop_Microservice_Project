@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MultiShop.Catalog.Entities;
 using MultiShop.Catalog.Settings;
+using MultiShop.Catalog.DTOs.ProductDiscountDTOs;
 
 namespace MultiShop.Catalog.Controllers
 {
@@ -18,7 +19,6 @@ namespace MultiShop.Catalog.Controllers
             _productDiscountCollection = database.GetCollection<ProductDiscount>("ProductDiscounts");
         }
 
-        // 🔹 Tüm indirimleri getir
         [HttpGet]
         public async Task<IActionResult> GetAllDiscounts()
         {
@@ -26,7 +26,6 @@ namespace MultiShop.Catalog.Controllers
             return Ok(discounts);
         }
 
-        // 🔹 Belirli bir indirimi getir
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -35,20 +34,37 @@ namespace MultiShop.Catalog.Controllers
             return Ok(discount);
         }
 
-        // 🔹 Yeni indirim ekle
         [HttpPost]
-        public async Task<IActionResult> CreateDiscount(ProductDiscount discount)
+        public async Task<IActionResult> CreateDiscount(CreateProductDiscountDTO dto)
         {
-            await _productDiscountCollection.InsertOneAsync(discount);
+            var entity = new ProductDiscount
+            {
+                ProductID = dto.ProductID,
+                DiscountRate = dto.DiscountRate,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                IsActive = dto.IsActive
+            };
+
+            await _productDiscountCollection.InsertOneAsync(entity);
             return Ok("İndirim başarıyla eklendi.");
         }
 
-        // 🔹 İndirim güncelle
         [HttpPut]
-        public async Task<IActionResult> UpdateDiscount(ProductDiscount discount)
+        public async Task<IActionResult> UpdateDiscount(UpdateProductDiscountDTO dto)
         {
+            var entity = new ProductDiscount
+            {
+                ProductDiscountID = dto.ProductDiscountID,
+                ProductID = dto.ProductID,
+                DiscountRate = dto.DiscountRate,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                IsActive = dto.IsActive
+            };
+
             var result = await _productDiscountCollection.ReplaceOneAsync(
-                x => x.ProductDiscountID == discount.ProductDiscountID, discount);
+                x => x.ProductDiscountID == dto.ProductDiscountID, entity);
 
             if (result.MatchedCount == 0)
                 return NotFound("İndirim bulunamadı.");
@@ -56,7 +72,6 @@ namespace MultiShop.Catalog.Controllers
             return Ok("İndirim başarıyla güncellendi.");
         }
 
-        // 🔹 İndirim sil
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDiscount(string id)
         {
