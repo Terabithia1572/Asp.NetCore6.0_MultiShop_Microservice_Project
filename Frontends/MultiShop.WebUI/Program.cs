@@ -14,6 +14,7 @@ using MultiShop.WebUI.Services.CatalogServices.FeatureServices;
 using MultiShop.WebUI.Services.CatalogServices.FeatureSliderServices;
 using MultiShop.WebUI.Services.CatalogServices.OfferDiscountServices;
 using MultiShop.WebUI.Services.CatalogServices.ProductDetailServices;
+using MultiShop.WebUI.Services.CatalogServices.ProductDiscountServices;
 using MultiShop.WebUI.Services.CatalogServices.ProductImageServices;
 using MultiShop.WebUI.Services.CatalogServices.ProductServices;
 using MultiShop.WebUI.Services.CatalogServices.SpecialOfferServices;
@@ -155,6 +156,10 @@ builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
 }).AddHttpMessageHandler<ClientCredentialTokenHandler>(); // HttpClient'a delegating handler ekle
 builder.Services.AddHttpClient<IProductService, ProductService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
+}).AddHttpMessageHandler<ClientCredentialTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<IProductDiscountService, ProductDiscountService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}"); // http://localhost:1002
 }).AddHttpMessageHandler<ClientCredentialTokenHandler>(); // HttpClient'a delegating handler ekle
