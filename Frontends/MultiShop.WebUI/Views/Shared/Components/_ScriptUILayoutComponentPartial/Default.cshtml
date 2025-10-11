@@ -1,5 +1,6 @@
-﻿<a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
+﻿<a href="#" class="btn btn-primary back-to-top">
+    <i class="fa fa-angle-double-up"></i>
+</a>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -13,3 +14,166 @@
 
 <!-- Template Javascript -->
 <script src="~/multishop/js/main.js"></script>
+
+<!-- Toastr -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // ==============================
+        // 📦 Mini-cart yükleme fonksiyonu
+        // ==============================
+        function loadMiniCart() {
+            $.ajax({
+                url: '/ShoppingCart/GetMiniCart',
+                type: 'GET',
+                success: function (result) {
+                    $('#header-cart #mini-cart').html(result);
+                },
+                error: function () {
+                    $('#header-cart #mini-cart').html('<div class="p-3 text-center text-muted small">Sepet yüklenemedi.</div>');
+                }
+            });
+        }
+
+        // ==============================
+        // 🔢 Sepet sayısını güncelle
+        // ==============================
+        function updateCartCount() {
+            $.ajax({
+                url: '/ShoppingCart/GetCartCount',
+                type: 'GET',
+                success: function (count) {
+                    $('#header-cart #cart-count').text(count);
+                },
+                error: function () {
+                    console.warn('Sepet sayısı alınamadı.');
+                }
+            });
+        }
+
+        // Sayfa açılışında yükle
+        loadMiniCart();
+        updateCartCount();
+
+        // ==============================
+        // 🛒 Ürün sepete ekleme (AJAX)
+        // ==============================
+        $(document).on('click', '.btn-add-basket', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('id');
+
+            $.ajax({
+                url: '/ShoppingCart/AddBasketItemAjax',
+                type: 'POST',
+                data: { id: productId },
+                success: function (result) {
+                    toastr.success('Ürün sepete eklendi!');
+                    $('#header-cart #mini-cart').html(result);
+                    updateCartCount();
+                    $('#header-cart #mini-cart').addClass('active'); // otomatik aç
+                },
+                error: function () {
+                    toastr.error('Sepete ekleme başarısız!');
+                }
+            });
+        });
+
+        // ==============================
+        // ❌ Ürünü sepetten kaldırma (AJAX)
+        // ==============================
+        $(document).on('click', '.remove-item', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('id');
+            var itemCard = $(this).closest('.mini-cart-item');
+
+            itemCard.fadeOut(300, function () {
+                $.ajax({
+                    url: '/ShoppingCart/RemoveBasketItemAjax',
+                    type: 'POST',
+                    data: { id: productId },
+                    success: function (result) {
+                        $('#header-cart #mini-cart').html(result);
+                        updateCartCount();
+                    },
+                    error: function () {
+                        toastr.error('Ürün sepetten kaldırılamadı.');
+                        itemCard.show();
+                    }
+                });
+            });
+        });
+
+        // ==============================
+        // 🧺 Sepet ikonuna tıklayınca aç / kapat
+        // ==============================
+        $(document).on('click', '#header-cart #cartIcon', function (e) {
+            e.preventDefault();
+            var miniCart = $('#header-cart #mini-cart');
+            if ($.trim(miniCart.html()) === '') { loadMiniCart(); }
+            miniCart.toggleClass('active');
+        });
+
+    });
+</script>
+
+<style>
+    /* 🧱 Mini-cart görünüm ayarları */
+    #header-cart #mini-cart {
+        width: 300px;
+        position: absolute;
+        right: 0;
+        top: 40px;
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        background: #fff;
+        z-index: 99999 !important;
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+        #header-cart #mini-cart.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+    /* 🧾 Sepet içi öğeler */
+    .mini-cart-item {
+        transition: all 0.3s ease;
+    }
+
+        .mini-cart-item:hover {
+            background: #f9f9f9;
+            transform: scale(1.01);
+        }
+
+    /* 🧃 Toastr tema */
+    #toast-container > .toast {
+        background-color: #222 !important;
+        color: #fff !important;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        font-weight: 500;
+    }
+
+    #toast-container > .toast-success {
+        background-color: #28a745 !important;
+    }
+
+    #toast-container > .toast-error {
+        background-color: #dc3545 !important;
+    }
+
+    #toast-container > .toast-message {
+        font-size: 15px;
+        padding: 10px;
+    }
+</style>
