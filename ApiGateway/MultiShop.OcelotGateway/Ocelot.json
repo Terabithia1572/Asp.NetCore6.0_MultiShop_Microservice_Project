@@ -1,5 +1,21 @@
 {
   "Routes": [ // Ocelot üzerinde tanımlanan yönlendirme kuralları
+    // 🔹----------------------------- ProductDiscounts Özel Rotası -----------------------------
+    // Bu rota, ürün indirimlerini (ProductDiscounts) doğrudan Catalog mikroservisine yönlendirir.
+    // NOT: Bu route genel /api/{everything} tanımının ÜSTÜNDE olmalıdır, çünkü Ocelot route’ları yukarıdan aşağı okur
+    // ve ilk eşleşeni bulduğunda diğerlerini denemez. Eğer bu aşağıdaysa, genel rota tarafından “yutulur” ve boş sonuç döner.
+    {
+      "DownstreamPathTemplate": "/api/ProductDiscounts", // Catalog API tarafındaki gerçek endpoint
+      "DownstreamScheme": "http", // Hedef (downstream) protokolü
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost", // Catalog API adresi
+          "Port": 1002 // Catalog API portu
+        }
+      ],
+      "UpstreamPathTemplate": "/services/catalog/ProductDiscounts", // Gateway üzerinden erişilecek endpoint
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ] // Bu route için izin verilen HTTP metodları
+    },
     // -------------------------------Catalog Mikroservisi---------------------------
     {
       "DownstreamPathTemplate": "/api/{everything}", // İstek gateway'den hedef servise giderken kullanılacak yol şablonu (wildcard: {everything})
@@ -179,6 +195,7 @@
       }
 
     },
+    // 🔹 Ürün + İndirimli ürünleri gateway üzerinden çekmek için özel route
     {
       "DownstreamPathTemplate": "/api/Products/GetProductsWithDiscount",
       "DownstreamScheme": "http",
