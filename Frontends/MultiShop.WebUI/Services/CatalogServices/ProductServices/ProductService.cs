@@ -30,16 +30,6 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
             return values; //Liste döndürülür
         }
 
-        public async Task<List<ResultProductWithDiscountDTO>> GetAllProductWithDiscountAsync()
-        {
-            var response = await _httpClient.GetAsync("services/catalog/Products/GetProductsWithDiscount");
-            if (!response.IsSuccessStatusCode) return new List<ResultProductWithDiscountDTO>();
-
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<ResultProductWithDiscountDTO>>(json)
-                   ?? new List<ResultProductWithDiscountDTO>();
-        }
-
         public async Task<UpdateProductDTO> GetByIDProductAsync(string id)
         {
             var response = await _httpClient.GetAsync("products/" + id); //HttpClient ile GET isteği gönderilir
@@ -68,6 +58,16 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
         {
             await _httpClient.PutAsJsonAsync<UpdateProductDTO>("products", updateProductDTO); //HttpClient ile PUT isteği gönderilir
 
+        }
+
+        // 🆕 İndirim uygulanmış ürünleri getir
+        public async Task<List<ResultProductWithDiscountDTO>> GetAllProductWithDiscountAsync()
+        {
+            var response = await _httpClient.GetAsync("products/GetProductsWithDiscount"); // Catalog API endpoint’i
+            var json = await response.Content.ReadAsStringAsync();
+            // Console.WriteLine("DEBUG GetProductsWithDiscount JSON: " + json);
+            return JsonConvert.DeserializeObject<List<ResultProductWithDiscountDTO>>(json)
+                   ?? new List<ResultProductWithDiscountDTO>();
         }
     }
 }

@@ -13,6 +13,7 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
         Task<List<ResultProductWithCategoryDTO>> GetProductsWithByCategoryByCategoryIDAsync(string categoryID); // Belirli bir kategori ile Ürünleri getirir
 
 
+        // 🆕 EKLENDİ: İndirimli ürün listesini getir
         Task<List<ResultProductWithDiscountDTO>> GetAllProductWithDiscountAsync();
     }
 }
