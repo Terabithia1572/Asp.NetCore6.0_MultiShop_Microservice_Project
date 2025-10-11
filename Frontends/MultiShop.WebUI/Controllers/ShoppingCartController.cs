@@ -54,5 +54,33 @@ namespace MultiShop.WebUI.Controllers
             await _basketService.RemoveBasketItem(id); // Sepetten ürünü çıkar
             return RedirectToAction("Index"); // Sepet sayfasına yönlendir
         }
+        // ⚡ Yeni AJAX versiyonu:
+        [HttpPost]
+        public async Task<IActionResult> AddBasketItemAjax(string id)
+        {
+            try
+            {
+                var values = await _productService.GetByIDProductAsync(id);
+
+                var item = new BasketItemDTO
+                {
+                    ProductID = values.ProductID,
+                    ProductName = values.ProductName,
+                    ProductPrice = values.ProductPrice,
+                    ProductQuantity = 1,
+                    ProductImageURL = values.ProductImageURL
+                };
+
+                await _basketService.AddBasketItem(item);
+
+                // Mini cart verisini çekelim (örneğin ilk 3 ürün)
+                var miniCart = await _basketService.GetBasket();
+                return PartialView("_MiniCartPartial", miniCart);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
     }
 }

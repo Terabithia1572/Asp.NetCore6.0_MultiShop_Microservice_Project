@@ -1,0 +1,29 @@
+﻿@model MultiShop.DTOLayer.BasketDTOs.BasketTotalDTO
+
+<div class="mini-cart-content p-3">
+    @if (Model?.BasketItems != null && Model.BasketItems.Any())
+    {
+        @foreach (var item in Model.BasketItems.Take(3))
+        {
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <img src="@item.ProductImageURL" alt="@item.ProductName" width="50" height="50" class="rounded" />
+                <div class="ms-2 flex-grow-1">
+                    <div class="fw-semibold">@item.ProductName</div>
+                    <small>@item.ProductPrice ₺</small>
+                </div>
+                <a href="/ShoppingCart/RemoveBasketItem/@item.ProductID" class="text-decoration-none">
+                    <i class="fa fa-times text-danger"></i>
+                </a>
+            </div>
+        }
+
+        <hr />
+        <div>
+            <a href="/ShoppingCart" class="btn btn-warning w-100">🛍 Sepete Git</a>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted mb-0">Sepetiniz boş.</p>
+    }
+</div>
