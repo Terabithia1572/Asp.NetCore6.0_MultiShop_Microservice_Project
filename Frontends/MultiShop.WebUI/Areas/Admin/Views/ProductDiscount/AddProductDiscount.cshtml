@@ -1,0 +1,66 @@
+﻿@model CreateProductDiscountDTO
+@{
+    ViewData["Title"] = "Yeni Ürün İndirimi Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Yeni Ürün İndirimi Ekle</h2>
+
+    <form method="post">
+        <!-- 🔹 Ürün seçimi (dropdown) -->
+        <div class="form-group mb-3">
+            <label>Ürün Seç</label>
+            <select class="form-control" asp-for="ProductID" required>
+                <option value="">Bir ürün seçiniz</option>
+                @foreach (var item in ViewBag.Products)
+                {
+                    <option value="@item.ProductID">@item.ProductName</option>
+                }
+            </select>
+        </div>
+
+        <!-- 🔹 İndirim oranı -->
+        <div class="form-group mb-3">
+            <label>İndirim Oranı (%)</label>
+            <input type="number" class="form-control" asp-for="DiscountRate" min="1" max="90" placeholder="İndirim oranı giriniz..." required />
+        </div>
+
+        <!-- 🔹 Başlangıç tarihi -->
+        <div class="form-group mb-3">
+            <label>Başlangıç Tarihi</label>
+            <input type="date" class="form-control" asp-for="StartDate" required />
+        </div>
+
+        <!-- 🔹 Bitiş tarihi -->
+        <div class="form-group mb-3">
+            <label>Bitiş Tarihi</label>
+            <input type="date" class="form-control" asp-for="EndDate" required />
+        </div>
+
+        <!-- 🔹 Aktiflik durumu -->
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" asp-for="IsActive" />
+            <label class="form-check-label">Aktif mi?</label>
+        </div>
+
+        <button type="submit" class="btn btn-success">Kaydet</button>
+        <a href="/Admin/ProductDiscount/Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+
+<!-- Küçük CSS dokunuşu -->
+<style>
+    .container {
+        max-width: 600px;
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    label {
+        font-weight: 600;
+        color: #333;
+    }
+</style>
