@@ -20,7 +20,9 @@
                         <span class="product-badge">@badgeText</span>
                         <img src="@item.ProductImageURL" alt="@item.ProductName">
                         <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/ShoppingCart/AddBasketItem/@item.ProductID">
+                            <a href="javascript:void(0)"
+                               class="btn btn-outline-dark btn-square btn-add-basket"
+                               data-id="@item.ProductID">
                                 <i class="fa fa-shopping-cart"></i>
                             </a>
                             <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>

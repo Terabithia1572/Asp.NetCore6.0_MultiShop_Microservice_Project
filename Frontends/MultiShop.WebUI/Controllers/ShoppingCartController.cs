@@ -75,12 +75,38 @@ namespace MultiShop.WebUI.Controllers
 
                 // Mini cart verisini çekelim (örneğin ilk 3 ürün)
                 var miniCart = await _basketService.GetBasket();
-                return PartialView("_MiniCartPartial", miniCart);
+                return PartialView("~/Views/Shared/Components/_MiniCartPartialView/_MiniCartPartialView.cshtml", miniCart);
+
             }
             catch
             {
                 return BadRequest();
             }
         }
+        // 📦 Mini Cart verisini getirmek için (sayfa açılışında)
+        [HttpGet]
+        public async Task<IActionResult> GetMiniCart()
+        {
+            var basket = await _basketService.GetBasket();
+            return PartialView("~/Views/Shared/Components/_MiniCartPartialView/_MiniCartPartialView.cshtml", basket);
+        }
+
+        // 🔢 Sepetteki toplam ürün sayısını getirmek için
+        [HttpGet]
+        public async Task<IActionResult> GetCartCount()
+        {
+            var basket = await _basketService.GetBasket();
+            var count = basket?.BasketItems?.Count ?? 0;
+            return Json(count);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoveBasketItemAjax(string id)
+        {
+            await _basketService.RemoveBasketItem(id);
+            var basket = await _basketService.GetBasket();
+            return PartialView("~/Views/Shared/Components/_MiniCartPartialView/_MiniCartPartialView.cshtml", basket);
+        }
+
+
     }
 }
