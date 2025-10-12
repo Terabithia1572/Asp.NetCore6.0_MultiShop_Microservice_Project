@@ -3,59 +3,59 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="utf-8">
-    <title>Giriş Formu - MultiShop</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giriş Yap | MultiShop</title>
 
-    <link rel="stylesheet" type="text/css" href="~/register/css/opensans-font.css">
-    <link rel="stylesheet" type="text/css" href="~/register/fonts/line-awesome/css/line-awesome.min.css">
-    <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
-    <link rel="stylesheet" href="~/register/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="~/login/css/multishop-login.css" />
 </head>
-<body class="form-v4">
-    <div class="page-content">
-        <div class="form-v4-content">
-            <div class="form-left">
-                <h2>BİLGİ</h2>
-                <p class="text-1">Hesabınıza giriş yapmak için kullanıcı adınızı veya e-posta adresinizi ve şifrenizi giriniz.</p>
-                <p class="text-2"><span>Yeni misiniz?</span> Hemen bir hesap oluşturabilirsiniz.</p>
-                <div class="form-left-last">
-                    <a href="~/Register/Index" class="account">Kayıt Ol</a>
-                </div>
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="~/multishop-login/img/logo.png" alt="MultiShop Logo" class="login-logo" />
+                <h2>MultiShop Giriş</h2>
+                <p>Hesabına giriş yap ve fırsatları kaçırma!</p>
             </div>
 
-            <!-- Login form -->
-            <form asp-controller="Login" asp-action="Index" method="post" id="loginform" class="form-detail" novalidate>
+            <form asp-controller="Login" asp-action="Index" method="post" id="loginform" class="login-form" novalidate>
                 @Html.AntiForgeryToken()
 
-                <h2>GİRİŞ FORMU</h2>
-
-                <div class="form-row">
-                    <label for="your_email">Kullanıcı Adı</label>
-                    <input type="text" asp-for="UserName" id="your_email" class="input-text" />
+                <div class="form-group">
+                    <label for="UserName">Kullanıcı Adı</label>
+                    <div class="input-icon">
+                        <i class="fa fa-user"></i>
+                        <input type="text" asp-for="UserName" id="UserName" class="form-control" placeholder="Kullanıcı adınızı girin" required />
+                    </div>
                 </div>
 
-                <div class="form-row">
-                    <label for="password">Şifre</label>
-                    <input type="password" asp-for="Password" id="password" class="input-text" />
+                <div class="form-group">
+                    <label for="Password">Şifre</label>
+                    <div class="input-icon">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" asp-for="Password" id="Password" class="form-control" placeholder="********" required />
+                        <i class="fa fa-eye toggle-password"></i>
+                    </div>
                 </div>
 
-                <div class="form-checkbox">
-                    <label class="container">
-                        <p>Beni Hatırla</p>
-                        <input type="checkbox"  />
-                        <span class="checkmark"></span>
+                <div class="form-footer">
+                    <label class="remember">
+                        <input type="checkbox" /> Beni Hatırla
                     </label>
+                    <a href="#" class="forgot">Şifremi Unuttum?</a>
                 </div>
 
-                <div class="form-row-last">
-                    <input type="submit" class="register" value="Giriş Yap" />
-                </div>
+                <button type="submit" class="btn-main">Giriş Yap</button>
 
-                <!-- Hata mesajları -->
-                <div>
+                <p class="register-text">
+                    Hesabın yok mu? <a href="/Register/Index">Kayıt Ol</a>
+                </p>
+
+                <div class="validation-errors">
                     @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                     {
                         <div class="text-danger">@err.ErrorMessage</div>
@@ -65,23 +65,14 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/additional-methods.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // jQuery validate ayarları
-        $("#loginform").validate({
-            rules: {
-                EmailOrUsername: { required: true },
-                Password: { required: true }
-            },
-            messages: {
-                EmailOrUsername: { required: "Lütfen e-posta veya kullanıcı adı giriniz" },
-                Password: { required: "Lütfen şifrenizi giriniz" }
-            },
-            errorPlacement: function (error, element) {
-                error.insertAfter(element);
-            }
+        // Şifre göster/gizle
+        $(".toggle-password").on("click", function () {
+            const input = $("#Password");
+            const type = input.attr("type") === "password" ? "text" : "password";
+            input.attr("type", type);
+            $(this).toggleClass("fa-eye fa-eye-slash");
         });
     </script>
 </body>

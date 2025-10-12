@@ -1,0 +1,152 @@
+﻿body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-page {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 30px 25px; /* 40px 35px -> daha kompakt */
+    text-align: center;
+}
+
+.login-logo {
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+.login-header h2 {
+    color: #343a40;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        font-size: 14px;
+        color: #343a40;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+.input-icon {
+    position: relative;
+}
+
+    .input-icon i.fa-user,
+    .input-icon i.fa-lock {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+
+    .input-icon .form-control {
+        width: 100%;
+        padding: 10px 38px 10px 38px; /* ikon ve sağ göz için daha dengeli boşluk */
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+        box-sizing: border-box; /* ✅ taşmayı engeller */
+    }
+
+        .input-icon .form-control:focus {
+            border-color: #ffc107;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255,193,7,0.2);
+        }
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    cursor: pointer;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+    .form-footer .remember input {
+        margin-right: 5px;
+    }
+
+    .form-footer .forgot {
+        color: #ffc107;
+        text-decoration: none;
+    }
+
+.btn-main {
+    width: 100%;
+    background: #ffc107;
+    color: #343a40;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+    .btn-main:hover {
+        background: #e0aa06;
+    }
+
+.register-text {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+    .register-text a {
+        color: #343a40;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+.validation-errors {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+@media (max-width: 576px) {
+    .login-card {
+        padding: 30px 25px;
+    }
+}
