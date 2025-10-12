@@ -1,42 +1,184 @@
 ﻿@model CreateProductDTO
 @{
-    ViewData["Title"] = "CreateProduct";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Yeni Ürün Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-semibold mb-1">
+            <i class="fa-solid fa-boxes-stacked text-warning me-2"></i>Yeni Ürün Ekle
+        </h4>
+        <div class="text-muted">Ürün detaylarını doldur, görselini ekle ve sisteme kaydet.</div>
+    </div>
+    <a href="/Admin/Product/Index" class="btn btn-light border shadow-sm">
+        <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+    </a>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Ürün Ekleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <label>Kategori Adı</label>
-                        <input type="text" class="form-control" asp-for="ProductName" />
-                        <br />
-                        <label>Ürün Fiyatı</label>
-                        <input type="text" class="form-control" asp-for="ProductPrice" />
-                        <br />
-                        <label>Ürün Görsel URL</label>
-                        <input type="text" class="form-control" asp-for="ProductImageURL" />
-                        <br />
-                        <label>Ürün Kategorisi</label>
-                        @Html.DropDownListFor(x => x.CategoryID, (List<SelectListItem>)ViewBag.CategoryList, "Kategori Seçiniz", new { @class = "form-control" })
-                        <br />
-                        <label>Ürün Açıklaması</label>
-                        <textarea class="form-control" rows="5" asp-for="ProductDescription"></textarea>
-                        <br />
-                        <button type="submit" class="btn btn-primary">Ürün Ekle</button>
-                    </form>
+<div class="create-product-container fade-in" style="max-width: 860px; margin:auto;">
+    <form asp-action="CreateProduct" method="post" enctype="multipart/form-data" id="productForm">
+        <div class="row g-4">
+            <!-- Sol taraf: Görsel yükleme -->
+            <div class="col-md-5">
+                <div id="dropZone" class="image-dropzone text-center p-4 rounded shadow-sm">
+                    <input type="file" id="imageInput" accept="image/*" hidden />
+                    <img id="previewImage" src="https://dummyimage.com/400x400/efefef/aaa&text=Ürün+Görseli"
+                         class="img-fluid rounded mb-3" style="object-fit:cover; height:260px; width:100%;">
+                    <div class="text-muted small mb-2">Dosyanı buraya sürükle veya seçmek için tıkla</div>
+                    <button type="button" id="selectImageBtn" class="btn btn-sm btn-outline-warning fw-semibold">
+                        <i class="fa-solid fa-upload me-1"></i> Görsel Seç
+                    </button>
+                    <input type="hidden" asp-for="ProductImageURL" id="ProductImageURL" />
+                </div>
+            </div>
+
+            <!-- Sağ taraf: Ürün Bilgileri -->
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm p-4 rounded-3 bg-white">
+                    <div class="mb-3">
+                        <label asp-for="ProductName" class="form-label fw-semibold">Ürün Adı</label>
+                        <input asp-for="ProductName" class="form-control form-control-sm shadow-sm" placeholder="Örn: Akıllı Saat" required />
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <label asp-for="ProductPrice" class="form-label fw-semibold">Fiyat</label>
+                        <span class="currency-symbol">₺</span>
+                        <input asp-for="ProductPrice" id="priceInput" type="number" step="0.01"
+                               class="form-control form-control-sm shadow-sm ps-4" placeholder="0.00" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryID" class="form-label fw-semibold">Kategori</label>
+                        @Html.DropDownListFor(x => x.CategoryID,
+                        (List<SelectListItem>)ViewBag.CategoryList,
+                                                "Kategori Seçiniz",
+                                                new { @class = "form-select form-select-sm shadow-sm", required = "required" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProductDescription" class="form-label fw-semibold">Açıklama</label>
+                        <textarea asp-for="ProductDescription" rows="4"
+                                  class="form-control form-control-sm shadow-sm"
+                                  placeholder="Ürünün teknik özelliklerini ve avantajlarını açıklayın..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4 py-2">
+                            <i class="fa-solid fa-plus me-1"></i> Ürünü Kaydet
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
-    </div>
-</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ⚡ Fade-in giriş animasyonu
+        document.querySelector('.fade-in').style.opacity = 0;
+        setTimeout(() => {
+            document.querySelector('.fade-in').style.transition = 'opacity .6s ease';
+            document.querySelector('.fade-in').style.opacity = 1;
+        }, 150);
 
+        // 🎨 Görsel seçme & sürükle bırak
+        const dropZone = document.getElementById("dropZone");
+        const imageInput = document.getElementById("imageInput");
+        const previewImage = document.getElementById("previewImage");
+        const ProductImageURL = document.getElementById("ProductImageURL");
+        const selectImageBtn = document.getElementById("selectImageBtn");
 
+        selectImageBtn.addEventListener("click", () => imageInput.click());
 
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("drag-over");
+        });
 
+        dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("drag-over");
+            const file = e.dataTransfer.files[0];
+            handleImage(file);
+        });
+
+        imageInput.addEventListener("change", (e) => handleImage(e.target.files[0]));
+
+        function handleImage(file) {
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    ProductImageURL.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 💰 Fiyat formatı
+        const priceInput = document.getElementById("priceInput");
+        priceInput.addEventListener("input", () => {
+            if (priceInput.value < 0) priceInput.value = 0;
+        });
+
+        // ✅ Form submit sonrası SweetAlert başarı bildirimi
+        const form = document.getElementById("productForm");
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Ürün başarıyla eklendi!',
+                icon: 'success',
+                confirmButtonColor: '#ffc107',
+                confirmButtonText: 'Tamam'
+            }).then(() => {
+                form.submit();
+            });
+        });
+    </script>
+
+    <style>
+        /* --- Görsel yükleme alanı --- */
+        .image-dropzone {
+            border: 2px dashed #ddd;
+            transition: all .3s ease;
+            background: #fafafa;
+        }
+
+            .image-dropzone.drag-over {
+                border-color: #ffc107;
+                background: #fffbe6;
+                transform: scale(1.02);
+            }
+
+        .currency-symbol {
+            position: absolute;
+            left: 10px;
+            top: 36px;
+            color: #777;
+            font-weight: 600;
+        }
+
+        .create-product-container input, .create-product-container textarea, .create-product-container select {
+            border-radius: 8px;
+        }
+
+        .btn-warning:hover {
+            background: #f4c10f;
+            transform: scale(1.02);
+        }
+
+        .card {
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            }
+    </style>
+}
