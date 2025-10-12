@@ -1,0 +1,89 @@
+﻿<div class="grid main">
+    <!-- LEFT: charts + KPIs -->
+    <div class="card-lite widget reveal p-3">
+        <div class="d-flex align-items-center justify-content-between">
+            <h6 class="fw-semibold m-0">Aylık Satış Grafiği</h6>
+            <a href="#" class="text-decoration-none small">Tümünü Gör →</a>
+        </div>
+        <canvas id="salesChart" class="mt-3"></canvas>
+
+        <div class="mini mt-3">
+            <div class="card-lite kpi">
+                <div class="muted">Günlük Gelir</div>
+                <div class="big">₺ <span class="counter" data-to="8420">0</span></div>
+                <div class="trend up small"><i class="fa fa-arrow-up"></i> %4.5</div>
+            </div>
+            <div class="card-lite kpi">
+                <div class="muted">Ziyaretçi</div>
+                <div class="big"><span class="counter" data-to="1260">0</span></div>
+                <div class="trend up small"><i class="fa fa-arrow-up"></i> %2.1</div>
+            </div>
+            <div class="card-lite kpi">
+                <div class="muted">İade Oranı</div>
+                <div class="big"><span class="counter" data-to="2.8">0</span>%</div>
+                <div class="trend down small"><i class="fa fa-arrow-down"></i> %0.3</div>
+            </div>
+        </div>
+
+        <div class="mt-3 card-lite p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="fw-semibold small">Son 7 Gün Ziyaretçi</span>
+                <span class="badge text-bg-warning">canlı</span>
+            </div>
+            <canvas id="visitChart" height="80" class="mt-2"></canvas>
+        </div>
+    </div>
+
+    <!-- RIGHT: Yeni Kullanıcılar + En Çok Satılanlar + Stok Uyarısı + Saat -->
+    <div class="side">
+        <div class="card-lite widget reveal">
+            <div class="widget-title">
+                <h6 class="fw-semibold">Yeni Kullanıcılar</h6>
+                <a href="#">Hepsi</a>
+            </div>
+            <ul class="user-list mt-2">
+                <li class="user-item">
+                    <div class="user-left"><img src="https://i.pravatar.cc/40?img=12"><span>Ahmet Kaya</span></div><span class="dot"></span>
+                </li>
+                <li class="user-item">
+                    <div class="user-left"><img src="https://i.pravatar.cc/40?img=33"><span>Elif Demir</span></div><span class="dot"></span>
+                </li>
+                <li class="user-item">
+                    <div class="user-left"><img src="https://i.pravatar.cc/40?img=22"><span>Can Yılmaz</span></div><span class="dot"></span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-lite widget reveal d2">
+            <div class="widget-title">
+                <h6 class="fw-semibold">En Çok Satılan Ürünler</h6>
+                <a href="#">Rapor</a>
+            </div>
+            <ul class="product-list mt-2">
+                <li class="prod-item"><span>Akıllı Saat</span><strong>312</strong></li>
+                <li class="prod-item"><span>Kablosuz Kulaklık</span><strong>275</strong></li>
+                <li class="prod-item"><span>Bluetooth Hoparlör</span><strong>192</strong></li>
+                <li class="prod-item"><span>Dizüstü Bilgisayar</span><strong>165</strong></li>
+            </ul>
+        </div>
+
+        <div class="card-lite widget reveal d3">
+            <div class="widget-title">
+                <h6 class="fw-semibold">Stok Uyarısı</h6>
+                <span class="badge text-bg-danger">kritik</span>
+            </div>
+            <ul class="product-list mt-2">
+                <li class="prod-item"><span>USB-C Kablo</span><span class="stock-badge">3 adet</span></li>
+                <li class="prod-item"><span>Oyun Mouse</span><span class="stock-badge">5 adet</span></li>
+            </ul>
+        </div>
+
+        <div class="card-lite widget reveal d4">
+            <div class="widget-title">
+                <h6 class="fw-semibold">Canlı Saat</h6>
+                <i class="fa-regular fa-clock text-warning"></i>
+            </div>
+            <div id="clock" class="display-6 mt-2"></div>
+        </div>
+    </div>
+</div>

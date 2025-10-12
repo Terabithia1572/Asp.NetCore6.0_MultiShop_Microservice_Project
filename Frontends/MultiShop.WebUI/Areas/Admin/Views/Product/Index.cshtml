@@ -1,54 +1,199 @@
-﻿@model List<ResultProductDTO>
+﻿@model List<ResultProductWithCategoryDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] = "Ürün Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<!-- Filtre ve Arama Alanı -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex gap-2 align-items-center">
+        <select id="categoryFilter" class="form-select form-select-sm border-0 shadow-sm" style="width:180px;">
+            <option value="">Tüm Kategoriler</option>
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var cat in ViewBag.Categories)
+                {
+                    <option value="@cat.CategoryName">@cat.CategoryName (@cat.ProductCount)</option>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Kategori Listesi</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Ürün Adı</th>
-                                <th>Ürün Fiyatı</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                               
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.ProductName</td>
-                                    <td>@item.ProductPrice</td>
-                                    <td><a href="/Admin/Product/DeleteProduct/@item.ProductID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/Product/UpdateProduct/@item.ProductID" class="btn btn-success">Güncelle</a></td>
-                                   
+                }
+            }
+        </select>
 
-                                    
-                                </tr>
-                            }
 
-                        </tbody>
-                    </table>
-                    <a href="/Admin/Product/CreateProduct/" class="btn btn-primary">Yeni Ürün Girişi</a>
+        <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm"
+               placeholder="🔍 Ürün ara..." style="width:220px;" />
+    </div>
+
+    <a href="/Admin/Product/CreateProduct/" class="btn btn-warning text-dark fw-semibold shadow-sm">
+        <i class="fa-solid fa-plus me-1"></i> Yeni Ürün Ekle
+    </a>
+</div>
+
+<h5 class="fw-semibold mb-3"><i class="fa-solid fa-box-open me-2 text-warning"></i>Ürün Listesi</h5>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-4">
+        <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+        Henüz ürün eklenmemiş.
+    </div>
+}
+else
+{
+    <div id="productGrid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px;">
+        @foreach (var item in Model)
+        {
+            <div class="card-lite reveal product-card"
+                 data-category="@item.Category.CategoryName"
+                 data-name="@item.ProductName.ToLower()">
+                <div class="p-3 d-flex flex-column h-100">
+                    <div class="position-relative mb-2">
+                        <img src="@item.ProductImageURL" alt="@item.ProductName"
+                             class="rounded w-100"
+                             style="height:180px; object-fit:cover;">
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark">
+                            ₺@item.ProductPrice.ToString("N0")
+                        </span>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <h6 class="fw-semibold mb-1">@item.ProductName</h6>
+                        <div class="text-muted small mb-2">@item.ProductDescription</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-auto">
+                        <a href="/Admin/Product/UpdateProduct/@item.ProductID"
+                           class="btn btn-sm btn-outline-success px-3">
+                            <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                        </a>
+                        <a href="/Admin/Product/DeleteProduct/@item.ProductID"
+                           class="btn btn-sm btn-outline-danger px-3"
+                           onclick="return confirm('Ürünü silmek istediğinize emin misiniz?')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-
+        }
     </div>
-</section>
+}
 
+@section Scripts {
+    <script>
+        // 🔎 Arama filtresi
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const productCards = document.querySelectorAll('.product-card');
 
+        function filterProducts() {
+            const searchValue = searchInput.value.toLowerCase();
+            const categoryValue = categoryFilter.value;
 
+            productCards.forEach(card => {
+                const matchesSearch = card.dataset.name.includes(searchValue);
+                const matchesCategory = !categoryValue || card.dataset.category === categoryValue;
+                card.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterProducts);
+        categoryFilter.addEventListener('change', filterProducts);
+
+        // 💫 Animasyon gecikmeleri
+        document.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.animationDelay = `${i * 0.05}s`;
+        });
+
+            // Scroll yapıldıkça görünür olan kartları animasyona sok
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.style.animationPlayState = 'paused';
+            observer.observe(card);
+        });
+    </script>
+}
+<style>
+    /* --- Ürün Kartı Giriş Animasyonu --- */
+    .product-card {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+        animation: fadeUp 0.55s ease forwards;
+        transition: all .35s ease;
+        will-change: transform, box-shadow;
+        border: 1px solid #eee;
+        border-radius: 14px;
+        background: #fff;
+    }
+
+        .product-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+        }
+
+    /* Fade + Scale giriş efekti */
+    @@keyframes fadeUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(25px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    }
+
+    /* Ardışık (Staggered) gecikme efekti */
+    .product-card:nth-child(1) {
+        animation-delay: .05s;
+    }
+
+    .product-card:nth-child(2) {
+        animation-delay: .1s;
+    }
+
+    .product-card:nth-child(3) {
+        animation-delay: .15s;
+    }
+
+    .product-card:nth-child(4) {
+        animation-delay: .2s;
+    }
+
+    .product-card:nth-child(5) {
+        animation-delay: .25s;
+    }
+
+    .product-card:nth-child(6) {
+        animation-delay: .3s;
+    }
+
+    .product-card:nth-child(7) {
+        animation-delay: .35s;
+    }
+
+    .product-card:nth-child(8) {
+        animation-delay: .4s;
+    }
+
+    /* Görsel hover efekti (parlama) */
+    .product-card img {
+        transition: transform .4s ease, filter .4s ease;
+    }
+
+    .product-card:hover img {
+        transform: scale(1.06);
+        filter: brightness(1.05);
+    }
+</style>

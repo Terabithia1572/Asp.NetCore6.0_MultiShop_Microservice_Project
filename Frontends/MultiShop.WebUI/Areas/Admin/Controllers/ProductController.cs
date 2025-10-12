@@ -39,7 +39,17 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //    return View(values); // Dönüştürülen liste view'e gönderilir.
             //}
             //return View(); // Eğer istek başarısızsa, boş bir view döndürülür.
-            var values = await _productService.GetAllProductAsync();
+            // 🔥 Ürünleri kategoriyle birlikte alıyoruz
+            var values = await _productService.GetProductsWithCategoryAsync();
+            var categories = await _categoryService.GetAllCategoryAsync();
+            ViewBag.Categories = categories
+    .Select(cat => new {
+        cat.CategoryName,
+        ProductCount = values.Count(p => p.Category.CategoryName == cat.CategoryName)
+    }).ToList();
+
+
+
             return View(values);
         }
         public async Task<IActionResult> ProductListWithCategory()

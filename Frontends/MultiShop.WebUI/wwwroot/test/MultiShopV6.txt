@@ -1,0 +1,354 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MultiShop Admin — Dynamic Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --yellow: #ffc107;
+            --dark: #212529;
+            --light: #f7f8fb;
+            --card: #fff;
+            --border: #e9ecef;
+            --muted: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+            background: linear-gradient(#fff,var(--light));
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 260px;
+            background: #0f1113;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            height: 100vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--yellow) #1e1e1e;
+        }
+
+            .sidebar::-webkit-scrollbar {
+                width: 7px;
+            }
+
+            .sidebar::-webkit-scrollbar-thumb {
+                background-color: var(--yellow);
+                border-radius: 8px;
+            }
+
+            .sidebar::-webkit-scrollbar-track {
+                background-color: #1e1e1e;
+            }
+
+        .brand {
+            padding: 18px 16px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .brand img {
+                height: 28px;
+                object-fit: contain;
+            }
+
+            .brand .admin-badge {
+                background: var(--yellow);
+                color: #000;
+                font-size: 11px;
+                padding: 4px 8px;
+                border-radius: 20px;
+                font-weight: 600;
+                box-shadow: 0 0 6px rgba(255,193,7,.5);
+            }
+
+        .navwrap {
+            flex: 1;
+            padding: 10px 0;
+        }
+
+        .sec-title {
+            color: #a9b0b7;
+            font-size: 11px;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+            padding: 10px 22px 4px;
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 22px;
+            color: #d7dbe0;
+            border-left: 3px solid transparent;
+            transition: .22s ease;
+            white-space: nowrap;
+            text-decoration: none !important;
+        }
+
+            .nav a i {
+                width: 18px;
+                color: var(--yellow) !important;
+            }
+
+            .nav a:hover {
+                background: rgba(255,193,7,.1);
+                color: #fff;
+            }
+
+            .nav a.active {
+                background: rgba(255,193,7,.18);
+                color: #fff;
+                border-left-color: var(--yellow);
+                text-decoration: none;
+            }
+
+        .sidebar-footer {
+            background: #0c0d0f;
+            color: #bbb;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,.08);
+            position: sticky;
+            bottom: 0;
+        }
+
+        /* HEADER */
+        .header {
+            position: fixed;
+            left: 260px;
+            right: 0;
+            top: 0;
+            height: 72px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 90;
+        }
+
+        .toggle {
+            display: none;
+            font-size: 20px;
+        }
+
+        .search {
+            background: #eef1f4;
+            border-radius: 26px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .search input {
+                border: none;
+                background: transparent;
+                outline: none;
+                width: 220px;
+            }
+
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* PROFILE */
+        .profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+            .profile img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 52px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0,0,0,.08);
+            min-width: 200px;
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: .2s;
+        }
+
+            .dropdown.show {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+
+            .dropdown a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 14px;
+                color: #222;
+            }
+
+                .dropdown a:hover {
+                    background: rgba(255,193,7,.15);
+                }
+
+        /* CONTENT */
+        .content {
+            margin-left: 260px;
+            padding: 100px 20px 40px;
+        }
+
+        /* Responsive */
+        @media(max-width:991px) {
+            .sidebar {
+                left: -260px;
+                transition: .25s
+            }
+
+                .sidebar.open {
+                    left: 0;
+                }
+
+            .header {
+                left: 0;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+
+            .toggle {
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div>
+            <div class="brand">
+                <img src="/images/multishop-logo.png" alt="MultiShop Logo"
+                     onerror="this.src='https://dummyimage.com/140x28/000/fff&text=MultiShop'">
+                <span class="admin-badge">Admin</span>
+            </div>
+
+            <div class="navwrap">
+                <div class="sec-title">Genel</div>
+                <nav class="nav">
+                    <a class="active"><i class="fa-solid fa-gauge"></i>Dashboard</a>
+                    <a><i class="fa-solid fa-box"></i>Ürünler</a>
+                    <a><i class="fa-solid fa-list"></i>Kategoriler</a>
+                    <a><i class="fa-solid fa-panorama"></i>Slider Paneli</a>
+                </nav>
+
+                <div class="sec-title">Kampanya</div>
+                <nav class="nav">
+                    <a><i class="fa-solid fa-percent"></i>İndirimler</a>
+                    <a><i class="fa-solid fa-star"></i>Öne Çıkan Özellikler</a>
+                    <a><i class="fa-solid fa-ticket"></i>İndirim Teklifleri</a>
+                    <a><i class="fa-solid fa-registered"></i>Markalar</a>
+                </nav>
+
+                <div class="sec-title">Mağaza</div>
+                <nav class="nav">
+                    <a><i class="fa-solid fa-circle-info"></i>Hakkımda</a>
+                    <a><i class="fa-solid fa-comments"></i>Yorumlar</a>
+                    <a><i class="fa-solid fa-users"></i>Kullanıcı Listesi</a>
+                    <a><i class="fa-solid fa-cart-shopping"></i>Sipariş Listesi</a>
+                    <a><i class="fa-solid fa-dolly"></i>Kargo</a>
+                    <a><i class="fa-solid fa-vault"></i>Kasa Bilgileri</a>
+                    <a><i class="fa-solid fa-chart-line"></i>İstatistikler</a>
+                    <a><i class="fa-solid fa-image"></i>Resimler</a>
+                    <a><i class="fa-solid fa-envelope"></i>Mesajlar</a>
+                </nav>
+
+                <div class="sec-title">Sistem</div>
+                <nav class="nav">
+                    <a><i class="fa-solid fa-gear"></i>Ayarlar</a>
+                    <a><i class="fa-solid fa-right-from-bracket"></i>Çıkış Yap</a>
+                </nav>
+            </div>
+        </div>
+        <footer class="sidebar-footer">© 2025 MultiShop Admin</footer>
+    </aside>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="d-flex align-items-center gap-3">
+            <i class="fa-solid fa-bars toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
+            <div class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Ara...">
+            </div>
+        </div>
+        <div class="right">
+            <i class="fa-regular fa-bell position-relative">
+                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-warning rounded-circle"></span>
+            </i>
+            <div class="profile" id="profileBtn">
+                <img src="https://i.pravatar.cc/150?img=47" alt="">
+                <span class="name">Yunus</span>
+                <div class="dropdown" id="profileMenu">
+                    <a href="#"><i class="fa fa-user"></i>Profilimi Düzenle</a>
+                    <a href="#"><i class="fa fa-box"></i>Siparişlerim</a>
+                    <a href="#"><i class="fa fa-gear"></i>Ayarlar</a>
+                    <a href="#"><i class="fa fa-right-from-bracket"></i>Çıkış Yap</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <h4 class="fw-semibold m-0 mb-3">Hoş geldin Yunus 👋</h4>
+        <p class="text-muted mb-4">Bugünün özetine hızlıca göz at.</p>
+        <canvas id="salesChart"></canvas>
+    </main>
+
+    <script>
+        const btn = document.getElementById('profileBtn');
+        const menu = document.getElementById('profileMenu');
+        btn.addEventListener('click', () => menu.classList.toggle('show'));
+        window.addEventListener('click', e => { if (!btn.contains(e.target)) menu.classList.remove('show'); });
+    </script>
+</body>
+</html>

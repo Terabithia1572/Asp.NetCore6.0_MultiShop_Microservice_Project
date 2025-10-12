@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@await Component.InvokeAsync("_AdminLayoutStatsComponentPartial") <!--Burası Bizim Area İçinde Admin Klasörü İçinde ViewComponent Klasörü içinde _AdminLayoutStatsComponentPartial olarak tuttuk-->
+<!-- Main Row -->
+@await Component.InvokeAsync("_AdminLayoutGridMainComponentPartial") <!--Burası Bizim Area İçinde Admin Klasörü İçinde ViewComponent Klasörü içinde _AdminLayoutGridMainComponentPartial olarak tuttuk-->
+

@@ -1,0 +1,656 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MultiShop Admin — Dynamic Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --yellow: #ffc107;
+            --dark: #212529;
+            --light: #f7f8fb;
+            --card: #fff;
+            --border: #e9ecef;
+            --muted: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+            background: linear-gradient(#fff,var(--light));
+            color: var(--dark);
+            overflow-x: hidden
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 260px;
+            background: #0f1113;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            z-index: 100
+        }
+
+        .brand {
+            padding: 18px 16px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .brand img {
+                height: 26px;
+                object-fit: contain;
+                filter: brightness(1.2)
+            }
+
+            .brand .beta {
+                margin-left: auto;
+                font-size: 11px;
+                background: rgba(255,193,7,.15);
+                color: #ffd24d;
+                border: 1px solid rgba(255,193,7,.35);
+                border-radius: 999px;
+                padding: 3px 8px
+            }
+
+        .navwrap {
+            flex: 1;
+            overflow: auto;
+            padding: 10px 0
+        }
+
+        .sec-title {
+            color: #a9b0b7;
+            font-size: 11px;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+            padding: 10px 22px 4px
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 22px;
+            color: #d7dbe0;
+            border-left: 3px solid transparent;
+            transition: .22s ease;
+            white-space: nowrap
+        }
+
+            .nav a i {
+                width: 18px;
+                text-align: center;
+                color: var(--yellow)
+            }
+
+            .nav a:hover {
+                background: rgba(255,193,7,.1);
+                color: #fff
+            }
+
+            .nav a.active {
+                background: rgba(255,193,7,.18);
+                color: #fff;
+                border-left-color: var(--yellow)
+            }
+
+        .sidebar footer {
+            padding: 10px 16px;
+            font-size: 12px;
+            color: #9aa0a6;
+            border-top: 1px solid rgba(255,255,255,.08)
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            left: 260px;
+            right: 0;
+            top: 0;
+            height: 72px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 90
+        }
+
+        .toggle {
+            display: none;
+            font-size: 20px
+        }
+
+        .search {
+            background: #eef1f4;
+            border-radius: 26px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .search input {
+                border: none;
+                background: transparent;
+                outline: none;
+                width: 220px
+            }
+
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer
+        }
+
+            .profile img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                object-fit: cover
+            }
+
+            .profile .name {
+                font-weight: 500
+            }
+
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 52px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0,0,0,.08);
+            min-width: 200px;
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: .2s
+        }
+
+            .dropdown.show {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto
+            }
+
+            .dropdown a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 14px;
+                color: #222
+            }
+
+                .dropdown a:hover {
+                    background: rgba(255,193,7,.15)
+                }
+
+        /* Content */
+        .content {
+            margin-left: 260px;
+            padding: 100px 20px 40px
+        }
+
+        .card-lite {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.04)
+        }
+
+        .stat {
+            padding: 18px;
+            text-align: center;
+            transition: .25s;
+            position: relative;
+            overflow: hidden
+        }
+
+            .stat:hover {
+                transform: translateY(-3px)
+            }
+
+            .stat .icon {
+                font-size: 24px;
+                color: var(--yellow);
+                margin-bottom: 6px
+            }
+
+            .stat .blur {
+                position: absolute;
+                inset: auto -30px -30px auto;
+                width: 120px;
+                height: 120px;
+                background: radial-gradient(rgba(255,193,7,.35),transparent 60%);
+                filter: blur(8px)
+            }
+
+        .grid {
+            display: grid;
+            gap: 18px
+        }
+
+            .grid.stats {
+                grid-template-columns: repeat(4,1fr)
+            }
+
+            .grid.main {
+                grid-template-columns: 2fr 1fr
+            }
+
+        .widget {
+            padding: 16px
+        }
+
+        .list-unstyled {
+            margin: 0;
+            padding: 0;
+            list-style: none
+        }
+
+        .user-item, .prod-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border)
+        }
+
+            .user-item:last-child, .prod-item:last-child {
+                border-bottom: 0
+            }
+
+        .user-left {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .user-left img {
+                width: 34px;
+                height: 34px;
+                border-radius: 50%
+            }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2ecc71
+        }
+
+        .mini {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 18px
+        }
+
+            .mini .kpi {
+                padding: 14px
+            }
+
+        .kpi .big {
+            font-size: 22px;
+            font-weight: 600
+        }
+
+        .kpi .muted {
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .kpi .trend.up {
+            color: #2ecc71
+        }
+
+        .kpi .trend.down {
+            color: #e74c3c
+        }
+
+        /* Animations on load */
+        .reveal {
+            opacity: 0;
+            transform: translateY(8px);
+            animation: reveal .45s ease forwards
+        }
+
+            .reveal.d2 {
+                animation-delay: .08s
+            }
+
+            .reveal.d3 {
+                animation-delay: .16s
+            }
+
+            .reveal.d4 {
+                animation-delay: .24s
+            }
+
+        @keyframes reveal {
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* Responsive */
+        @media(max-width:991px) {
+            .sidebar {
+                left: -260px;
+                transition: .25s
+            }
+
+                .sidebar.open {
+                    left: 0
+                }
+
+            .header {
+                left: 0
+            }
+
+            .content {
+                margin-left: 0
+            }
+
+            .toggle {
+                display: inline-block
+            }
+
+            .grid.stats {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .grid.main {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div>
+            <div class="brand">
+                <img src="/images/multishop-logo.png" alt="MultiShop Logo" onerror="this.src='https://dummyimage.com/140x28/000/fff&text=MultiShop'">
+                <span class="beta">Admin</span>
+            </div>
+
+            <div class="navwrap">
+                <div class="sec-title">Genel</div>
+                <nav class="nav">
+                    <a class="active"><i class="fa-solid fa-gauge"></i>Dashboard</a>
+                    <a><i class="fa-solid fa-box"></i>Ürünler</a>
+                    <a><i class="fa-solid fa-list"></i>Kategoriler</a>
+                    <a><i class="fa-solid fa-panorama"></i>Slider Paneli</a>
+                </nav>
+
+                <div class="sec-title">Kampanya</div>
+                <nav class="nav">
+                    <a><i class="fa-solid fa-percent"></i>İndirimler</a>
+                    <a><i class="fa-solid fa-star"></i>Öne Çıkan Özellikler</a>
+                    <a><i class="fa-solid fa-ticket"></i>İndirim Teklifleri</a>
+                    <a><i class="fa-solid fa-registered"></i>Markalar</a>
+                </nav>
+
+                <div class="sec-title">Mağaza</div>
+                <nav class="nav">
+                    <a><i class="fa-solid fa-circle-info"></i>Hakkımda</a>
+                    <a><i class="fa-solid fa-comments"></i>Yorumlar</a>
+                    <a><i class="fa-solid fa-users"></i>Kullanıcı Listesi</a>
+                    <a><i class="fa-solid fa-cart-shopping"></i>Sipariş Listesi</a>
+                    <a><i class="fa-solid fa-dolly"></i>Kargo</a>
+                    <a><i class="fa-solid fa-vault"></i>Kasa Bilgileri</a>
+                    <a><i class="fa-solid fa-chart-line"></i>İstatistikler</a>
+                    <a><i class="fa-solid fa-image"></i>Resimler</a>
+                    <a><i class="fa-solid fa-envelope"></i>Mesajlar</a>
+                </nav>
+
+                <div class="sec-title">Sistem</div>
+                <nav class="nav">
+                    <a><i class="fa-solid fa-gear"></i>Ayarlar</a>
+                    <a><i class="fa-solid fa-right-from-bracket"></i>Çıkış Yap</a>
+                </nav>
+            </div>
+        </div>
+
+        <footer>© 2025 MultiShop Admin</footer>
+    </aside>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="d-flex align-items-center gap-3">
+            <i class="fa-solid fa-bars toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
+            <div class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Ara...">
+            </div>
+        </div>
+        <div class="right">
+            <i class="fa-regular fa-bell position-relative">
+                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-warning rounded-circle"></span>
+            </i>
+            <div class="profile" id="profileBtn">
+                <img src="https://i.pravatar.cc/150?img=47" alt="">
+                <span class="name">Yunus</span>
+                <div class="dropdown" id="profileMenu">
+                    <a href="#"><i class="fa fa-user"></i>Profilimi Düzenle</a>
+                    <a href="#"><i class="fa fa-box"></i>Siparişlerim</a>
+                    <a href="#"><i class="fa fa-gear"></i>Ayarlar</a>
+                    <a href="#"><i class="fa fa-right-from-bracket"></i>Çıkış Yap</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <div class="mb-3">
+            <h4 class="fw-semibold m-0">Hoş geldin Yunus 👋</h4>
+            <div class="text-muted">Bugünün özetine hızlıca göz at.</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid stats mb-3">
+            <div class="card-lite stat reveal">
+                <div class="blur"></div>
+                <div class="icon"><i class="fa-solid fa-box"></i></div>
+                <div class="small text-muted">Ürün Sayısı</div>
+                <div class="display-6 fw-semibold"><span class="counter" data-to="124">0</span></div>
+            </div>
+            <div class="card-lite stat reveal d2">
+                <div class="blur"></div>
+                <div class="icon"><i class="fa-solid fa-users"></i></div>
+                <div class="small text-muted">Kullanıcılar</div>
+                <div class="display-6 fw-semibold"><span class="counter" data-to="78">0</span></div>
+            </div>
+            <div class="card-lite stat reveal d3">
+                <div class="blur"></div>
+                <div class="icon"><i class="fa-solid fa-truck"></i></div>
+                <div class="small text-muted">Siparişler</div>
+                <div class="display-6 fw-semibold"><span class="counter" data-to="56">0</span></div>
+            </div>
+            <div class="card-lite stat reveal d4">
+                <div class="blur"></div>
+                <div class="icon"><i class="fa-solid fa-comments"></i></div>
+                <div class="small text-muted">Yorumlar</div>
+                <div class="display-6 fw-semibold"><span class="counter" data-to="34">0</span></div>
+            </div>
+        </div>
+
+        <!-- Main row -->
+        <div class="grid main">
+            <!-- Chart big -->
+            <div class="card-lite widget reveal">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="fw-semibold m-0">Aylık Satış Grafiği</h6>
+                    <a href="#" class="text-decoration-none small">Tümünü Gör →</a>
+                </div>
+                <canvas id="salesChart" class="mt-3"></canvas>
+
+                <!-- mini kpi row -->
+                <div class="mini mt-3">
+                    <div class="card-lite kpi">
+                        <div class="muted">Günlük Gelir</div>
+                        <div class="big">₺ <span class="counter" data-to="8420">0</span></div>
+                        <div class="trend up small"><i class="fa fa-arrow-up"></i> %4.5</div>
+                    </div>
+                    <div class="card-lite kpi">
+                        <div class="muted">Ziyaretçi</div>
+                        <div class="big"><span class="counter" data-to="1260">0</span></div>
+                        <div class="trend up small"><i class="fa fa-arrow-up"></i> %2.1</div>
+                    </div>
+                    <div class="card-lite kpi">
+                        <div class="muted">İade Oranı</div>
+                        <div class="big"><span class="counter" data-to="2.8">0</span>%</div>
+                        <div class="trend down small"><i class="fa fa-arrow-down"></i> %0.3</div>
+                    </div>
+                </div>
+
+                <!-- mini line chart -->
+                <div class="mt-3 card-lite p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="fw-semibold small">Son 7 Gün Ziyaretçi</span>
+                        <span class="badge text-bg-warning">canlı</span>
+                    </div>
+                    <canvas id="visitChart" height="80" class="mt-2"></canvas>
+                </div>
+            </div>
+
+            <!-- Right column widgets -->
+            <div class="grid" style="gap:18px">
+                <div class="card-lite widget reveal">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="fw-semibold m-0">Yeni Kullanıcılar</h6>
+                        <a class="small text-decoration-none" href="#">Hepsi</a>
+                    </div>
+                    <ul class="list-unstyled mt-2">
+                        <li class="user-item">
+                            <div class="user-left"><img src="https://i.pravatar.cc/40?img=12"><span>Ahmet Kaya</span></div>
+                            <span class="dot"></span>
+                        </li>
+                        <li class="user-item">
+                            <div class="user-left"><img src="https://i.pravatar.cc/40?img=33"><span>Elif Demir</span></div>
+                            <span class="dot"></span>
+                        </li>
+                        <li class="user-item">
+                            <div class="user-left"><img src="https://i.pravatar.cc/40?img=22"><span>Can Yılmaz</span></div>
+                            <span class="dot"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-lite widget reveal d2">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="fw-semibold m-0">En Çok Satılan Ürünler</h6>
+                        <a class="small text-decoration-none" href="#">Rapor</a>
+                    </div>
+                    <ul class="list-unstyled mt-2">
+                        <li class="prod-item"><span>Akıllı Saat</span><strong>312</strong></li>
+                        <li class="prod-item"><span>Kablosuz Kulaklık</span><strong>275</strong></li>
+                        <li class="prod-item"><span>Bluetooth Hoparlör</span><strong>192</strong></li>
+                        <li class="prod-item"><span>Dizüstü Bilgisayar</span><strong>165</strong></li>
+                    </ul>
+                </div>
+
+                <div class="card-lite widget reveal d3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="fw-semibold m-0">Stok Uyarısı</h6>
+                        <span class="badge text-bg-danger">kritik</span>
+                    </div>
+                    <ul class="list-unstyled mt-2">
+                        <li class="prod-item"><span>USB-C Kablo</span><span class="text-danger fw-semibold">3 adet</span></li>
+                        <li class="prod-item"><span>Oyun Mouse</span><span class="text-danger fw-semibold">5 adet</span></li>
+                    </ul>
+                </div>
+
+                <div class="card-lite widget reveal d4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="fw-semibold m-0">Canlı Saat</h6>
+                        <i class="fa-regular fa-clock text-warning"></i>
+                    </div>
+                    <div id="clock" class="display-6 mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Profile dropdown with fade/slide
+        const btn = document.getElementById('profileBtn');
+        const menu = document.getElementById('profileMenu');
+        btn.addEventListener('click', () => menu.classList.toggle('show'));
+        window.addEventListener('click', e => { if (!btn.contains(e.target)) menu.classList.remove('show'); });
+
+        // Animated counters
+        document.querySelectorAll('.counter').forEach(el => {
+            const to = parseFloat(el.dataset.to);
+            const isFloat = String(to).includes('.');
+            let cur = 0;
+            const steps = 40, inc = to / steps;
+            const t = setInterval(() => {
+                cur += inc;
+                el.textContent = isFloat ? cur.toFixed(1) : Math.floor(cur);
+                if (cur >= to) { el.textContent = isFloat ? to.toFixed(1) : to; clearInterval(t); }
+            }, 20);
+        });
+
+        // Big sales chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
+                datasets: [{ data: [120, 160, 190, 250, 220, 310], backgroundColor: 'rgba(255,193,7,0.9)', borderRadius: 7 }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#eee' } }, x: { grid: { display: false } } } }
+        });
+
+        // Mini visits line chart
+        const vctx = document.getElementById('visitChart').getContext('2d');
+        new Chart(vctx, {
+            type: 'line',
+            data: {
+                labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
+                datasets: [{
+                    data: [180, 210, 195, 230, 260, 240, 270], tension: .35, fill: true,
+                    backgroundColor: 'rgba(255,193,7,.18)', borderColor: '#ffc107', pointRadius: 0, borderWidth: 2
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f0f0f0' } }, x: { grid: { display: false } } } }
+        });
+
+        // Live clock
+        const clock = document.getElementById('clock');
+        const tick = () => { const d = new Date(); clock.textContent = d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); };
+        tick(); setInterval(tick, 1000);
+    </script>
+</body>
+</html>

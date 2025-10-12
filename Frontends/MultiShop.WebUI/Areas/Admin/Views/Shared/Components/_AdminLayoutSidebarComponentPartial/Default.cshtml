@@ -1,39 +1,89 @@
-﻿<aside class="main-sidebar dark-bg">
-    <section class="sidebar">
-        <div class="user-panel black-bg">
-            <div class="pull-left image"> <img src="~/ovio/html/dist/img/img1.jpg" class="img-circle" alt="User Image"> </div>
-            <div class="pull-left info">
-                <p>Multishop Admin</p>
-                <a href="#"><i class="fa fa-circle"></i> Çevimiçi</a>
-            </div>
+﻿@{
+    var path = Context.Request.Path.ToString().ToLower();
+}
+
+<aside class="sidebar" id="sidebar">
+    <div>
+        <div class="brand">
+            <img src="/images/multishop-logo.png" alt="MultiShop Logo"
+                 onerror="this.src='https://dummyimage.com/140x28/000/fff&text=MultiShop'">
+            <span class="admin-badge">Admin</span>
         </div>
-        <!-- Sidebar Menu -->
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header dark-bg">Menu</li>
-            <li> <a href="/Default/Index/"> <i class="fa fa-home"></i> <span>Siteye Git</span></a> </li>
-            <li> <a href="/Admin/Category/Index/"> <i class="fa fa-th"></i> <span>Kategoriler</span></a> </li>
-            <li> <a href="/Admin/Product/Index/"> <i class="fa fa-ticket"></i> <span>Ürünler</span></a> </li>
-            <li> <a href="/Admin/FeatureSlider/Index/"> <i class="fa fa-image"></i> <span>Slider Paneli</span></a> </li>
-            <li> <a href="/Admin/SpecialOffer/Index/"> <i class="fa fa-money"></i> <span>İndirimler</span></a> </li>
-            <li> <a href="/Admin/Feature/Index/"> <i class="fa fa-star"></i> <span>Öne Çıkan Özellikler</span></a> </li>
-            <li> <a href="/Admin/OfferDiscount/Index/"> <i class="fa fa-credit-card"></i> <span>İndirim Teklifleri</span></a> </li>
-            <li> <a href="/Admin/Brand/Index/"> <i class="fa fa-envelope"></i> <span>Markalar</span></a> </li>
-            <li> <a href="/Admin/About/Index/"> <i class="fa fa-info"></i> <span>Hakkımda</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-comments"></i> <span>Yorumlar</span></a> </li>
-            <li> <a href="/Admin/User/UserList/"> <i class="fa fa-users"></i> <span>Kullanıcı Listesi</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-shopping-cart"></i> <span>Sipariş Listesi</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-money"></i> <span>Kasa Bilgileri</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-pie-chart"></i> <span>İstatistikler</span></a> </li>
-            <li> <a href="/Admin/Cargo/CargoCompanyList/"> <i class="fa fa-car"></i> <span>Kargo</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-credit-card"></i> <span>İndirimler</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-image"></i> <span>Resimler</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-inbox"></i> <span>Mesajlar</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-wrench"></i> <span>Ayarlar</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-lock"></i> <span>Çıkış Yap</span></a> </li>
-          
 
+        <div class="navwrap">
+            <div class="sec-title">Genel</div>
+            <nav class="nav">
+                <a href="/Admin/Dashboard/Index" class="@(path.Contains("/admin/dashboard") ? "active" : "")">
+                    <i class="fa-solid fa-gauge"></i> Dashboard
+                </a>
+                <a href="/Admin/Product/Index" class="@(path.Contains("/admin/product") ? "active" : "")">
+                    <i class="fa-solid fa-box"></i> Ürünler
+                </a>
+                <a href="/Admin/Category/Index" class="@(path.Contains("/admin/category") ? "active" : "")">
+                    <i class="fa-solid fa-list"></i> Kategoriler
+                </a>
+                <a href="/Admin/Slider/Index" class="@(path.Contains("/admin/slider") ? "active" : "")">
+                    <i class="fa-solid fa-panorama"></i> Slider Paneli
+                </a>
+            </nav>
 
-        </ul>
-        <!-- sidebar-menu -->
-    </section>
+            <div class="sec-title">Kampanya</div>
+            <nav class="nav">
+                <a href="/Admin/Discount/Index" class="@(path.Contains("/admin/discount") ? "active" : "")">
+                    <i class="fa-solid fa-percent"></i> İndirimler
+                </a>
+                <a href="/Admin/Feature/Index" class="@(path.Contains("/admin/feature") ? "active" : "")">
+                    <i class="fa-solid fa-star"></i> Öne Çıkan Özellikler
+                </a>
+                <a href="/Admin/Offer/Index" class="@(path.Contains("/admin/offer") ? "active" : "")">
+                    <i class="fa-solid fa-ticket"></i> İndirim Teklifleri
+                </a>
+                <a href="/Admin/Brand/Index" class="@(path.Contains("/admin/brand") ? "active" : "")">
+                    <i class="fa-solid fa-registered"></i> Markalar
+                </a>
+            </nav>
+
+            <div class="sec-title">Mağaza</div>
+            <nav class="nav">
+                <a href="/Admin/About/Index" class="@(path.Contains("/admin/about") ? "active" : "")">
+                    <i class="fa-solid fa-circle-info"></i> Hakkımda
+                </a>
+                <a href="/Admin/Comment/Index" class="@(path.Contains("/admin/comment") ? "active" : "")">
+                    <i class="fa-solid fa-comments"></i> Yorumlar
+                </a>
+                <a href="/Admin/User/Index" class="@(path.Contains("/admin/user") ? "active" : "")">
+                    <i class="fa-solid fa-users"></i> Kullanıcı Listesi
+                </a>
+                <a href="/Admin/Order/Index" class="@(path.Contains("/admin/order") ? "active" : "")">
+                    <i class="fa-solid fa-cart-shopping"></i> Sipariş Listesi
+                </a>
+                <a href="/Admin/Cargo/Index" class="@(path.Contains("/admin/cargo") ? "active" : "")">
+                    <i class="fa-solid fa-dolly"></i> Kargo
+                </a>
+                <a href="/Admin/Wallet/Index" class="@(path.Contains("/admin/wallet") ? "active" : "")">
+                    <i class="fa-solid fa-vault"></i> Kasa Bilgileri
+                </a>
+                <a href="/Admin/Statistic/Index" class="@(path.Contains("/admin/statistic") ? "active" : "")">
+                    <i class="fa-solid fa-chart-line"></i> İstatistikler
+                </a>
+                <a href="/Admin/Gallery/Index" class="@(path.Contains("/admin/gallery") ? "active" : "")">
+                    <i class="fa-solid fa-image"></i> Resimler
+                </a>
+                <a href="/Admin/Message/Index" class="@(path.Contains("/admin/message") ? "active" : "")">
+                    <i class="fa-solid fa-envelope"></i> Mesajlar
+                </a>
+            </nav>
+
+            <div class="sec-title">Sistem</div>
+            <nav class="nav">
+                <a href="/Admin/Setting/Index" class="@(path.Contains("/admin/setting") ? "active" : "")">
+                    <i class="fa-solid fa-gear"></i> Ayarlar
+                </a>
+                <a href="/Login/Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+                </a>
+            </nav>
+        </div>
+    </div>
+    <footer class="sidebar-footer">© 2025 MultiShop Admin</footer>
 </aside>
