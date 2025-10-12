@@ -3,80 +3,95 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="utf-8">
-    <title>Kayıt Formu - Colorlib Form-v4</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kayıt Ol | MultiShop</title>
 
-    <link rel="stylesheet" type="text/css" href="~/register/css/opensans-font.css">
-    <link rel="stylesheet" type="text/css" href="~/register/fonts/line-awesome/css/line-awesome.min.css">
-    <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
-    <link rel="stylesheet" href="~/register/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="~/login/css/multishop-register.css" />
 </head>
-<body class="form-v4">
-    <div class="page-content">
-        <div class="form-v4-content">
-            <div class="form-left">
-                <h2>BİLGİ</h2>
-                <p class="text-1">Bu formu doldurarak sisteme kaydolabilirsiniz. Bilgileriniz gizlilik politikamız kapsamında korunur.</p>
-                <p class="text-2"><span>Bilgilendirme:</span> Kaydınızı tamamladıktan sonra e-posta doğrulaması gerekebilir.</p>
-                <div class="form-left-last">
-                    <a href="~/Login/Index" class="account">Hesabın Var mı?</a>
-                </div>
+<body>
+    <div class="register-page">
+        <div class="register-card">
+            <div class="register-header">
+                <img src="~/multishop-login/img/multishop_logo.png" alt="MultiShop Logo" class="register-logo" />
+                <h2>MultiShop Kayıt</h2>
+                <p>Yeni hesabını oluştur ve fırsatları kaçırma!</p>
             </div>
 
-            <!-- Doğru action/controller + antiforgery -->
-            <form class="form-detail" method="post" id="myform" novalidate>
+            <form asp-controller="Register" asp-action="Index" method="post" class="register-form">
                 @Html.AntiForgeryToken()
 
-                <h2>KAYIT FORMU</h2>
-                <div class="form-group">
-                    <div class="form-row form-row-1">
-                        <label for="first_name">Ad</label>
-                        <input type="text" asp-for="Name" id="first_name" class="input-text" />
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="Name">Ad</label>
+                        <div class="input-icon">
+                            <i class="fa fa-user"></i>
+                            <input asp-for="Name" id="Name" class="form-control" placeholder="Adınızı girin" required />
+                        </div>
                     </div>
-                    <div class="form-row form-row-1">
-                        <label for="last_name">Soyad</label>
-                        <input type="text" asp-for="Surname" id="last_name" class="input-text" />
+
+                    <div class="form-group half">
+                        <label for="Surname">Soyad</label>
+                        <div class="input-icon">
+                            <i class="fa fa-user"></i>
+                            <input asp-for="Surname" id="Surname" class="form-control" placeholder="Soyadınızı girin" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">E-Posta</label>
+                    <div class="input-icon">
+                        <i class="fa fa-envelope"></i>
+                        <input asp-for="Email" id="Email" class="form-control" placeholder="E-posta adresinizi girin" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Username">Kullanıcı Adı</label>
+                    <div class="input-icon">
+                        <i class="fa fa-id-card"></i>
+                        <input asp-for="Username" id="Username" class="form-control" placeholder="Kullanıcı adınızı belirleyin" required />
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <label for="your_email">E-posta Adresiniz</label>
-                    <input type="email" asp-for="Email" id="your_email" class="input-text" />
-                </div>
-
-                <div class="form-row">
-                    <label for="your_username">Kullanıcı Adınız</label>
-                    <input type="text" asp-for="Username" id="your_username" class="input-text" />
-                </div>
-
-                <div class="form-group">
-                    <div class="form-row form-row-1">
-                        <label for="password">Şifre</label>
-                        <input type="password" asp-for="Password" id="password" class="input-text" />
+                    <div class="form-group half">
+                        <label for="Password">Şifre</label>
+                        <div class="input-icon">
+                            <i class="fa fa-lock"></i>
+                            <input type="password" asp-for="Password" id="Password" class="form-control" placeholder="********" required />
+                            <i class="fa fa-eye toggle-password"></i>
+                        </div>
                     </div>
-                    <div class="form-row form-row-1">
-                        <label for="comfirm_password">Şifreyi Doğrulayın</label>
-                        <input type="password" asp-for="ConfirmPassword" id="comfirm_password" class="input-text" />
+
+                    <div class="form-group half">
+                        <label for="ConfirmPassword">Şifre Tekrar</label>
+                        <div class="input-icon">
+                            <i class="fa fa-lock"></i>
+                            <input type="password" asp-for="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="********" required />
+                            <i class="fa fa-eye toggle-password"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-checkbox">
-                    <label class="container">
-                        <p><a href="#" class="text">Şartlar ve Koşullar</a>’ı kabul ediyorum</p>
-                        <input type="checkbox" id="terms" />
-                        <span class="checkmark"></span>
+                <div class="form-footer">
+                    <label class="remember">
+                        <input type="checkbox" required /> Şartlar & koşulları kabul ediyorum
                     </label>
                 </div>
 
-                <div class="form-row-last">
-                    <input type="submit" class="register" value="Kayıt Ol" />
-                </div>
+                <button type="submit" class="btn-main">Kayıt Ol</button>
 
-                <!-- ModelState hatalarını gösterelim -->
-                <div>
+                <p class="login-text">
+                    Zaten hesabın var mı? <a href="/Login/Index">Giriş Yap</a>
+                </p>
+
+                <div class="validation-errors">
                     @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                     {
                         <div class="text-danger">@err.ErrorMessage</div>
@@ -86,39 +101,14 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/additional-methods.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // DEMO kilidi kaldırıldı: debug:false veya tamamen sil
-        jQuery.validator.setDefaults({
-            debug: false, // <-- ÖNEMLİ: submit engellenmesin
-            success: function(label){ label.attr('id', 'valid'); }
-        });
-
-        // Kurallar "name" ile eşleşmeli: Name, Surname, Email, Username, Password, ConfirmPassword
-        $("#myform").validate({
-            rules: {
-                Name: { required: true },
-                Surname: { required: true },
-                Email: { required: true, email: true },
-                Username: { required: true },
-                Password: { required: true, minlength: 6 },
-                ConfirmPassword: { required: true, equalTo: "#password" },
-                terms: { required: false } // istersen required:true yap
-            },
-            messages: {
-                Name: { required: "Lütfen adınızı giriniz" },
-                Surname: { required: "Lütfen soyadınızı giriniz" },
-                Email: { required: "Lütfen e-posta giriniz", email: "Geçerli bir e-posta giriniz" },
-                Username: { required: "Lütfen kullanıcı adı giriniz" },
-                Password: { required: "Lütfen şifre giriniz", minlength: "En az 6 karakter olmalı" },
-                ConfirmPassword: { required: "Lütfen şifreyi tekrar giriniz", equalTo: "Şifreler eşleşmiyor" }
-            },
-            errorPlacement: function(error, element){
-                // mevcut temaya uyumlu: label.error zaten absolute konumlandırılmış
-                error.insertAfter(element);
-            }
+        // Şifre göster/gizle
+        $(".toggle-password").on("click", function () {
+            const input = $(this).siblings("input");
+            const type = input.attr("type") === "password" ? "text" : "password";
+            input.attr("type", type);
+            $(this).toggleClass("fa-eye fa-eye-slash");
         });
     </script>
 </body>
