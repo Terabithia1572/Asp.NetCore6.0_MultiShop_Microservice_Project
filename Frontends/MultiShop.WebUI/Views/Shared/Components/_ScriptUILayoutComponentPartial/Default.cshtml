@@ -116,6 +116,22 @@
             miniCart.toggleClass('active');
         });
 
+        // 🌟 Header yüksekliğini dinamik olarak hesapla ve body padding-top'u ayarla
+        function adjustBodyPadding() {
+            var headerHeight = $('.sticky-header-container').outerHeight() || 0;
+            $('body').css('padding-top', headerHeight + 'px');
+        }
+
+        // Sayfa yüklendiğinde ve pencere boyutu değiştiğinde çalıştır
+        $(window).on('load resize', function () {
+            adjustBodyPadding();
+        });
+
+        // Scroll olduğunda da aynı hizalamayı koru
+        $(window).on('scroll', function () {
+            adjustBodyPadding();
+        });
+
     });
 </script>
 
@@ -145,7 +161,6 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
 
-    /* 🧾 Sepet içi öğeler */
     .mini-cart-item {
         transition: all 0.3s ease;
     }
@@ -176,4 +191,20 @@
         font-size: 15px;
         padding: 10px;
     }
+
+    /* 🔒 Tam üst kısmı sabitle */
+    .sticky-header-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+        .sticky-header-container.active {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
 </style>

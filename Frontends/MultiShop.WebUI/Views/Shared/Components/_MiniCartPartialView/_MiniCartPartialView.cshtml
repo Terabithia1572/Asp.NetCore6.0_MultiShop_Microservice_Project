@@ -1,28 +1,85 @@
 ﻿@model MultiShop.DTOLayer.BasketDTOs.BasketTotalDTO
 
+@{
+    // --- Hesaplar ---
+    var hasItems = Model?.BasketItems != null && Model.BasketItems.Any();
+    decimal subtotal = Model?.TotalPrice ?? 0M;
+
+    decimal kdv = Math.Round(subtotal * 0.10M, 2);
+    decimal totalWithKdv = Math.Round(subtotal + kdv, 2);
+
+    // Kargo politikası: 500₺ ve üzeri ücretsiz, altı 29.90₺
+    const decimal KARGO_UCRETI_ESIK = 500M;
+    const decimal KARGO_UCRETI = 29.90M;
+    bool kargoUcretsiz = subtotal >= KARGO_UCRETI_ESIK;
+    decimal kargoTutar = kargoUcretsiz ? 0M : KARGO_UCRETI;
+
+    decimal grandTotal = Math.Round(totalWithKdv + kargoTutar, 2);
+}
+
 <div class="mini-cart-content p-3">
-    @if (Model?.BasketItems != null && Model.BasketItems.Any())
+    @if (hasItems)
     {
         @foreach (var item in Model.BasketItems)
         {
+            decimal lineTotal = Math.Round(item.ProductPrice * item.ProductQuantity, 2);
             <div class="mini-cart-item d-flex align-items-center justify-content-between mb-2">
                 <img src="@item.ProductImageURL" alt="@item.ProductName" width="50" height="50" class="rounded" />
                 <div class="ms-2 flex-grow-1">
                     <div class="fw-semibold">@item.ProductName</div>
-                    <small>@item.ProductPrice ₺</small>
+                    <small class="text-muted">
+                        <span class="text-dark fw-bold">@item.ProductQuantity ×</span> @item.ProductPrice ₺
+                        <span class="text-secondary">= @lineTotal ₺</span>
+                    </small>
                 </div>
-                <a href="javascript:void(0)"
-                   class="remove-item text-danger float-right"
-                   data-id="@item.ProductID">
+                <a href="javascript:void(0)" class="remove-item text-danger float-right" data-id="@item.ProductID">
                     <i class="fa fa-times"></i>
                 </a>
             </div>
         }
 
-
         <hr />
+
+        <!-- Ara Toplam -->
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <strong>Ara Toplam:</strong>
+            <span class="fw-bold text-dark">@subtotal ₺</span>
+        </div>
+
+        <!-- KDV -->
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-muted small">KDV (%10):</span>
+            <span class="text-muted small">@kdv ₺</span>
+        </div>
+
+        <!-- KDV Dahil -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong>KDV Dahil Tutar:</strong>
+            <span class="fw-bold text-success">@totalWithKdv ₺</span>
+        </div>
+
+        <!-- Kargo -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small @(kargoUcretsiz ? "text-success" : "text-info")">
+                @(kargoUcretsiz ? "🟣 Kargo ücretsiz!" : "🟡 Kargo:")
+            </span>
+            <span class="small @(kargoUcretsiz ? "text-success" : "text-info")">
+                @(kargoUcretsiz ? "0,00 ₺" : $"{kargoTutar:0.00} ₺")
+            </span>
+        </div>
+
+        <hr class="mt-0" />
+
+        <!-- GENEL TOPLAM -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <strong>Genel Toplam:</strong>
+            <span class="fw-bold text-dark">@grandTotal ₺</span>
+        </div>
+
         <div>
-            <a href="/ShoppingCart" class="btn btn-warning w-100">🛍 Sepete Git</a>
+            <a href="/ShoppingCart" class="btn btn-premium-cart w-100 fw-bold">
+                🛍 Sepete Git (@Model.BasketItems.Sum(x => x.ProductQuantity) ürün)
+            </a>
         </div>
     }
     else
@@ -30,3 +87,71 @@
         <p class="text-center text-muted mb-0">Sepetiniz boş.</p>
     }
 </div>
+
+<style>
+    .mini-cart-content strong {
+        font-size: 15px;
+        color: #444;
+    }
+
+    .mini-cart-content span {
+        font-size: 15px;
+    }
+
+    .mini-cart-item .fw-semibold {
+        font-size: 14px;
+        color: #222;
+    }
+
+    .mini-cart-item small {
+        font-size: 13px;
+        display: block;
+        line-height: 1.3;
+        margin-top: 2px;
+    }
+
+        /* 🎯 2× hizalamasını ve boyutunu düzeltir */
+        .mini-cart-item small span {
+            display: inline-block;
+            min-width: 25px;
+            text-align: right;
+            margin-right: 4px;
+        }
+
+        .mini-cart-item small .text-dark.fw-bold {
+            min-width: 32px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 12.5px;
+            opacity: 0.85;
+        }
+
+        .mini-cart-item small .text-secondary {
+            font-size: 12.5px;
+            margin-left: 6px;
+            color: #888 !important;
+        }
+
+    /* 🟡 Premium Sepet Butonu */
+    .btn-premium-cart {
+        background: linear-gradient(90deg, #ffc107, #f5b100);
+        border: none;
+        color: #000;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 6px;
+    }
+
+        .btn-premium-cart:hover {
+            background: linear-gradient(90deg, #e5a900, #d89c00);
+            transform: scale(1.02);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            color: #fff;
+        }
+
+        .btn-premium-cart:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+</style>

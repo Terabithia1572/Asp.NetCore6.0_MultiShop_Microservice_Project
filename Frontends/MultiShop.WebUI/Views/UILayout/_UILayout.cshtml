@@ -6,8 +6,11 @@
 <html lang="en">
     @await Component.InvokeAsync("_HeadUILayoutComponentPartial")  <!-- Burada Biz Head kodlarını _HeadUILayoutComponentPartial Tuttuk -->
 <body>
+    <div class="sticky-header-container">
     @await Component.InvokeAsync("_TopbarUILayoutComponentPartial") <!-- Burada Biz Topbar kodlarını _TopbarUILayoutComponentPartial Tuttuk -->
     @await Component.InvokeAsync("_NavbarUILayoutComponentPartial") <!-- Burada Biz Navbar kodlarını _NavbarUILayoutComponentPartial Tuttuk -->
+    </div>
+
     @await Component.InvokeAsync("_DirectoryAlertUILayoutComponentPartial") <!-- Burada Biz DirectoryAlert kodlarını _DirectoryAlertUILayoutComponentPartial Tuttuk -->
     @RenderBody()
     @await Component.InvokeAsync("_FooterUILayoutComponentPartial") <!-- Burada Biz Footer kodlarını _FooterUILayoutComponentPartial Tuttuk -->
