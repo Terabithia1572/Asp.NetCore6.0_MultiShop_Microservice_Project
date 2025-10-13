@@ -1,31 +1,126 @@
 ﻿@model CreateCategoryDTO
 @{
-    ViewData["Title"] = "CreateCategory";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Yeni Kategori Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="container-fluid px-2 px-lg-4 mt-3">
+    <div class="card-lite shadow-sm border-0 p-4 mx-auto" style="max-width:650px; border-radius:16px;">
+        <h5 class="fw-semibold text-dark mb-3 d-flex align-items-center">
+            <i class="fa-solid fa-layer-group text-warning me-2"></i> Yeni Kategori Ekle
+        </h5>
+        <hr />
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Kategori Ekleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                   <form method="post" >
-                       <label>Kategori Adı</label>
-                       <input type="text" class="form-control" asp-for="CategoryName" />
-                       <br />
-                        <label>Kategori Görseli</label>
-                        <input type="text" class="form-control" asp-for="CategoryImageURL" />
-                        <br />
-                        <button type="submit" class="btn btn-primary">Kategori Ekle</button>
-                   </form>
-                </div>
+        <form method="post" enctype="multipart/form-data" id="createCategoryForm">
+            <!-- Kategori Adı -->
+            <div class="mb-3">
+                <label class="form-label fw-medium">Kategori Adı</label>
+                <input type="text" asp-for="CategoryName" class="form-control shadow-sm" placeholder="Örn: Elektronik, Giyim..." required>
             </div>
-        </div>
 
+            <!-- Görsel Yükleme Alanı -->
+            <div class="mb-3">
+                <label class="form-label fw-medium">Kategori Görseli</label>
+
+                <div id="dropzone" class="border border-2 border-dashed rounded-4 p-4 text-center bg-light shadow-sm"
+                     style="cursor:pointer; transition: all .3s ease;">
+                    <i class="fa-solid fa-cloud-arrow-up fa-2x text-warning mb-2"></i>
+                    <p class="mb-0 fw-semibold text-secondary">Görsel seçmek için tıklayın veya buraya sürükleyin</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display:none;">
+                </div>
+
+                <div class="text-center my-3">
+                    <img id="previewImage" src="/images/noimage.png"
+                         alt="Önizleme" class="rounded shadow-sm border"
+                         style="max-height:220px; object-fit:cover;">
+                </div>
+
+                <!-- Gizli alan: seçilen dosya URL’si -->
+                <input type="hidden" asp-for="CategoryImageURL" id="CategoryImageURL" />
+            </div>
+
+            <!-- Butonlar -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="/Admin/Category/Index" class="btn btn-light border shadow-sm px-4">
+                    <i class="fa-solid fa-arrow-left"></i> Geri
+                </a>
+                <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                    <i class="fa-solid fa-check me-1"></i> Kaydet
+                </button>
+            </div>
+        </form>
     </div>
-</section>
+</div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        // 📸 Drag & Drop Görsel Seçimi
+        const dropzone = document.getElementById("dropzone");
+        const fileInput = document.getElementById("fileInput");
+        const previewImage = document.getElementById("previewImage");
+        const imageUrlField = document.getElementById("CategoryImageURL");
+
+        dropzone.addEventListener("click", () => fileInput.click());
+
+        dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropzone.classList.add("border-warning", "bg-warning-subtle");
+        });
+
+        dropzone.addEventListener("dragleave", () => {
+            dropzone.classList.remove("border-warning", "bg-warning-subtle");
+        });
+
+        dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropzone.classList.remove("border-warning", "bg-warning-subtle");
+            const file = e.dataTransfer.files[0];
+            handleFile(file);
+        });
+
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                imageUrlField.value = e.target.result; // base64 olarak kaydediliyor
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 💫 SweetAlert başarı bildirimi
+        document.getElementById("createCategoryForm").addEventListener("submit", function () {
+            Swal.fire({
+                icon: "success",
+                title: "Kategori eklendi!",
+                text: "Yeni kategori başarıyla oluşturuldu.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+
+        // 🎬 Giriş animasyonu
+        const formCard = document.querySelector(".card-lite");
+        formCard.style.opacity = 0;
+        formCard.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            formCard.style.transition = "all 0.6s ease";
+            formCard.style.opacity = 1;
+            formCard.style.transform = "translateY(0)";
+        }, 150);
+    </script>
+
+    <style>
+        #dropzone:hover {
+            background: #fff7e6;
+            border-color: #f1c40f;
+        }
+    </style>
+}

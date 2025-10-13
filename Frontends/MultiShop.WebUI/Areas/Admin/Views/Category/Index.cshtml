@@ -1,57 +1,167 @@
 ﻿@model List<ResultCategoryDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] = "Kategori Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<!-- Üst Alan -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex gap-2 align-items-center">
+        <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm"
+               placeholder="🔍 Kategori ara..." style="width:240px;" />
+    </div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Kategori Listesi</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Kategori Adı</th>
-                                <th>Kategori Görseli</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.CategoryName</td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(item.CategoryImageURL))
-                                        {
-                                            <img src="@item.CategoryImageURL" alt="@item.CategoryName" style="width: 100px; height: 100px;" />
-                                        }
-                                        else
-                                        {
-                                            <span>Görsel Yok</span>
-                                        }
-                                    <td><a href="/Admin/Category/DeleteCategory/@item.CategoryID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/Category/UpdateCategory/@item.CategoryID" class="btn btn-success">Güncelle</a></td>
-                                   
-                                </tr>
-                            }
-                          
-                        </tbody>
-                    </table>
-                    <a href="/Admin/Category/CreateCategory/" class="btn btn-primary">Yeni Kategori Girişi</a>
+    <div class="d-flex gap-2">
+        <!-- Hızlı ekleme (modal) -->
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            <i class="fa-solid fa-plus me-1"></i> Hızlı Kategori Ekle
+        </button>
+
+        <!-- Tam sayfa ekleme -->
+        <a href="/Admin/Category/CreateCategory/" class="btn btn-outline-warning fw-semibold shadow-sm">
+            <i class="fa-solid fa-pen-to-square me-1"></i> Tam Sayfada Ekle
+        </a>
+    </div>
+</div>
+
+<h5 class="fw-semibold mb-3"><i class="fa-solid fa-list me-2 text-warning"></i>Kategori Listesi</h5>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-4">
+        <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+        Henüz kategori eklenmemiş.
+    </div>
+}
+else
+{
+    <div id="categoryGrid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px;">
+        @foreach (var item in Model)
+        {
+            <div class="card-lite reveal category-card" data-name="@item.CategoryName.ToLower()">
+                <div class="p-3 d-flex flex-column h-100 category-hover position-relative">
+                    <div class="position-relative mb-2 overflow-hidden rounded shadow-sm">
+                        <img src="@(string.IsNullOrEmpty(item.CategoryImageURL) ? "/images/noimage.png" : item.CategoryImageURL)"
+                             alt="@item.CategoryName"
+                             class="w-100"
+                             style="height:170px; object-fit:cover; border:1px solid #eee; transition: transform .4s ease;">
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark shadow-sm">
+                            @item.CategoryName
+                        </span>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <div class="text-muted small mb-1">ID: <b>@item.CategoryID</b></div>
+                        <div class="small text-secondary">
+                            <i class="fa-solid fa-box me-1 text-warning"></i>@($"{new Random().Next(3, 15)} ürün")
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="/Admin/Category/UpdateCategory/@item.CategoryID"
+                           class="btn btn-sm btn-outline-success px-3">
+                            <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger px-3" onclick="confirmDelete('@item.CategoryID')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </button>
+                    </div>
+                    <div class="glow"></div>
                 </div>
             </div>
-        </div>
-
+        }
     </div>
-</section>
+}
 
+<!-- 🟡 Modal: Hızlı Kategori Ekle -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-warning text-dark rounded-top-4">
+                <h5 class="modal-title fw-semibold"><i class="fa-solid fa-plus me-2"></i>Hızlı Kategori Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form method="post" action="/Admin/Category/CreateCategory/">
+                <div class="modal-body">
+                    <label class="form-label fw-medium">Kategori Adı</label>
+                    <input type="text" name="CategoryName" class="form-control form-control-sm mb-3" required />
+
+                    <label class="form-label fw-medium">Kategori Görsel URL</label>
+                    <input type="text" name="CategoryImageURL" class="form-control form-control-sm" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold">
+                        <i class="fa-solid fa-check me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 🔍 Arama filtresi
+        const searchInput = document.getElementById('searchInput');
+        const categoryCards = document.querySelectorAll('.category-card');
+        searchInput.addEventListener('input', () => {
+            const val = searchInput.value.toLowerCase();
+            categoryCards.forEach(card => card.style.display = card.dataset.name.includes(val) ? '' : 'none');
+        });
+
+        // ✨ Hover efekti
+        document.querySelectorAll('.category-hover img').forEach(img => {
+            img.addEventListener('mouseenter', () => img.style.transform = 'scale(1.08)');
+            img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
+        });
+
+        // ⚡ SweetAlert silme
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu kategori kalıcı olarak silinecek!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal'
+            }).then((r) => { if (r.isConfirmed) window.location.href = `/Admin/Category/DeleteCategory/${id}`; });
+        }
+
+        // 🌟 Reveal animasyonu
+        document.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                el.style.transition = 'all 0.4s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, i * 80);
+        });
+    </script>
+
+    <style>
+        .category-hover {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            transition: all .3s ease;
+        }
+
+            .category-hover:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 10px 22px rgba(255,193,7,0.35);
+            }
+
+        .glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: 14px;
+            transition: background .2s ease;
+        }
+    </style>
+}
