@@ -63,7 +63,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             await _featureSliderService.CreateFeatureSliderAsync(createFeatureSliderDTO);
             return RedirectToAction("Index", "FeatureSlider", new { area = "Admin" }); // Önce Çıkan Özellik listesine yönlendirilir.
         }
-        [HttpGet("{id}")]
+        [HttpPost("{id}")]
         public async Task<IActionResult> DeleteFeatureSlider(string id)
         {
             //var client = _httpClientFactory.CreateClient(); // IHttpClientFactory kullanarak HttpClient oluşturulur.

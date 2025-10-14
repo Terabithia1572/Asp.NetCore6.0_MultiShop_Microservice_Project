@@ -1,48 +1,337 @@
 ﻿@model List<ResultFeatureSliderDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Slider Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
     int count = 0;
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<!-- 🔸 Üst Alan -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex gap-2 align-items-center">
+        <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm"
+               placeholder="🔍 Slider ara..." style="width:240px;" />
+    </div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Önce Çıkan Özellikler Listesi</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Öne Çıkan Özellik Adı</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.FeatureSliderTitle</td>
-                                    <td><a href="/Admin/FeatureSlider/DeleteFeatureSlider/@item.FeatureSliderID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/FeatureSlider/UpdateFeatureSlider/@item.FeatureSliderID" class="btn btn-success">Güncelle</a></td>
+    <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addSliderModal">
+            <i class="fa-solid fa-plus me-1"></i> Hızlı Slider Ekle
+        </button>
+        <a href="/Admin/FeatureSlider/CreateFeatureSlider/" class="btn btn-outline-warning fw-semibold shadow-sm">
+            <i class="fa-solid fa-pen-to-square me-1"></i> Tam Sayfada Ekle
+        </a>
+    </div>
+</div>
 
-                                </tr>
-                            }
+<h5 class="fw-semibold mb-3"><i class="fa-solid fa-star me-2 text-warning"></i>Slider Listesi</h5>
 
-                        </tbody>
-                    </table>
-                    <a href="/Admin/FeatureSlider/CreateFeatureSlider/" class="btn btn-primary">Yeni Slider Görsel Girişi</a>
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-4">
+        <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+        Henüz slider eklenmemiş.
+    </div>
+}
+else
+{
+    <div id="sliderGrid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px;">
+        @foreach (var item in Model)
+        {
+            count++;
+            <div class="slider-card reveal shadow-sm rounded border-0 bg-white position-relative overflow-hidden" id="slider-@item.FeatureSliderID">
+                <div class="p-3 d-flex flex-column h-100 position-relative z-1">
+                    <div class="position-relative mb-2 overflow-hidden rounded shadow-sm">
+                        <img src="@(string.IsNullOrEmpty(item.FeatureSliderImageURL) ? "/images/noimage.png" : item.FeatureSliderImageURL)"
+                             alt="@item.FeatureSliderTitle"
+                             class="w-100 slider-img" />
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark shadow-sm">
+                            @($"Slider #{count}")
+                        </span>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <div class="text-muted small mb-1">ID: <b>@item.FeatureSliderID</b></div>
+                        <div class="small text-secondary">
+                            <i class="fa-solid fa-heading me-1 text-warning"></i>@item.FeatureSliderTitle
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="/Admin/FeatureSlider/UpdateFeatureSlider/@item.FeatureSliderID"
+                           class="btn btn-sm btn-outline-warning text-dark fw-semibold px-3">
+                            <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger fw-semibold px-3"
+                                onclick="confirmDelete('@item.FeatureSliderID')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-
+        }
     </div>
-</section>
+}
 
+<!-- 🔶 Hızlı Slider Ekle Modal -->
+<div class="modal fade" id="addSliderModal" tabindex="-1" aria-labelledby="addSliderLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-image me-2"></i>Yeni Slider Ekle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
 
+            <form id="quickSliderForm" method="post" action="/Admin/FeatureSlider/CreateFeatureSlider/">
+                @Html.AntiForgeryToken()
+                <div class="modal-body bg-light py-4 px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-heading me-1 text-warning"></i> Slider Başlığı
+                        </label>
+                        <input type="text" name="FeatureSliderTitle" class="form-control form-control-sm shadow-sm"
+                               placeholder="Örn: Yaz Kampanyası..." required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-align-left me-1 text-warning"></i> Açıklama
+                        </label>
+                        <input type="text" name="FeatureSliderDescription" class="form-control form-control-sm shadow-sm"
+                               placeholder="Kısa açıklama giriniz..." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-image me-1 text-warning"></i> Slider Görseli
+                        </label>
+                        <div id="sliderDropzone" class="border border-2 border-dashed rounded-4 text-center p-4 bg-white shadow-sm"
+                             style="cursor:pointer; transition:all .3s ease;">
+                            <i class="fa-solid fa-cloud-arrow-up text-warning fa-2x mb-2"></i>
+                            <p class="fw-medium text-muted mb-0">Tıklayın veya görseli buraya sürükleyin</p>
+                            <input type="file" id="sliderFileInput" accept="image/*" style="display:none;">
+                        </div>
+                        <div class="text-center mt-3">
+                            <img id="sliderPreview" src="/images/noimage.png" alt="Önizleme"
+                                 class="rounded shadow-sm border" style="max-height:150px; object-fit:cover;">
+                        </div>
+                        <input type="hidden" id="FeatureSliderImageURLHidden" name="FeatureSliderImageURL" />
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="statusSwitch" name="FeatureSliderStatus" checked>
+                        <label class="form-check-label fw-semibold text-secondary" for="statusSwitch">
+                            <i class="fa-solid fa-toggle-on me-1 text-warning"></i> Aktif Olarak Yayınla
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-white border-0 py-3 px-4 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light border shadow-sm px-3" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> İptal
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                        <i class="fa-solid fa-check me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 🎬 Reveal animasyonu
+        const reveals = document.querySelectorAll(".reveal");
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(card => observer.observe(card));
+
+        // 🔍 Arama filtresi
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase();
+            document.querySelectorAll(".slider-card").forEach(card => {
+                const match = card.innerText.toLowerCase().includes(searchValue);
+                card.style.display = match ? "block" : "none";
+            });
+        });
+
+        // ✅ Hızlı ekleme animasyonu
+        document.getElementById("quickSliderForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, { method: "POST", body: formData })
+                .then(res => {
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Slider Eklendi!",
+                            text: "Yeni slider başarıyla eklendi.",
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
+                        setTimeout(() => window.location.reload(), 1300);
+                    } else {
+                        Swal.fire({ icon: "error", title: "Hata!", text: "Ekleme başarısız oldu." });
+                    }
+                });
+        });
+
+        // 🧾 Silme işlemi
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Emin misin?",
+                text: "Bu slider kalıcı olarak silinecek!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Admin/FeatureSlider/DeleteFeatureSlider/${id}`, { method: "POST" })
+                        .then(response => {
+                            if (response.ok) {
+                                const card = document.getElementById(`slider-${id}`);
+                                card.style.transition = "all .5s ease";
+                                card.style.opacity = "0";
+                                card.style.transform = "scale(0.9)";
+                                setTimeout(() => card.remove(), 500);
+
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Silindi!",
+                                    text: "Slider başarıyla silindi.",
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Hata!",
+                                    text: "Silme işlemi başarısız oldu."
+                                });
+                            }
+                        });
+                }
+            });
+        }
+
+        // 🖼️ Görsel sürükle-bırak
+        const drop = document.getElementById("sliderDropzone");
+        const fileInput = document.getElementById("sliderFileInput");
+        const preview = document.getElementById("sliderPreview");
+        const hiddenUrl = document.getElementById("FeatureSliderImageURLHidden");
+
+        if (drop) {
+            drop.addEventListener("click", () => fileInput.click());
+            ["dragover", "dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => e.preventDefault()));
+            drop.addEventListener("dragover", () => drop.classList.add("border-warning", "bg-warning-subtle"));
+            drop.addEventListener("dragleave", () => drop.classList.remove("border-warning", "bg-warning-subtle"));
+            drop.addEventListener("drop", e => {
+                drop.classList.remove("border-warning", "bg-warning-subtle");
+                handleFile(e.dataTransfer.files[0]);
+            });
+            fileInput.addEventListener("change", () => handleFile(fileInput.files[0]));
+
+            function handleFile(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    hiddenUrl.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+    <style>
+        .slider-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all .6s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .slider-card.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .slider-img {
+            height: 170px;
+            object-fit: cover;
+            border: 1px solid #eee;
+            transition: transform .4s ease;
+        }
+
+        .slider-card:hover .slider-img {
+            transform: scale(1.05);
+        }
+
+        /* 🌟 Sarı parıltılı hover efekti */
+        .slider-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 193, 7, 0.3), transparent 60%);
+            opacity: 0;
+            transition: opacity .4s ease;
+            pointer-events: none;
+        }
+
+        .slider-card:hover::after {
+            opacity: 1;
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+
+        @@keyframes pulseGlow {
+            from
+
+        {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+
+        to {
+            opacity: 0.6;
+            transform: scale(1.05);
+        }
+
+        }
+
+        .slider-card:hover {
+            box-shadow: 0 8px 25px rgba(255,193,7,0.3);
+            transform: translateY(-3px);
+        }
+
+        #addSliderModal .modal-content {
+            animation: fadePop .4s ease;
+        }
+        @@keyframes fadePop {
+            from
+
+        {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        }
+    </style>
+
+}

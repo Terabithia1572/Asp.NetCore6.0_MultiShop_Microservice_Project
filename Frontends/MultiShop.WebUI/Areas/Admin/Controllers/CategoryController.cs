@@ -55,7 +55,7 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             await _categoryService.CreateCategoryAsync(createCategoryDTO);
             return RedirectToAction("Index", "Category", new { area = "Admin" }); // Kategori listesine yönlendirilir.
         }
-        [HttpGet("{id}")]
+        [HttpPost("{id}")]
         public async Task<IActionResult> DeleteCategory(string id)
         {
             await _categoryService.DeleteCategoryAsync(id);

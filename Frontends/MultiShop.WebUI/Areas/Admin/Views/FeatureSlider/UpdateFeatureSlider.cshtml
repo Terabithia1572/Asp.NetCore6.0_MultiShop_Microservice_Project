@@ -1,36 +1,141 @@
 ﻿@model UpdateFeatureSliderDTO
 @{
-    ViewData["Title"] = "UpdateFeatureSlider";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-
+    ViewData["Title"] = "Slider Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
-
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Öne Çıkan Slider Görseli Güncelleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <input type="hidden" asp-for="FeatureSliderID" />
-                        <label>Görsel Başlığı Adı</label>
-                        <input type="text" class="form-control" asp-for="FeatureSliderTitle" />
-                        <br />
-                        <label>Görsel Açıklaması</label>
-                        <input type="text" class="form-control" asp-for="FeatureSliderDescription" />
-                        <br />
-                        <label>Görsel Linki</label>
-                        <input type="text" class="form-control" asp-for="FeatureSliderImageURL" />
-                        <br />
-                        <button type="submit" class="btn btn-primary">Slider Görseli Güncelle</button>
-                    </form>
-                </div>
-            </div>
+<div class="container py-4 fade-in">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-warning text-dark py-3 px-4 d-flex align-items-center justify-content-between">
+            <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-pen-to-square me-2"></i>Slider Güncelle
+            </h5>
+            <a href="/Admin/FeatureSlider/Index" class="btn btn-sm btn-outline-dark shadow-sm">
+                <i class="fa-solid fa-arrow-left"></i> Geri Dön
+            </a>
         </div>
 
+        <form id="updateForm" method="post" action="/Admin/FeatureSlider/UpdateFeatureSlider" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="FeatureSliderID" />
+
+            <div class="row g-0 bg-light">
+                <!-- Sol Alan -->
+                <div class="col-lg-7 p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-heading me-1 text-warning"></i> Slider Başlığı
+                        </label>
+                        <input asp-for="FeatureSliderTitle" class="form-control shadow-sm" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-align-left me-1 text-warning"></i> Açıklama
+                        </label>
+                        <textarea asp-for="FeatureSliderDescription" class="form-control shadow-sm" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" asp-for="FeatureSliderStatus" type="checkbox">
+                        <label class="form-check-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-toggle-on me-1 text-warning"></i> Aktif Olarak Yayınla
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sağ Alan -->
+                <div class="col-lg-5 bg-white p-4 d-flex flex-column align-items-center justify-content-center border-start">
+                    <div id="dropUpdate" class="border border-2 border-dashed rounded-4 text-center p-4 w-100 shadow-sm"
+                         style="cursor:pointer; transition:all .3s ease;">
+                        <i class="fa-solid fa-cloud-arrow-up text-warning fa-2x mb-2"></i>
+                        <p class="fw-medium text-muted mb-0">Yeni görseli tıklayın veya buraya sürükleyin</p>
+                        <input type="file" id="updateInput" accept="image/*" style="display:none;">
+                    </div>
+                    <div class="text-center mt-3 w-100">
+                        <img id="previewUpdate" src="@Model.FeatureSliderImageURL" class="rounded shadow-sm border w-100"
+                             style="max-height:250px; object-fit:cover;">
+                    </div>
+                    <input type="hidden" asp-for="FeatureSliderImageURL" id="hiddenUpdate" />
+                </div>
+            </div>
+
+            <div class="card-footer bg-white border-top d-flex justify-content-end py-3 px-4">
+                <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                    <i class="fa-solid fa-save"></i> Güncelle
+                </button>
+            </div>
+        </form>
     </div>
-</section>
+</div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const drop = document.getElementById("dropUpdate");
+        const input = document.getElementById("updateInput");
+        const preview = document.getElementById("previewUpdate");
+        const hidden = document.getElementById("hiddenUpdate");
 
+        drop.addEventListener("click", () => input.click());
+        ["dragover", "dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => e.preventDefault()));
+        drop.addEventListener("dragover", () => drop.classList.add("border-warning", "bg-warning-subtle"));
+        drop.addEventListener("dragleave", () => drop.classList.remove("border-warning", "bg-warning-subtle"));
+        drop.addEventListener("drop", e => {
+            drop.classList.remove("border-warning", "bg-warning-subtle");
+            handleFile(e.dataTransfer.files[0]);
+        });
+        input.addEventListener("change", () => handleFile(input.files[0]));
+
+        function handleFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                preview.src = e.target.result;
+                hidden.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // SweetAlert güncelleme bildirimi
+        document.getElementById("updateForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, { method: "POST", body: formData })
+                .then(res => {
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Güncellendi!",
+                            text: "Slider başarıyla güncellendi.",
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
+                        setTimeout(() => window.location.href = "/Admin/FeatureSlider/Index", 1300);
+                    } else {
+                        Swal.fire({ icon: "error", title: "Hata!", text: "Güncelleme başarısız oldu." });
+                    }
+                });
+        });
+    </script>
+
+    <style>
+        .fade-in {
+            animation: fadeIn .6s ease-in-out;
+        }
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
+}
