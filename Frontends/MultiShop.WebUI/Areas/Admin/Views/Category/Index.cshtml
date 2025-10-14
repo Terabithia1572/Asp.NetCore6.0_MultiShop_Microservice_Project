@@ -4,7 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<!-- Üst Alan -->
+<!-- 🔸 Üst Alan -->
 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
     <div class="d-flex gap-2 align-items-center">
         <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm"
@@ -12,12 +12,9 @@
     </div>
 
     <div class="d-flex gap-2">
-        <!-- Hızlı ekleme (modal) -->
         <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
             <i class="fa-solid fa-plus me-1"></i> Hızlı Kategori Ekle
         </button>
-
-        <!-- Tam sayfa ekleme -->
         <a href="/Admin/Category/CreateCategory/" class="btn btn-outline-warning fw-semibold shadow-sm">
             <i class="fa-solid fa-pen-to-square me-1"></i> Tam Sayfada Ekle
         </a>
@@ -38,13 +35,12 @@ else
     <div id="categoryGrid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px;">
         @foreach (var item in Model)
         {
-            <div class="card-lite reveal category-card" data-name="@item.CategoryName.ToLower()">
-                <div class="p-3 d-flex flex-column h-100 category-hover position-relative">
+            <div class="category-card reveal shadow-sm rounded border-0 bg-white position-relative overflow-hidden" id="cat-@item.CategoryID">
+                <div class="p-3 d-flex flex-column h-100 position-relative z-1">
                     <div class="position-relative mb-2 overflow-hidden rounded shadow-sm">
                         <img src="@(string.IsNullOrEmpty(item.CategoryImageURL) ? "/images/noimage.png" : item.CategoryImageURL)"
                              alt="@item.CategoryName"
-                             class="w-100"
-                             style="height:170px; object-fit:cover; border:1px solid #eee; transition: transform .4s ease;">
+                             class="w-100 category-img" />
                         <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark shadow-sm">
                             @item.CategoryName
                         </span>
@@ -59,39 +55,64 @@ else
 
                     <div class="d-flex justify-content-between mt-3">
                         <a href="/Admin/Category/UpdateCategory/@item.CategoryID"
-                           class="btn btn-sm btn-outline-success px-3">
+                           class="btn btn-sm btn-outline-warning text-dark fw-semibold px-3">
                             <i class="fa-solid fa-pen-to-square"></i> Güncelle
                         </a>
-                        <button class="btn btn-sm btn-outline-danger px-3" onclick="confirmDelete('@item.CategoryID')">
+                        <button class="btn btn-sm btn-outline-danger fw-semibold px-3"
+                                onclick="confirmDelete('@item.CategoryID')">
                             <i class="fa-solid fa-trash"></i> Sil
                         </button>
                     </div>
-                    <div class="glow"></div>
                 </div>
             </div>
         }
     </div>
 }
 
-<!-- 🟡 Modal: Hızlı Kategori Ekle -->
+<!-- 🔶 Modal -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header bg-warning text-dark rounded-top-4">
-                <h5 class="modal-title fw-semibold"><i class="fa-solid fa-plus me-2"></i>Hızlı Kategori Ekle</h5>
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-layer-group me-2"></i> Yeni Kategori Ekle
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
-            <form method="post" action="/Admin/Category/CreateCategory/">
-                <div class="modal-body">
-                    <label class="form-label fw-medium">Kategori Adı</label>
-                    <input type="text" name="CategoryName" class="form-control form-control-sm mb-3" required />
 
-                    <label class="form-label fw-medium">Kategori Görsel URL</label>
-                    <input type="text" name="CategoryImageURL" class="form-control form-control-sm" />
+            <form id="quickCategoryForm" method="post" action="/Admin/Category/CreateCategory/">
+                <div class="modal-body bg-light py-4 px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-tag me-1 text-warning"></i> Kategori Adı
+                        </label>
+                        <input type="text" name="CategoryName" class="form-control form-control-sm shadow-sm"
+                               placeholder="Örn: Elektronik, Oyuncak..." required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-image me-1 text-warning"></i> Kategori Görseli
+                        </label>
+                        <div id="miniDropzone" class="border border-2 border-dashed rounded-4 text-center p-4 bg-white shadow-sm"
+                             style="cursor:pointer; transition:all .3s ease;">
+                            <i class="fa-solid fa-cloud-arrow-up text-warning fa-2x mb-2"></i>
+                            <p class="fw-medium text-muted mb-0">Tıklayın veya görseli buraya sürükleyin</p>
+                            <input type="file" id="miniFileInput" accept="image/*" style="display:none;">
+                        </div>
+                        <div class="text-center mt-3">
+                            <img id="miniPreview" src="/images/noimage.png" alt="Önizleme"
+                                 class="rounded shadow-sm border" style="max-height:150px; object-fit:cover;">
+                        </div>
+                        <input type="hidden" id="CategoryImageURLHidden" name="CategoryImageURL" />
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-warning text-dark fw-semibold">
+
+                <div class="modal-footer bg-white border-0 py-3 px-4 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light border shadow-sm px-3" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> İptal
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
                         <i class="fa-solid fa-check me-1"></i> Kaydet
                     </button>
                 </div>
@@ -103,65 +124,157 @@ else
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // 🎬 Reveal animasyonu
+        const reveals = document.querySelectorAll(".reveal");
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(card => observer.observe(card));
+
         // 🔍 Arama filtresi
-        const searchInput = document.getElementById('searchInput');
-        const categoryCards = document.querySelectorAll('.category-card');
-        searchInput.addEventListener('input', () => {
-            const val = searchInput.value.toLowerCase();
-            categoryCards.forEach(card => card.style.display = card.dataset.name.includes(val) ? '' : 'none');
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase();
+            document.querySelectorAll(".category-card").forEach(card => {
+                const match = card.innerText.toLowerCase().includes(searchValue);
+                card.style.display = match ? "block" : "none";
+            });
         });
 
-        // ✨ Hover efekti
-        document.querySelectorAll('.category-hover img').forEach(img => {
-            img.addEventListener('mouseenter', () => img.style.transform = 'scale(1.08)');
-            img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
-        });
-
-        // ⚡ SweetAlert silme
+        // 🧾 Silme işlemi
         function confirmDelete(id) {
             Swal.fire({
-                title: 'Emin misiniz?',
+                title: "Emin misin?",
                 text: "Bu kategori kalıcı olarak silinecek!",
-                icon: 'warning',
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#e74c3c',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Evet, sil!',
-                cancelButtonText: 'İptal'
-            }).then((r) => { if (r.isConfirmed) window.location.href = `/Admin/Category/DeleteCategory/${id}`; });
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Admin/Category/DeleteCategory/${id}`, { method: "POST" })
+                        .then(response => {
+                            if (response.ok) {
+                                // 💨 Kartı animasyonla kaldır
+                                const card = document.getElementById(`cat-${id}`);
+                                card.style.transition = "all .5s ease";
+                                card.style.opacity = "0";
+                                card.style.transform = "scale(0.9)";
+                                setTimeout(() => card.remove(), 500);
+
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Silindi!",
+                                    text: "Kategori başarıyla silindi.",
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Hata!",
+                                    text: "Silme işlemi başarısız oldu."
+                                });
+                            }
+                        });
+                }
+            });
         }
 
-        // 🌟 Reveal animasyonu
-        document.querySelectorAll('.reveal').forEach((el, i) => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(10px)';
-            setTimeout(() => {
-                el.style.transition = 'all 0.4s ease';
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            }, i * 80);
-        });
+        // 🖼️ Görsel sürükle-bırak
+        const drop = document.getElementById("miniDropzone");
+        const fileInput = document.getElementById("miniFileInput");
+        const preview = document.getElementById("miniPreview");
+        const hiddenUrl = document.getElementById("CategoryImageURLHidden");
+
+        if (drop) {
+            drop.addEventListener("click", () => fileInput.click());
+            ["dragover", "dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => e.preventDefault()));
+            drop.addEventListener("dragover", () => drop.classList.add("border-warning", "bg-warning-subtle"));
+            drop.addEventListener("dragleave", () => drop.classList.remove("border-warning", "bg-warning-subtle"));
+            drop.addEventListener("drop", e => {
+                drop.classList.remove("border-warning", "bg-warning-subtle");
+                handleFile(e.dataTransfer.files[0]);
+            });
+            fileInput.addEventListener("change", () => handleFile(fileInput.files[0]));
+
+            function handleFile(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    hiddenUrl.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 
     <style>
-        .category-hover {
-            position: relative;
-            overflow: hidden;
-            border-radius: 14px;
+        .category-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all .6s ease;
+        }
+
+            .category-card.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .category-img {
+            height: 170px;
+            object-fit: cover;
+            border: 1px solid #eee;
+            transition: transform .4s ease;
+        }
+
+        .category-card:hover .category-img {
+            transform: scale(1.05);
+        }
+
+        .category-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: radial-gradient(circle, rgba(255,193,7,0.25) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity .4s ease;
+            pointer-events: none;
+        }
+
+        .category-card:hover::after {
+            opacity: 1;
+        }
+
+        .category-card:hover {
+            box-shadow: 0 8px 20px rgba(255,193,7,0.25);
             transition: all .3s ease;
         }
 
-            .category-hover:hover {
-                transform: translateY(-6px);
-                box-shadow: 0 10px 22px rgba(255,193,7,0.35);
-            }
+        #addCategoryModal .modal-content {
+            animation: fadePop .4s ease;
+        }
+        @@keyframes fadePop {
+            from
 
-        .glow {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            border-radius: 14px;
-            transition: background .2s ease;
+        {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         }
     </style>
 }

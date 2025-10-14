@@ -1,32 +1,151 @@
 ﻿@model UpdateCategoryDTO
 @{
-    ViewData["Title"] = "UpdateCategory";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Kategori Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-semibold mb-1">
+            <i class="fa-solid fa-pen-to-square text-warning me-2"></i>Kategori Güncelle
+        </h4>
+        <div class="text-muted">Kategori bilgilerini düzenle ve değişiklikleri kaydet.</div>
+    </div>
+    <a href="/Admin/Category/Index" class="btn btn-light border shadow-sm">
+        <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+    </a>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Kategori Güncelleme Sayfası</h4>
-              <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <input type="hidden" asp-for="CategoryID"/>
-                        <label>Kategori Adı</label>
-                        <input type="text" class="form-control" asp-for="CategoryName" />
-                        <br />
-                        <label>Kategori Görseli</label>
-                        <input type="text" class="form-control" asp-for="CategoryImageURL" />
-                        <br />
-                        <button type="submit" class="btn btn-success">Kategori Güncelle</button>
-                    </form>
+<div class="update-category-container fade-in" style="max-width: 720px; margin:auto;">
+    <form asp-action="UpdateCategory" method="post" enctype="multipart/form-data" id="updateCategoryForm">
+        <input type="hidden" asp-for="CategoryID" />
+
+        <div class="row g-4">
+            <!-- Sol taraf: Görsel -->
+            <div class="col-md-5">
+                <div id="dropZone" class="image-dropzone text-center p-4 rounded shadow-sm">
+                    <input type="file" id="imageInput" accept="image/*" hidden />
+                    <img id="previewImage" src="@(string.IsNullOrEmpty(Model.CategoryImageURL) ? "/images/noimage.png" : Model.CategoryImageURL)"
+                         class="img-fluid rounded mb-3" style="object-fit:cover; height:230px; width:100%;">
+                    <div class="text-muted small mb-2">Yeni görseli buraya sürükle veya seçmek için tıkla</div>
+                    <button type="button" id="selectImageBtn" class="btn btn-sm btn-outline-warning fw-semibold">
+                        <i class="fa-solid fa-upload me-1"></i> Görsel Değiştir
+                    </button>
+                    <input type="hidden" asp-for="CategoryImageURL" id="CategoryImageURL" />
+                </div>
+            </div>
+
+            <!-- Sağ taraf: Bilgiler -->
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm p-4 rounded-3 bg-white">
+                    <div class="mb-3">
+                        <label asp-for="CategoryName" class="form-label fw-semibold">Kategori Adı</label>
+                        <input asp-for="CategoryName" class="form-control form-control-sm shadow-sm" placeholder="Kategori adını güncelle" required />
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4 py-2">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
-    </div>
-</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ⚡ Fade-in giriş animasyonu
+        const fadeEl = document.querySelector('.fade-in');
+        fadeEl.style.opacity = 0;
+        setTimeout(() => {
+            fadeEl.style.transition = 'opacity .6s ease';
+            fadeEl.style.opacity = 1;
+        }, 150);
 
+        // 🎨 Görsel sürükle-bırak
+        const dropZone = document.getElementById("dropZone");
+        const imageInput = document.getElementById("imageInput");
+        const previewImage = document.getElementById("previewImage");
+        const CategoryImageURL = document.getElementById("CategoryImageURL");
+        const selectImageBtn = document.getElementById("selectImageBtn");
 
+        selectImageBtn.addEventListener("click", () => imageInput.click());
+
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("drag-over");
+        });
+
+        dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("drag-over");
+            const file = e.dataTransfer.files[0];
+            handleImage(file);
+        });
+
+        imageInput.addEventListener("change", (e) => handleImage(e.target.files[0]));
+
+        function handleImage(file) {
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    CategoryImageURL.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ✅ Güncelleme bildirimi
+        const form = document.getElementById("updateCategoryForm");
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Kategori başarıyla güncellendi!',
+                icon: 'success',
+                confirmButtonColor: '#ffc107',
+                confirmButtonText: 'Tamam'
+            }).then(() => {
+                form.submit();
+            });
+        });
+    </script>
+
+    <style>
+        /* Görsel alanı */
+        .image-dropzone {
+            border: 2px dashed #ddd;
+            transition: all .3s ease;
+            background: #fafafa;
+        }
+
+            .image-dropzone.drag-over {
+                border-color: #ffc107;
+                background: #fffbe6;
+                transform: scale(1.02);
+            }
+
+        /* Kart ve buton efektleri */
+        .card {
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            }
+
+        .btn-warning:hover {
+            background: #f4c10f;
+            transform: scale(1.02);
+        }
+
+        .update-category-container input {
+            border-radius: 8px;
+        }
+    </style>
+}
