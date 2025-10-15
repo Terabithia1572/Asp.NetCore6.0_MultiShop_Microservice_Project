@@ -16,7 +16,7 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductDiscountServices
         public async Task<List<ResultProductDiscountDTO>> GetAllProductDiscountAsync()
         {
             // API endpoint ismi Controller adının küçük haliyle aynı olmalı (productdiscounts)
-            var response = await _httpClient.GetAsync("productdiscounts"); // GET isteği gönderilir
+            var response = await _httpClient.GetAsync("productdiscounts/withnames"); // GET isteği gönderilir
             var jsonData = await response.Content.ReadAsStringAsync(); // JSON verisi okunur
 
             Console.WriteLine("🎯 DEBUG ProductDiscount JSON => " + jsonData);

@@ -4,13 +4,18 @@
 
 <aside class="sidebar" id="sidebar">
     <div>
-        <div class="brand">
-            <img src="~/multishop-login/img/multishop_logo1.png" alt="MultiShop Logo"
-                 onerror="this.src='https://dummyimage.com/140x28/000/fff&text=MultiShop'">
+        <!-- 🔥 Premium Logo Alanı -->
+        <div class="brand fade-in">
+            <a href="/Admin/Dashboard/Index" class="logo-link">
+                <div class="logo-wrapper">
+                    <img src="~/multishop-login/img/multishop_logo1.png" alt="MultiShop Logo" />
+                </div>
+            </a>
             <span class="admin-badge">Admin</span>
         </div>
 
         <div class="navwrap">
+            <!-- 🟨 GENEL -->
             <div class="sec-title">Genel</div>
             <nav class="nav">
                 <a href="/Admin/Dashboard/Index" class="@(path.Contains("/admin/dashboard") ? "active" : "")">
@@ -22,58 +27,63 @@
                 <a href="/Admin/Category/Index" class="@(path.Contains("/admin/category") ? "active" : "")">
                     <i class="fa-solid fa-list"></i> Kategoriler
                 </a>
-                <a href="/Admin/Slider/Index" class="@(path.Contains("/admin/slider") ? "active" : "")">
-                    <i class="fa-solid fa-panorama"></i> Slider Paneli
+                <a href="/Admin/FeatureSlider/Index" class="@(path.Contains("/admin/featureslider") ? "active" : "")">
+                    <i class="fa-solid fa-panorama"></i> Slider Yönetimi
                 </a>
             </nav>
 
+            <!-- 🟨 KAMPANYA -->
             <div class="sec-title">Kampanya</div>
             <nav class="nav">
-                <a href="/Admin/Discount/Index" class="@(path.Contains("/admin/discount") ? "active" : "")">
-                    <i class="fa-solid fa-percent"></i> İndirimler
+                <a href="/Admin/ProductDiscount/Index" class="@(path.Contains("/admin/productdiscount") ? "active" : "")">
+                    <i class="fa-solid fa-percent"></i> Ürün İndirimleri
                 </a>
-                <a href="/Admin/Feature/Index" class="@(path.Contains("/admin/feature") ? "active" : "")">
+                <a href="/Admin/Feature/Index" class="@(path.Contains("/admin/feature/") && !path.Contains("/admin/featureslider")) ? " active" : "" )">
                     <i class="fa-solid fa-star"></i> Öne Çıkan Özellikler
                 </a>
-                <a href="/Admin/Offer/Index" class="@(path.Contains("/admin/offer") ? "active" : "")">
-                    <i class="fa-solid fa-ticket"></i> İndirim Teklifleri
+                <a href="/Admin/OfferDiscount/Index" class="@(path.Contains("/admin/offerdiscount") ? "active" : "")">
+                    <i class="fa-solid fa-ticket"></i> Kampanyalar
                 </a>
                 <a href="/Admin/Brand/Index" class="@(path.Contains("/admin/brand") ? "active" : "")">
                     <i class="fa-solid fa-registered"></i> Markalar
                 </a>
             </nav>
 
+            <!-- 🟨 MAĞAZA -->
             <div class="sec-title">Mağaza</div>
             <nav class="nav">
                 <a href="/Admin/About/Index" class="@(path.Contains("/admin/about") ? "active" : "")">
-                    <i class="fa-solid fa-circle-info"></i> Hakkımda
+                    <i class="fa-solid fa-circle-info"></i> Hakkımızda
                 </a>
                 <a href="/Admin/Comment/Index" class="@(path.Contains("/admin/comment") ? "active" : "")">
                     <i class="fa-solid fa-comments"></i> Yorumlar
                 </a>
                 <a href="/Admin/User/Index" class="@(path.Contains("/admin/user") ? "active" : "")">
-                    <i class="fa-solid fa-users"></i> Kullanıcı Listesi
-                </a>
-                <a href="/Admin/Order/Index" class="@(path.Contains("/admin/order") ? "active" : "")">
-                    <i class="fa-solid fa-cart-shopping"></i> Sipariş Listesi
+                    <i class="fa-solid fa-users"></i> Kullanıcılar
                 </a>
                 <a href="/Admin/Cargo/Index" class="@(path.Contains("/admin/cargo") ? "active" : "")">
-                    <i class="fa-solid fa-dolly"></i> Kargo
-                </a>
-                <a href="/Admin/Wallet/Index" class="@(path.Contains("/admin/wallet") ? "active" : "")">
-                    <i class="fa-solid fa-vault"></i> Kasa Bilgileri
+                    <i class="fa-solid fa-dolly"></i> Kargo İşlemleri
                 </a>
                 <a href="/Admin/Statistic/Index" class="@(path.Contains("/admin/statistic") ? "active" : "")">
                     <i class="fa-solid fa-chart-line"></i> İstatistikler
                 </a>
-                <a href="/Admin/Gallery/Index" class="@(path.Contains("/admin/gallery") ? "active" : "")">
-                    <i class="fa-solid fa-image"></i> Resimler
-                </a>
-                <a href="/Admin/Message/Index" class="@(path.Contains("/admin/message") ? "active" : "")">
-                    <i class="fa-solid fa-envelope"></i> Mesajlar
+                <a href="/Admin/SpecialOffer/Index" class="@(path.Contains("/admin/specialoffer") ? "active" : "")">
+                    <i class="fa-solid fa-gift"></i> Özel Teklifler
                 </a>
             </nav>
 
+            <!-- 🟨 MESAJ & GALERİ -->
+            <div class="sec-title">İletişim & Medya</div>
+            <nav class="nav">
+                <a href="/Admin/Message/Index" class="@(path.Contains("/admin/message") ? "active" : "")">
+                    <i class="fa-solid fa-envelope"></i> Mesajlar
+                </a>
+                <a href="/Admin/Gallery/Index" class="@(path.Contains("/admin/gallery") ? "active" : "")">
+                    <i class="fa-solid fa-image"></i> Galeri
+                </a>
+            </nav>
+
+            <!-- 🟨 SİSTEM -->
             <div class="sec-title">Sistem</div>
             <nav class="nav">
                 <a href="/Admin/Setting/Index" class="@(path.Contains("/admin/setting") ? "active" : "")">
@@ -85,5 +95,181 @@
             </nav>
         </div>
     </div>
+
     <footer class="sidebar-footer">© 2025 MultiShop Admin</footer>
 </aside>
+
+@section Scripts {
+    <style>
+        /* 🌟 Sidebar Ana Yapı */
+        .sidebar {
+            background: #111;
+            color: #ddd;
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 🔥 Premium Logo Kutusu */
+        .logo-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 185px;
+            height: 85px;
+            border-radius: 14px;
+            padding: 6px;
+            background: radial-gradient(circle at top left, #1f1f1f 0%, #111 100%);
+            border: 1px solid rgba(255, 193, 7, 0.35);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.25);
+            transition: all 0.4s ease-in-out;
+            animation: pulseGlow 5s infinite ease-in-out;
+        }
+
+            .logo-wrapper img {
+                width: 150px;
+                height: auto;
+                object-fit: contain;
+                filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.3));
+                transition: all 0.4s ease-in-out;
+            }
+
+            .logo-wrapper:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0 25px rgba(255,193,7,0.5);
+                border-color: rgba(255,193,7,0.7);
+                background: linear-gradient(145deg, #1a1a1a, #222);
+            }
+
+                .logo-wrapper:hover img {
+                    transform: scale(1.03);
+                    filter: drop-shadow(0 0 14px rgba(255,193,7,0.7));
+                }
+
+            /* 👑 E-Ticaret yazısı */
+            .logo-wrapper::after {
+                content: "E-Ticaret Platformu";
+                position: absolute;
+                bottom: -18px;
+                font-size: 0.7rem;
+                color: rgba(255,255,255,0.55);
+                letter-spacing: 0.5px;
+                text-shadow: 0 0 6px rgba(255,193,7,0.3);
+            }
+
+        /* 💫 Nabız parıltısı efekti */
+        @@keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255,193,7,0.25);
+            }
+
+            50% {
+                box-shadow: 0 0 28px rgba(255,193,7,0.55);
+            }
+        }
+
+        /* 🌀 Fade-in animasyonları */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease;
+        }
+
+        /* 👑 Admin etiketi */
+        .admin-badge {
+            font-size: 0.9rem;
+            background: #ffc107;
+            color: #111;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(255,193,7,0.3);
+        }
+
+        /* 💫 Menü Stili */
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 1rem;
+            color: #bbb;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+            .nav a::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 3px;
+                height: 0%;
+                background: #ffc107;
+                transition: height 0.3s ease;
+            }
+
+            .nav a:hover::before {
+                height: 100%;
+            }
+
+            .nav a:hover {
+                color: #fff;
+                background: rgba(255,193,7,0.05);
+            }
+
+            .nav a.active {
+                color: #fff;
+                font-weight: 600;
+                border-left: 3px solid #ffc107;
+                background: rgba(255,193,7,0.08);
+                box-shadow: inset 4px 0 10px rgba(255,193,7,0.2);
+            }
+
+        .sec-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 15px 0 5px 15px;
+            color: #999;
+        }
+
+        .sidebar-footer {
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 0.75rem;
+            color: #888;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 📱 Responsive */
+        @@media (max-width: 768px) {
+            .logo-wrapper {
+                width: 150px;
+                height: 70px;
+            }
+
+                .logo-wrapper img {
+                    width: 120px;
+                }
+        }
+    </style>
+}

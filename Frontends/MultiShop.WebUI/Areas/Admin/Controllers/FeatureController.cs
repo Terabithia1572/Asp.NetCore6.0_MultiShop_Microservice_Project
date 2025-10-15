@@ -61,7 +61,23 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //}
             //return View(); // Başarısız ise aynı view döndürülür.
             await _featureService.CreateFeatureAsync(createFeatureDTO);
+            var all = await _featureService.GetAllFeatureAsync();
+            var newFeature = all.OrderByDescending(x => x.FeatureID).FirstOrDefault();
+            TempData["NewFeatureID"] = newFeature?.FeatureID;
+            TempData["SuccessMessage"] = "Özellik başarıyla eklendi!";
             return RedirectToAction("Index", "Feature", new { area = "Admin" });
+        }
+        // ⚡ 2. Hızlı Özellik Ekle (AJAX üzerinden çalışır)
+        [HttpPost]
+        [Route("/Admin/Feature/CreateFeatureAjax")]
+        public async Task<IActionResult> CreateFeatureAjax([FromForm] CreateFeatureDTO dto)
+        {
+            await _featureService.CreateFeatureAsync(dto);
+            var all = await _featureService.GetAllFeatureAsync();
+            var newFeature = all.OrderByDescending(x => x.FeatureID).FirstOrDefault();
+
+            // 🟡 LocalStorage için ID dönüyoruz
+            return Json(new { featureID = newFeature?.FeatureID });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteFeature(string id)

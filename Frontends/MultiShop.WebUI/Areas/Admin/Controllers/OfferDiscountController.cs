@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CatalogDTOs.OfferDiscountDTOs;
 using MultiShop.WebUI.Services.CatalogServices.OfferDiscountServices;
@@ -67,8 +68,22 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //    return RedirectToAction("Index", "OfferDiscount", new { area = "Admin" }); // İndirim Teklif listesine yönlendirilir.
             //}
             //return View(); // Başarısız ise aynı view döndürülür.
-            await _offerDiscountService.CreateOfferDiscountAsync(createOfferDiscountDTO); // İndirim Teklif oluşturma işlemi yapılır.
-            return RedirectToAction("Index", "OfferDiscount", new { area = "Admin" }); // İndirim Teklif listesine yönlendirilir.   
+            await _offerDiscountService.CreateOfferDiscountAsync(createOfferDiscountDTO);
+            var all = await _offerDiscountService.GetAllOfferDiscountAsync();
+            var newItem = all.OrderByDescending(x => x.OfferDiscountID).FirstOrDefault();
+            TempData["NewOfferID"] = newItem?.OfferDiscountID;
+            TempData["SuccessMessage"] = "Teklif başarıyla eklendi!";
+            return RedirectToAction("Index", "OfferDiscount", new { area = "Admin" });
+        }
+        // Hızlı Ekle (AJAX)
+        [HttpPost]
+        [Route("/Admin/OfferDiscount/CreateOfferDiscountAjax")]
+        public async Task<IActionResult> CreateOfferDiscountAjax([FromForm] CreateOfferDiscountDTO dto)
+        {
+            await _offerDiscountService.CreateOfferDiscountAsync(dto);
+            var all = await _offerDiscountService.GetAllOfferDiscountAsync();
+            var newItem = all.OrderByDescending(x => x.OfferDiscountID).FirstOrDefault();
+            return Json(new { offerDiscountID = newItem?.OfferDiscountID });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteOfferDiscount(string id)

@@ -18,13 +18,30 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             _productService = productService;
         }
 
+        // 🔸 Listeleme
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var values = await _productDiscountService.GetAllProductDiscountAsync();
-            return View(values);
+            var discounts = await _productDiscountService.GetAllProductDiscountAsync();
+            var products = await _productService.GetAllProductAsync();
+
+            ViewBag.Products = products.Select(p => new
+            {
+                p.ProductID,
+                p.ProductName
+            }).ToList();
+
+            // Aktiflik durumlarını doğru hesaplayalım
+            var now = DateTime.Now;
+            foreach (var item in discounts)
+            {
+                item.IsActive = item.IsActive && item.StartDate <= now && item.EndDate >= now;
+            }
+
+            return View(discounts);
         }
 
+        // 🔸 Ekleme (GET)
         [HttpGet]
         public async Task<IActionResult> AddProductDiscount()
         {
@@ -38,27 +55,54 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             return View();
         }
 
+        // 🔸 Ekleme (POST)
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProductDiscount(CreateProductDiscountDTO dto)
         {
+            var allDiscounts = await _productDiscountService.GetAllProductDiscountAsync();
+
+            // 🎯 Aynı ürün için zaten aktif veya geçerli bir indirim varsa engelle
+            bool alreadyExists = allDiscounts.Any(x =>
+                x.ProductID == dto.ProductID &&
+                x.EndDate >= DateTime.Now);
+
+            if (alreadyExists)
+            {
+                TempData["DuplicateError"] = "Bu ürün için zaten bir indirim tanımlanmış. Lütfen önce mevcut indirimi silin.";
+                return RedirectToAction("Index");
+            }
+
+            // 🎯 Tarih kontrolü: tarih aralığı doğru mu
+            if (dto.StartDate > dto.EndDate)
+            {
+                TempData["DateError"] = "Bitiş tarihi, başlangıç tarihinden önce olamaz!";
+                return RedirectToAction("Index");
+            }
+
+            // 🎯 Aktiflik durumunu otomatik belirle
+            var now = DateTime.Now;
+            dto.IsActive = dto.StartDate <= now && dto.EndDate >= now;
+
             await _productDiscountService.CreateProductDiscountAsync(dto);
-            return RedirectToAction("Index", "ProductDiscount", new { area = "Admin" });
+            TempData["SuccessMessage"] = "İndirim başarıyla eklendi!";
+            return RedirectToAction("Index");
         }
 
-        [HttpGet("{id}")]
+        // 🔸 Silme
+        [HttpPost("{id}")]
         public async Task<IActionResult> DeleteProductDiscount(string id)
         {
             await _productDiscountService.DeleteProductDiscountAsync(id);
-            return RedirectToAction("Index", "ProductDiscount", new { area = "Admin" });
+            TempData["SuccessMessage"] = "İndirim silindi.";
+            return RedirectToAction("Index");
         }
 
+        // 🔸 Güncelleme (GET)
         [HttpGet("{id}")]
         public async Task<IActionResult> UpdateProductDiscount(string id)
         {
-            // 🔹 Servisten veri çek
             var value = await _productDiscountService.GetByIdProductDiscountAsync(id);
-
-            // 🔹 Update DTO’ya dönüştür
             var dto = new UpdateProductDiscountDTO
             {
                 ProductDiscountID = value.ProductDiscountID,
@@ -69,7 +113,6 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
                 IsActive = value.IsActive
             };
 
-            // 🔹 Ürün dropdown’ı
             var products = await _productService.GetAllProductAsync();
             ViewBag.Products = products.Select(p => new
             {
@@ -80,11 +123,18 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             return View(dto);
         }
 
+        // 🔸 Güncelleme (POST)
         [HttpPost("{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProductDiscount(UpdateProductDiscountDTO dto)
         {
+            // 🎯 Aktiflik güncelle
+            var now = DateTime.Now;
+            dto.IsActive = dto.StartDate <= now && dto.EndDate >= now;
+
             await _productDiscountService.UpdateProductDiscountAsync(dto);
-            return RedirectToAction("Index", "ProductDiscount", new { area = "Admin" });
+            TempData["SuccessMessage"] = "İndirim güncellendi!";
+            return RedirectToAction("Index");
         }
     }
 }

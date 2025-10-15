@@ -14,5 +14,8 @@ namespace MultiShop.DTOLayer.CatalogDTOs.ProductDiscountDTOs
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
+        public string? ProductName { get; set; } // 🆕 Ürün adı (UI'de göstermek için)
+        public string? ProductImageURL { get; set; } // 🆕 Ürün adı (UI'de göstermek için)
+
     }
 }
