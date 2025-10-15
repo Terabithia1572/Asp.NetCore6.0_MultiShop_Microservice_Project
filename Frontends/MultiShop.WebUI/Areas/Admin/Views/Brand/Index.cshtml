@@ -1,48 +1,286 @@
 ﻿@model List<ResultBrandDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Markalar";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<!-- Üst Alan -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex align-items-center gap-2">
+        <h4 class="fw-semibold text-dark mb-0">
+            <i class="fa-solid fa-copyright text-warning me-2"></i>Markalar
+        </h4>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+            <i class="fa-solid fa-bolt me-1"></i> Hızlı Marka Ekle
+        </button>
+        <a href="/Admin/Brand/CreateBrand" class="btn btn-outline-warning fw-semibold shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Tam Sayfada Ekle
+        </a>
+    </div>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Marka Listesi</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Marka Adı</th>
-                                <th>Marka Görseli</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>@item.BrandName</td>
-                                    <td>@item.BrandImageURL</td>
-                                    <td><a href="/Admin/Brand/DeleteBrand/@item.BrandID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/Brand/UpdateBrand/@item.BrandID" class="btn btn-success">Güncelle</a></td>
-
-                                </tr>
-                            }
-
-                        </tbody>
-                    </table>
-                    <a href="/Admin/Brand/CreateBrand/" class="btn btn-primary">Yeni Marka Girişi</a>
+<!-- Listeleme -->
+<div id="brandGrid" class="brand-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-light border text-center py-4">
+            <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+            Henüz marka eklenmemiş.
+        </div>
+    }
+    else
+    {
+        foreach (var b in Model)
+        {
+            <div class="brand-card" id="brand-@b.BrandID">
+                <div class="brand-image text-center p-3">
+                    <img src="@b.BrandImageURL" class="img-fluid rounded shadow-sm" style="height:100px;object-fit:contain;" alt="@b.BrandName" />
+                </div>
+                <div class="p-3 text-center">
+                    <h6 class="fw-bold text-dark">@b.BrandName</h6>
+                    <div class="mt-3 d-flex justify-content-center gap-2">
+                        <a href="/Admin/Brand/UpdateBrand/@b.BrandID" class="btn btn-sm btn-outline-warning fw-semibold px-3">
+                            <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger fw-semibold px-3" onclick="confirmDelete('@b.BrandID')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </button>
+                    </div>
                 </div>
             </div>
+        }
+    }
+</div>
+
+<!-- 🟨 Hızlı Marka Ekle Modal -->
+<div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-bolt me-2"></i>Yeni Marka Ekle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+
+            <form id="quickBrandForm" class="bg-light py-3 px-4">
+                <div class="row g-3">
+                    <!-- Görsel -->
+                    <div class="col-md-5">
+                        <div id="dropZoneQuick" class="image-dropzone text-center p-3 rounded shadow-sm">
+                            <input type="file" id="imageInputQuick" accept="image/*" hidden />
+                            <img id="previewImageQuick" src="https://dummyimage.com/400x200/efefef/aaa&text=Marka+Görseli"
+                                 class="img-fluid rounded mb-2" style="object-fit:contain; height:160px; width:100%;">
+                            <div class="text-muted small mb-2">Dosyanı buraya sürükle veya seçmek için tıkla</div>
+                            <button type="button" id="selectImageBtnQuick" class="btn btn-sm btn-outline-warning fw-semibold">
+                                <i class="fa-solid fa-upload me-1"></i> Görsel Seç
+                            </button>
+                            <input type="hidden" id="BrandImageURLQuick" />
+                        </div>
+                    </div>
+
+                    <!-- Bilgi -->
+                    <div class="col-md-7">
+                        <div class="card border-0 shadow-sm p-3 rounded-3 bg-white">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Marka Adı</label>
+                                <input type="text" id="BrandNameQuick" class="form-control form-control-sm shadow-sm" placeholder="Marka adı giriniz..." required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light border shadow-sm px-3" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> İptal
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                        <i class="fa-solid fa-check me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
         </div>
-
     </div>
-</section>
+</div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Drag & Drop - Base64
+        const drop = document.getElementById("dropZoneQuick");
+        const input = document.getElementById("imageInputQuick");
+        const preview = document.getElementById("previewImageQuick");
+        const hiddenUrl = document.getElementById("BrandImageURLQuick");
+        document.getElementById("selectImageBtnQuick").addEventListener("click", () => input.click());
+        drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("drag-over"); });
+        drop.addEventListener("dragleave", () => drop.classList.remove("drag-over"));
+        drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("drag-over"); handleImg(e.dataTransfer.files[0]); });
+        input.addEventListener("change", e => handleImg(e.target.files[0]));
+        function handleImg(file) {
+            if (file && file.type.startsWith("image/")) {
+                const r = new FileReader();
+                r.onload = e => { preview.src = e.target.result; hiddenUrl.value = e.target.result; };
+                r.readAsDataURL(file);
+            }
+        }
 
+        // Silme
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Emin misin?",
+                text: "Bu marka kalıcı olarak silinecek!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "İptal"
+            }).then(res => {
+                if (res.isConfirmed) {
+                    fetch(`/Admin/Brand/DeleteBrand/${id}`, { method: "GET" })
+                        .then(r => { if (r.ok) { document.getElementById(`brand-${id}`)?.remove(); Swal.fire({ icon: "success", title: "Silindi!", timer: 1200, showConfirmButton: false }); } });
+                }
+            });
+        }
 
+        // Hızlı Ekle (AJAX)
+        document.getElementById("quickBrandForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const name = document.getElementById("BrandNameQuick").value.trim();
+            const img = document.getElementById("BrandImageURLQuick").value.trim();
+            if (!name || !img) {
+                Swal.fire({ icon: "warning", title: "Eksik Bilgi", text: "Lütfen marka adı ve görsel seçiniz." });
+                return;
+            }
 
+            const fd = new FormData();
+            fd.append("BrandName", name);
+            fd.append("BrandImageURL", img);
+
+            fetch("/Admin/Brand/CreateBrandAjax", { method: "POST", body: fd })
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.brandID) {
+                        const grid = document.getElementById("brandGrid");
+                        const card = document.createElement("div");
+                        card.className = "brand-card highlight-new";
+                        card.id = `brand-${res.brandID}`;
+                        card.innerHTML = `
+                            <div class="brand-image text-center p-3">
+                                <img src="${img}" class="img-fluid rounded shadow-sm" style="height:100px;object-fit:contain;" alt="${name}" />
+                            </div>
+                            <div class="p-3 text-center">
+                                <h6 class="fw-bold text-dark">${name}</h6>
+                                <div class="new-badge">✨ Yeni Eklendi</div>
+                                <div class="mt-3 d-flex justify-content-center gap-2">
+                                    <a href="/Admin/Brand/UpdateBrand/${res.brandID}" class="btn btn-sm btn-outline-warning fw-semibold px-3">
+                                        <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger fw-semibold px-3" onclick="confirmDelete('${res.brandID}')">
+                                        <i class="fa-solid fa-trash"></i> Sil
+                                    </button>
+                                </div>
+                            </div>`;
+                        grid.prepend(card);
+                        // LocalStorage - 3 gün “Yeni Eklendi”
+                        const now = Date.now(), expire = now + (3 * 24 * 60 * 60 * 1000);
+                        const store = JSON.parse(localStorage.getItem("newBrands") || "{}");
+                        store[res.brandID] = expire;
+                        localStorage.setItem("newBrands", JSON.stringify(store));
+
+                        Swal.fire({ icon: "success", title: "Eklendi!", showConfirmButton: false, timer: 1200 });
+                        this.reset();
+                        preview.src = "https://dummyimage.com/400x200/efefef/aaa&text=Marka+Görseli";
+                        const modal = bootstrap.Modal.getInstance(document.getElementById("addBrandModal"));
+                        modal.hide();
+                    }
+                });
+        });
+
+        // Yeni eklendi efekti
+        document.addEventListener("DOMContentLoaded", () => {
+            const newId = '@TempData["NewBrandID"]';
+            if (newId) {
+                const now = Date.now(), expire = now + (3 * 24 * 60 * 60 * 1000);
+                const store = JSON.parse(localStorage.getItem("newBrands") || "{}");
+                store[newId] = expire;
+                localStorage.setItem("newBrands", JSON.stringify(store));
+            }
+
+            const stored = JSON.parse(localStorage.getItem("newBrands") || "{}");
+            const now2 = Date.now();
+            for (const [id, exp] of Object.entries(stored)) {
+                if (exp > now2) {
+                    const card = document.getElementById(`brand-${id}`);
+                    if (card && !card.querySelector(".new-badge")) {
+                        const badge = document.createElement("div");
+                        badge.className = "new-badge";
+                        badge.innerHTML = "✨ Yeni Eklendi";
+                        card.appendChild(badge);
+                    }
+                    card?.classList.add("highlight-new");
+                } else delete stored[id];
+            }
+            localStorage.setItem("newBrands", JSON.stringify(stored));
+        });
+    </script>
+
+    <style>
+        .brand-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,193,7,0.3);
+            transition: all .3s ease;
+            position: relative;
+        }
+
+            .brand-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(255,193,7,0.35);
+            }
+
+        .image-dropzone {
+            border: 2px dashed #ddd;
+            transition: all .3s ease;
+            background: #fafafa;
+        }
+
+            .image-dropzone.drag-over {
+                border-color: #ffc107;
+                background: #fffbe6;
+                transform: scale(1.02);
+            }
+
+        .highlight-new {
+            box-shadow: 0 0 18px rgba(255,215,0,0.8) !important;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(90deg,#ffd700,#ffb703);
+            color: #222;
+            font-weight: 700;
+            font-size: .8rem;
+            padding: 4px 8px;
+            border-radius: 8px;
+            animation: twinkle 1.6s infinite;
+        }
+        @@keyframes twinkle {
+            0%,100%
+
+        {
+            filter: brightness(1)
+        }
+
+        50% {
+            filter: brightness(1.7)
+        }
+
+        }
+    </style>
+}

@@ -1,32 +1,62 @@
 ﻿@model CreateBrandDTO
 @{
-    ViewData["Title"] = "CreateBrand";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Yeni Marka Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="fade-in" style="max-width:850px;margin:auto;">
+    <form asp-action="CreateBrand" method="post" id="brandForm">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div id="dropZone" class="image-dropzone text-center p-4 rounded shadow-sm">
+                    <input type="file" id="imageInput" accept="image/*" hidden />
+                    <img id="previewImage" src="https://dummyimage.com/400x200/efefef/aaa&text=Marka+Görseli" class="img-fluid rounded mb-3"
+                         style="object-fit:contain;height:220px;width:100%;">
+                    <div class="text-muted small mb-2">Dosyanı buraya sürükle veya tıkla</div>
+                    <button type="button" id="selectImageBtn" class="btn btn-sm btn-outline-warning fw-semibold">
+                        <i class="fa-solid fa-upload me-1"></i> Görsel Seç
+                    </button>
+                    <input type="hidden" asp-for="BrandImageURL" id="BrandImageURL" />
+                </div>
+            </div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Marka Ekleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <label>Marka Adı</label>
-                        <input type="text" class="form-control" asp-for="BrandName" />
-                        <br />
-                        <label>Marka Görseli</label>
-                        <input type="text" class="form-control" asp-for="BrandImageURL" />
-                        <br />
-                        <button type="submit" class="btn btn-primary">Marka Ekle</button>
-                    </form>
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm p-4 rounded-3 bg-white">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Marka Adı</label>
+                        <input asp-for="BrandName" class="form-control form-control-sm shadow-sm" placeholder="Marka adı..." required />
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                            <i class="fa-solid fa-check me-1"></i> Kaydet
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
-    </div>
-</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const dz=document.getElementById("dropZone"),inFile=document.getElementById("imageInput"),prev=document.getElementById("previewImage"),hidden=document.getElementById("BrandImageURL");
+        document.getElementById("selectImageBtn").addEventListener("click",()=>inFile.click());
+        dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag-over");});
+        dz.addEventListener("dragleave",()=>dz.classList.remove("drag-over"));
+        dz.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("drag-over");handleImg(e.dataTransfer.files[0]);});
+        inFile.addEventListener("change",e=>handleImg(e.target.files[0]));
+        function handleImg(file){if(file&&file.type.startsWith("image/")){const r=new FileReader();r.onload=e=>{prev.src=e.target.result;hidden.value=e.target.result;};r.readAsDataURL(file);}}
+    </script>
+    <style>
+        .image-dropzone {
+            border: 2px dashed #ddd;
+            background: #fafafa;
+        }
 
-
-
+            .image-dropzone.drag-over {
+                border-color: #ffc107;
+                background: #fffbe6;
+                transform: scale(1.02);
+            }</style>
+}

@@ -1,38 +1,83 @@
 ﻿@model UpdateAboutDTO
 @{
-    ViewData["Title"] = "UpdateAbout";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Hakkımda Bilgisi Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-semibold mb-1">
+            <i class="fa-solid fa-user-pen text-warning me-2"></i>Hakkımda Bilgisini Güncelle
+        </h4>
+        <div class="text-muted">Mevcut bilgilerinizi düzenleyin ve güncel tutun.</div>
+    </div>
+    <a href="/Admin/About/Index" class="btn btn-light border shadow-sm">
+        <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+    </a>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Hakkımda Güncelleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <input type="hidden" asp-for="AboutID" />
-                        <label>Hakkımda Açıklaması</label>
-                        <input type="text" class="form-control" asp-for="AboutDescription" />
-                        <br />
-                        <label>Hakkımda Adresi</label>
-                        <input type="text" class="form-control" asp-for="AboutAddress" />
-                        <br />
-                        <label>Hakkımda Mail</label>
-                        <input type="text" class="form-control" asp-for="AboutEmail" />
-                        <br />
-                        <label>Hakkımda Telefon</label>
-                        <input type="text" class="form-control" asp-for="AboutPhone" />
-                        <br />
-                        <button type="submit" class="btn btn-primary">Hakkımda Güncelle</button>
-                    </form>
+<div class="fade-in" style="max-width:850px;margin:auto;">
+    <form asp-action="UpdateAbout" method="post" id="updateForm">
+        <input type="hidden" asp-for="AboutID" />
+        <div class="card border-0 shadow-sm p-4 rounded-3 bg-white">
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label asp-for="AboutDescription" class="form-label fw-semibold">Hakkımda Açıklaması</label>
+                    <textarea asp-for="AboutDescription" class="form-control shadow-sm" rows="3" placeholder="Kendiniz veya şirketiniz hakkında bilgi..." required></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AboutAddress" class="form-label fw-semibold">Adres</label>
+                    <input asp-for="AboutAddress" class="form-control shadow-sm" placeholder="Adresinizi giriniz..." />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AboutEmail" class="form-label fw-semibold">E-posta</label>
+                    <input asp-for="AboutEmail" type="email" class="form-control shadow-sm" placeholder="E-posta adresinizi giriniz..." />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AboutPhone" class="form-label fw-semibold">Telefon</label>
+                    <input asp-for="AboutPhone" class="form-control shadow-sm" placeholder="Telefon numaranız..." />
                 </div>
             </div>
+
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4 py-2">
+                    <i class="fa-solid fa-check me-1"></i> Güncelle
+                </button>
+            </div>
         </div>
+    </form>
+</div>
 
-    </div>
-</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const form = document.getElementById("updateForm");
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Bilgiler güncellendi!',
+                text: 'Hakkımda bilgisi başarıyla güncellendi.',
+                icon: 'success',
+                confirmButtonColor: '#ffc107',
+                confirmButtonText: 'Tamam'
+            }).then(() => {
+                form.submit();
+            });
+        });
+    </script>
 
+    <style>
+        .fade-in {
+            opacity: 0;
+            transition: opacity .6s ease;
+        }
 
+            .fade-in.show {
+                opacity: 1;
+            }
+    </style>
+
+    <script>
+        window.addEventListener("load", () => document.querySelector(".fade-in").classList.add("show"));
+    </script>
+}

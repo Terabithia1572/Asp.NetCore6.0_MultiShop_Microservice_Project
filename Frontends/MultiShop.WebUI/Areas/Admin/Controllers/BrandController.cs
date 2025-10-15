@@ -67,8 +67,26 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             //    return RedirectToAction("Index", "Brand", new { area = "Admin" }); // Marka listesine yönlendirilir.
             //}
             //return View(); // Başarısız ise aynı view döndürülür.
-            await _brandService.CreateBrandAsync(createBrandDTO); // Yeni marka oluşturma servisi çağrılır.
-            return RedirectToAction("Index", "Brand", new { area = "Admin" }); // Marka listesine yönlendirilir.
+            await _brandService.CreateBrandAsync(createBrandDTO);
+
+            // 🔥 En son eklenen markayı bulup TempData'ya atıyoruz
+            var last = await _brandService.GetAllBrandAsync();
+            var newBrand = last.OrderByDescending(x => x.BrandID).FirstOrDefault();
+            if (newBrand != null)
+                TempData["NewBrandID"] = newBrand.BrandID;
+
+            return RedirectToAction("Index", "Brand", new { area = "Admin" });
+        }
+        // ✅ Hızlı Marka Ekle (AJAX)
+        [HttpPost]
+        public async Task<IActionResult> CreateBrandAjax(CreateBrandDTO dto)
+        {
+            await _brandService.CreateBrandAsync(dto);
+
+            var last = await _brandService.GetAllBrandAsync();
+            var newBrand = last.OrderByDescending(x => x.BrandID).FirstOrDefault();
+
+            return Json(new { brandID = newBrand?.BrandID });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteBrand(string id)
