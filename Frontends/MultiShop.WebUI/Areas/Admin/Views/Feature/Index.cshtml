@@ -1,51 +1,326 @@
 ﻿@model List<ResultFeatureDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] = "Öne Çıkan Özellikler";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<!-- 🔸 Üst Alan -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex align-items-center gap-2">
+        <h4 class="fw-semibold text-dark mb-0">
+            <i class="fa-solid fa-star text-warning me-2"></i>Öne Çıkan Özellikler
+        </h4>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addFeatureModal">
+            <i class="fa-solid fa-bolt me-1"></i> Hızlı Özellik Ekle
+        </button>
+        <a href="/Admin/Feature/CreateFeature" class="btn btn-outline-warning fw-semibold shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Tam Sayfada Ekle
+        </a>
+    </div>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Önce Çıkan Özellikler Listesi</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Önce Çıkan Özellik Başlığı</th>
-                                <th>Önce Çıkan Özellik Görseli</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.FeatureTitle</td>
-                                    <td>@item.FeatureIcon</td>
-                                    <td><a href="/Admin/Feature/DeleteFeature/@item.FeatureID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/Feature/UpdateFeature/@item.FeatureID" class="btn btn-success">Güncelle</a></td>
-
-                                </tr>
-                            }
-
-                        </tbody>
-                    </table>
-                    <a href="/Admin/Feature/CreateFeature/" class="btn btn-primary">Yeni Öne Çıkan Özellik Girişi</a>
+<!-- 🔹 Listeleme Alanı -->
+<div id="featureGrid" class="feature-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-light border text-center py-4">
+            <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+            Henüz öne çıkan özellik eklenmemiş.
+        </div>
+    }
+    else
+    {
+        foreach (var f in Model)
+        {
+            <div class="feature-card reveal visible" id="feature-@f.FeatureID">
+                <div class="icon-box mb-3"><i class="@f.FeatureIcon text-warning fs-1"></i></div>
+                <h5 class="fw-semibold text-dark">@f.FeatureTitle</h5>
+                <div class="mt-3 d-flex justify-content-center gap-2">
+                    <a href="/Admin/Feature/UpdateFeature/@f.FeatureID" class="btn btn-sm btn-outline-warning fw-semibold px-3">
+                        <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                    </a>
+                    <button class="btn btn-sm btn-outline-danger fw-semibold px-3" onclick="confirmDelete('@f.FeatureID')">
+                        <i class="fa-solid fa-trash"></i> Sil
+                    </button>
                 </div>
             </div>
+        }
+    }
+</div>
+
+<!-- 🟨 Hızlı Özellik Ekle Modal -->
+<div class="modal fade" id="addFeatureModal" tabindex="-1" aria-labelledby="addFeatureLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-star me-2"></i>Yeni Özellik Ekle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+
+            <form id="quickFeatureForm" class="bg-light py-3 px-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-heading text-warning me-1"></i> Özellik Başlığı
+                        </label>
+                        <input type="text" id="FeatureTitle" class="form-control form-control-sm shadow-sm" placeholder="Başlık giriniz..." required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-secondary">
+                            <i class="fa-solid fa-icons text-warning me-1"></i> Özellik İkonu Seç
+                        </label>
+                        <input type="hidden" id="FeatureIcon" required />
+                        <div id="iconPicker" class="d-flex flex-wrap gap-2 p-2 bg-white rounded shadow-sm border" style="max-height:140px;overflow-y:auto;">
+                            @{
+                                var icons = new[]
+                                {
+                                                        "fa fa-check", "fa fa-phone-volume", "fas fa-exchange-alt", "fa fa-bug", "fa fa-cog", "fa fa-star",
+                                                        "fa fa-lightbulb", "fa fa-rocket", "fa fa-heart", "fa fa-shield-halved", "fa fa-users",
+                                                        "fa fa-leaf", "fa fa-globe", "fa fa-key", "fa fa-cloud", "fa fa-fire", "fa fa-bolt", "fa fa-magic",
+                                                        "fa fa-smile", "fa fa-chart-line", "fa fa-lock", "fa fa-crown", "fa fa-pen", "fa fa-camera",
+                                                        "fa fa-gem", "fa fa-snowflake", "fa fa-gift", "fa fa-database", "fa fa-truck"
+                                                        };
+                                foreach (var icon in icons)
+                                {
+                                    <div class="icon-option border rounded p-2" data-icon="@icon" style="cursor:pointer;flex:0 0 45px;text-align:center;">
+                                        <i class="@icon text-secondary fs-5"></i>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="text-center mt-2" id="iconPreview"></div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light border shadow-sm px-3" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> İptal
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                        <i class="fa-solid fa-check me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
         </div>
-
     </div>
-</section>
+</div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        // 🎨 İkon seçimi
+        document.querySelectorAll('.icon-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.icon-option').forEach(i => i.classList.remove('selected'));
+                el.classList.add('selected');
+                const selected = el.dataset.icon;
+                document.getElementById("FeatureIcon").value = selected;
+                document.getElementById("iconPreview").innerHTML = `<i class="${selected} text-warning fs-2"></i>`;
+            });
+        });
 
+        // 🧾 Silme işlemi
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Emin misin?",
+                text: "Bu özellik kalıcı olarak silinecek!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "İptal"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(`/Admin/Feature/DeleteFeature/${id}`, { method: "GET" })
+                        .then(r => {
+                            if (r.ok) {
+                                document.getElementById(`feature-${id}`)?.remove();
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Silindi!",
+                                    text: "Özellik başarıyla silindi.",
+                                    showConfirmButton: false,
+                                    timer: 1200
+                                });
+                            }
+                        });
+                }
+            });
+        }
+
+        // ⚡ Hızlı ekleme – AJAX + kalıcı kayıt
+        document.getElementById("quickFeatureForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const title = document.getElementById("FeatureTitle").value.trim();
+            const icon = document.getElementById("FeatureIcon").value.trim();
+            if (!title || !icon) {
+                Swal.fire({ icon: "warning", title: "Eksik Bilgi", text: "Lütfen başlık ve ikon seçiniz." });
+                return;
+            }
+
+            const data = new FormData();
+            data.append("FeatureTitle", title);
+            data.append("FeatureIcon", icon);
+
+            fetch("/Admin/Feature/CreateFeatureAjax", {
+                method: "POST",
+                body: data
+            })
+            .then(r => r.json())
+                    .then(res => {
+            if (res && res.featureID) {
+                const grid = document.getElementById("featureGrid");
+                const card = document.createElement("div");
+                card.className = "feature-card visible animate__animated animate__fadeIn highlight-new";
+                card.id = `feature-${res.featureID}`;
+                card.innerHTML = `
+                    <div class="icon-box mb-3"><i class="${icon} text-warning fs-1"></i></div>
+                    <h5 class="fw-semibold text-dark">${title}</h5>
+                    <div class="new-badge">✨ Yeni Eklendi</div>
+                    <div class="mt-3 d-flex justify-content-center gap-2">
+                        <a href="/Admin/Feature/UpdateFeature/${res.featureID}" class="btn btn-sm btn-outline-warning fw-semibold px-3">
+                            <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger fw-semibold px-3" onclick="confirmDelete('${res.featureID}')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </button>
+                    </div>`;
+                grid.prepend(card);
+
+                // 🔥 localStorage’a 3 günlüğüne kaydet
+                const now = new Date().getTime();
+                const expire = now + (3 * 24 * 60 * 60 * 1000); // 3 gün
+                const store = JSON.parse(localStorage.getItem("newFeatures") || "{}");
+                store[res.featureID] = expire;
+                localStorage.setItem("newFeatures", JSON.stringify(store));
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Eklendi!",
+                    text: "Yeni özellik başarıyla eklendi!",
+                    showConfirmButton: false,
+                    timer: 1300
+                });
+
+                // 🔧 formu sıfırla
+                document.getElementById("quickFeatureForm").reset();
+                document.getElementById("iconPreview").innerHTML = "";
+                document.querySelectorAll(".icon-option").forEach(i => i.classList.remove("selected"));
+                const modal = bootstrap.Modal.getInstance(document.getElementById("addFeatureModal"));
+                modal.hide();
+            } else {
+                Swal.fire({ icon: "error", title: "Hata", text: "Sunucudan geçerli bir yanıt alınamadı." });
+            }
+        });
+        });
+
+               // 🟡 Yeni eklenen feature'ları localStorage'da tut
+        document.addEventListener("DOMContentLoaded", () => {
+            const newFeatureId = '@TempData["NewFeatureID"]';
+            if (newFeatureId) {
+                const now = new Date().getTime();
+                const expire = now + (3 * 24 * 60 * 60 * 1000); // 3 gün (ms cinsinden)
+                const store = JSON.parse(localStorage.getItem("newFeatures") || "{}");
+                store[newFeatureId] = expire;
+                localStorage.setItem("newFeatures", JSON.stringify(store));
+            }
+
+            // 🔥 localStorage'da kayıtlı olanları kontrol et
+            const stored = JSON.parse(localStorage.getItem("newFeatures") || "{}");
+            const now = new Date().getTime();
+            for (const [id, expire] of Object.entries(stored)) {
+                if (expire > now) {
+                    const card = document.getElementById(`feature-${id}`);
+                    if (card) {
+                        card.classList.add("highlight-new");
+                        if (!card.querySelector(".new-badge")) {
+                            const badge = document.createElement("div");
+                            badge.className = "new-badge";
+                            badge.innerHTML = "✨ Yeni Eklendi";
+                            card.appendChild(badge);
+                        }
+                    }
+                } else {
+                    // süresi dolanları temizle
+                    delete stored[id];
+                }
+            }
+            localStorage.setItem("newFeatures", JSON.stringify(stored));
+        });
+    </script>
+
+    <style>
+        /* Parlama efekti */
+        .highlight-new {
+            position: relative;
+            box-shadow: 0 0 20px rgba(255,215,0,0.8);
+            transform: scale(1.02);
+            transition: all .5s ease;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(90deg,#ffd700,#ffb703);
+            color: #222;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: twinkle 1.6s infinite;
+        }
+
+        @@keyframes twinkle {
+            0%, 100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.7);
+            }
+        }
+
+        .feature-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            padding: 25px 15px;
+            text-align: center;
+            transition: all .3s ease;
+            border: 1px solid rgba(255,193,7,0.3);
+        }
+
+            .feature-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 10px 20px rgba(255,193,7,0.35);
+            }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #fff8e1, #fff3cd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+
+        .icon-option {
+            transition: all .2s ease;
+        }
+
+            .icon-option.selected {
+                border: 2px solid #ffc107 !important;
+                background: #fff8e1;
+            }
+    </style>
+}

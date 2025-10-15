@@ -1,49 +1,446 @@
 ﻿@model List<ResultProductDiscountDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Ürün İndirimleri";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
+    var now = DateTime.Now;
 }
 
-<h2 class="mb-3">İndirim Yönetimi</h2>
-<a href="/Admin/ProductDiscount/AddProductDiscount" class="btn btn-success mb-3">+ Yeni İndirim Ekle</a>
+<!-- 🔸 Üst Alan -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex gap-2 align-items-center">
+        <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm"
+               placeholder="🔍 Ürün adı, oran veya tarih ara..." style="width:280px;" />
+    </div>
 
-<table class="table table-bordered table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>Ürün ID</th>
-            <th>Ürün Adı</th>
-            <th>İndirim Oranı (%)</th>
-            <th>Başlangıç Tarihi</th>
-            <th>Bitiş Tarihi</th>
-            <th>Aktif Mi?</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addDiscountModal">
+            <i class="fa-solid fa-percent me-1"></i> Hızlı İndirim Ekle
+        </button>
+        <a href="/Admin/ProductDiscount/AddProductDiscount" class="btn btn-outline-warning fw-semibold shadow-sm">
+            <i class="fa-solid fa-pen-to-square me-1"></i> Tam Sayfada Ekle
+        </a>
+    </div>
+</div>
+
+
+<h5 class="fw-semibold mb-3"><i class="fa-solid fa-tags me-2 text-warning"></i>İndirim Listesi</h5>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-4">
+        <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+        Henüz indirim tanımlanmamış.
+    </div>
+}
+else
+{
+    <div id="discountGrid" class="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+        @foreach (var d in Model.OrderByDescending(x => x.IsActive).ThenBy(x => x.StartDate))
         {
-            <tr>
-                <td>@item.ProductID</td>
-                <td>@item.DiscountRate</td>
-                <td>@item.StartDate.ToShortDateString()</td>
-                <td>@item.EndDate.ToShortDateString()</td>
-                <td>
-                    @if (item.IsActive)
-                    {
-                        <span class="badge bg-success">Aktif</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Pasif</span>
-                    }
-                </td>
-                <td>
-                    <a href="/Admin/ProductDiscount/UpdateProductDiscount/@item.ProductDiscountID" class="btn btn-sm btn-warning">Düzenle</a>
-                    <a href="/Admin/ProductDiscount/DeleteProductDiscount/@item.ProductDiscountID" class="btn btn-sm btn-danger">Sil</a>
-                </td>
-            </tr>
+            var state = d.IsActive && d.StartDate <= now && d.EndDate >= now ? "active"
+            : d.StartDate > now ? "upcoming"
+            : "expired";
+
+            <div class="discount-card reveal" id="disc-@d.ProductDiscountID" data-state="@state" data-end="@d.EndDate.ToString("o")">
+                <div class="card-image">
+                    <img src="@d.ProductImageURL" alt="@d.ProductName" />
+                    <span class="status @(state)">@(state == "active" ? "Aktif" : state == "upcoming" ? "Yakında" : "Süresi Doldu")</span>
+                </div>
+
+                <div class="card-content">
+                    <h5 class="product-name">
+                        <i class="fa-solid fa-box text-warning me-1"></i>
+                        @(string.IsNullOrEmpty(d.ProductName) ? $"Ürün ID: {d.ProductID}" : d.ProductName)
+                    </h5>
+
+                    <div class="discount-rate">
+                        @($"{d.DiscountRate}%")
+                    </div>
+
+                    <div class="discount-dates">
+                        <i class="fa-regular fa-calendar text-warning me-1"></i>
+                        @d.StartDate.ToString("dd.MM.yyyy") – @d.EndDate.ToString("dd.MM.yyyy")
+                    </div>
+
+                    <!-- 🕒 Canlı Sayaç Alanı -->
+                    <div class="countdown text-muted small" id="timer-@d.ProductDiscountID"></div>
+
+                    <div class="discount-actions">
+                        <a href="/Admin/ProductDiscount/UpdateProductDiscount/@d.ProductDiscountID" class="btn btn-sm btn-outline-warning fw-semibold">
+                            <i class="fa-solid fa-pen-to-square"></i> Düzenle
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger fw-semibold" onclick="confirmDelete('@d.ProductDiscountID')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+}
 
+<!-- 🔶 Hızlı İndirim Ekle Modal -->
+<div class="modal fade" id="addDiscountModal" tabindex="-1" aria-labelledby="addDiscountLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-percent me-2"></i>Yeni Ürün İndirimi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
 
+            <form id="quickDiscountForm" method="post" action="/Admin/ProductDiscount/AddProductDiscount">
+                @Html.AntiForgeryToken()
+                <div class="modal-body bg-light py-4 px-4">
+                    <div class="row g-3">
+                        <!-- 🎯 Dropdown ile Ürün Seçimi -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-secondary">
+                                <i class="fa-solid fa-box me-1 text-warning"></i> Ürün Seç
+                            </label>
+                            <select class="form-select form-select-sm shadow-sm" name="ProductID" required>
+                                <option value="">Bir ürün seçiniz</option>
+                                @if (ViewBag.Products != null)
+                                {
+                                    foreach (var item in ViewBag.Products)
+                                    {
+                                        <option value="@item.ProductID">@item.ProductName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-secondary">
+                                <i class="fa-solid fa-percent me-1 text-warning"></i> İndirim Oranı (%)
+                            </label>
+                            <input type="number" min="1" max="90" name="DiscountRate" class="form-control form-control-sm shadow-sm" placeholder="Örn: 15" required />
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-secondary">
+                                <i class="fa-regular fa-calendar me-1 text-warning"></i> Aktif mi?
+                            </label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isActiveSwitch" name="IsActive" checked>
+                                <label class="form-check-label small text-muted" for="isActiveSwitch">Yayına al</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-secondary">
+                                <i class="fa-regular fa-calendar-days me-1 text-warning"></i> Başlangıç Tarihi
+                            </label>
+                            <input type="date" name="StartDate" class="form-control form-control-sm shadow-sm" required />
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-secondary">
+                                <i class="fa-regular fa-calendar-days me-1 text-warning"></i> Bitiş Tarihi
+                            </label>
+                            <input type="date" name="EndDate" class="form-control form-control-sm shadow-sm" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-white border-0 py-3 px-4 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light border shadow-sm px-3" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> İptal
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                        <i class="fa-solid fa-check me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 🕒 CANLI SAYAÇ
+        function startCountdown() {
+            document.querySelectorAll(".discount-card[data-end]").forEach(card => {
+                const end = new Date(card.dataset.end).getTime();
+                const id = card.id.replace("disc-", "");
+                const el = document.getElementById("timer-" + id);
+                if (!el) return;
+
+                setInterval(() => {
+                    const now = new Date().getTime();
+                    const diff = end - now;
+
+                    if (diff <= 0) {
+                        el.textContent = "Süre doldu";
+                        card.querySelector(".status").textContent = "Süresi Doldu";
+                        card.querySelector(".status").className = "status expired";
+                        return;
+                    }
+
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    el.textContent = `⏳ ${days}g ${hours}s ${mins}dk kaldı`;
+                }, 60000);
+            });
+        }
+        startCountdown();
+
+        // 🔍 Arama filtresi
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const v = this.value.toLowerCase();
+            document.querySelectorAll(".discount-card").forEach(card => {
+                const match = card.innerText.toLowerCase().includes(v);
+                card.style.display = match ? "block" : "none";
+            });
+        });
+
+        // 🧾 Silme
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Emin misin?",
+                text: "Bu indirim kaydı kalıcı olarak silinecek!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "İptal"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(`/Admin/ProductDiscount/DeleteProductDiscount/${id}`, { method: "POST" })
+                        .then(r => {
+                            if (r.ok) {
+                                const c = document.getElementById(`disc-${id}`);
+                                if (c) {
+                                    c.style.transition = "all .4s ease";
+                                    c.style.opacity = "0";
+                                    c.style.transform = "scale(0.9)";
+                                    setTimeout(() => c.remove(), 400);
+                                }
+                                Swal.fire({ icon: "success", title: "Silindi!", text: "İndirim kaydı başarıyla silindi.", showConfirmButton: false, timer: 1000 });
+                            }
+                        });
+                }
+            });
+        }
+
+        // 🎬 Reveal animasyonu
+        const reveals = document.querySelectorAll(".reveal");
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(card => observer.observe(card));
+
+        // 🗓️ Modal açıldığında tarih alanlarını bugünün tarihi ile doldur
+                     document.addEventListener("DOMContentLoaded", () => {
+            const success = '@(TempData["SuccessMessage"] ?? "")';
+            const duplicate = '@(TempData["DuplicateError"] ?? "")';
+            const dateError = '@(TempData["DateError"] ?? "")';
+
+            // HTML decode fonksiyonu — Türkçe karakter hatasını çözer
+            function decodeHtml(html) {
+                var txt = document.createElement("textarea");
+                txt.innerHTML = html;
+                return txt.value;
+            }
+
+            if (success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: decodeHtml(success),
+                    showConfirmButton: false,
+                    timer: 1500,
+                    background: '#fff',
+                    color: '#333',
+                    backdrop: `rgba(255,193,7,0.1)`
+                });
+            }
+
+            if (duplicate) {
+                Swal.fire({
+                    title: '⚠️ Uyarı!',
+                    text: decodeHtml(duplicate),
+                    icon: 'warning',
+                    confirmButtonText: 'Tamam',
+                    confirmButtonColor: '#ffc107',
+                    background: '#fffbea',
+                    color: '#222',
+                    showClass: {
+                        popup: 'animate__animated animate__headShake'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+            }
+
+            if (dateError) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Tarih Hatası',
+                    text: decodeHtml(dateError),
+                    confirmButtonColor: '#dc3545',
+                    background: '#fff',
+                    color: '#333',
+                    showClass: {
+                        popup: 'animate__animated animate__shakeX'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+            }
+        });
+    </script>
+
+    <style>
+        /* 🌟 Ana kart yapısı */
+        .discount-card {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            transition: all .35s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            opacity: 0;
+            transform: translateY(15px);
+            border: 1px solid rgba(255,193,7,0.25);
+        }
+
+            .discount-card.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .discount-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(255,193,7,0.35);
+            }
+
+        /* 🖼️ Görsel */
+        .card-image {
+            position: relative;
+            overflow: hidden;
+            height: 180px;
+            background: #fafafa;
+        }
+
+            .card-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: all .5s ease;
+                filter: brightness(0.95);
+            }
+
+        .discount-card:hover .card-image img {
+            transform: scale(1.07);
+            filter: brightness(1.05);
+        }
+
+        /* 🏷️ Durum etiketi */
+        .status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #111;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+            .status.active {
+                background: linear-gradient(90deg,#ffc107,#ffdb5b);
+            }
+
+            .status.upcoming {
+                background: linear-gradient(90deg,#0dcaf0,#5edfff);
+                color: #fff;
+            }
+
+            .status.expired {
+                background: linear-gradient(90deg,#6c757d,#adb5bd);
+                color: #fff;
+            }
+
+        /* 💬 İçerik */
+        .card-content {
+            padding: 15px 18px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .product-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #222;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        .discount-rate {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(90deg,#ffcd38,#ffb703);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .discount-dates {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        .countdown {
+            margin-bottom: 10px;
+            color: #999;
+        }
+
+        /* 🔘 Butonlar */
+        .discount-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .discount-actions a, .discount-actions button {
+                border-radius: 10px;
+                font-weight: 600;
+                padding: 6px 14px;
+                font-size: 0.85rem;
+                transition: all .3s ease;
+            }
+
+                .discount-actions a:hover {
+                    background: #ffca2c;
+                    color: #000;
+                    border-color: #ffca2c;
+                }
+
+                .discount-actions button:hover {
+                    background: #dc3545;
+                    color: #fff;
+                    border-color: #dc3545;
+                }
+    </style>
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />

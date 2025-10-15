@@ -1,33 +1,121 @@
 ﻿@model UpdateFeatureDTO
 @{
-    ViewData["Title"] = "UpdateFeature";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Özellik Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+    <h4 class="fw-semibold text-dark mb-0">
+        <i class="fa-solid fa-pen-to-square text-warning me-2"></i>Öne Çıkan Özellik Güncelle
+    </h4>
+    <a href="/Admin/Feature/Index" class="btn btn-outline-secondary fw-semibold shadow-sm">
+        <i class="fa-solid fa-arrow-left"></i> Geri Dön
+    </a>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Öne Çıkan Özellik Güncelleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <input type="hidden" asp-for="FeatureID" />
-                        <label>Öne Çıkan Özellik Başlığı</label>
-                        <input type="text" class="form-control" asp-for="FeatureTitle" />
-                        <br />
-                        <label>Öne Çıkan Özellik Görseli</label>
-                        <input type="text" class="form-control" asp-for="FeatureIcon" />
-                        <br />
-                        <button type="submit" class="btn btn-primary">Öne Çıkan Özellik Güncelle</button>
-                    </form>
-                </div>
+<div class="container bg-white p-4 rounded shadow-sm" style="max-width:700px;">
+    <form id="updateFeatureForm" method="post">
+        <input type="hidden" asp-for="FeatureID" />
+        <div class="mb-3">
+            <label class="form-label fw-semibold text-secondary">
+                <i class="fa-solid fa-heading text-warning me-1"></i> Özellik Başlığı
+            </label>
+            <input type="text" class="form-control shadow-sm" asp-for="FeatureTitle" required />
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold text-secondary">
+                <i class="fa-solid fa-icons text-warning me-1"></i> Özellik İkonu Seç
+            </label>
+            <input type="hidden" asp-for="FeatureIcon" id="FeatureIcon" required />
+            <div id="iconPicker" class="d-flex flex-wrap gap-2 p-2 bg-light rounded shadow-sm border" style="max-height:160px;overflow-y:auto;">
+                @{
+                    var icons = new[]
+                    {
+                                "fa fa-check", "fa fa-phone-volume", "fas fa-exchange-alt", "fa fa-bug", "fa fa-cog", "fa fa-star",
+                                "fa fa-lightbulb", "fa fa-rocket", "fa fa-heart", "fa fa-shield-halved", "fa fa-users",
+                                "fa fa-leaf", "fa fa-globe", "fa fa-key", "fa fa-cloud", "fa fa-fire", "fa fa-bolt", "fa fa-magic",
+                                "fa fa-smile", "fa fa-chart-line", "fa fa-lock", "fa fa-crown", "fa fa-pen", "fa fa-camera",
+                                "fa fa-gem", "fa fa-snowflake", "fa fa-gift", "fa fa-database", "fa fa-truck"
+                                };
+                    foreach (var icon in icons)
+                    {
+                        var selectedClass = icon == Model.FeatureIcon ? "selected" : "";
+                        <div class="icon-option border rounded p-2 @selectedClass" data-icon="@icon" style="cursor:pointer;flex:0 0 45px;text-align:center;">
+                            <i class="@icon text-secondary fs-5"></i>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="text-center mt-2" id="iconPreview">
+                <i class="@Model.FeatureIcon text-warning fs-2"></i>
             </div>
         </div>
 
-    </div>
-</section>
+        <div class="d-flex justify-content-end gap-2">
+            <button type="reset" class="btn btn-light border shadow-sm px-4">
+                <i class="fa-solid fa-rotate-left"></i> Temizle
+            </button>
+            <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                <i class="fa-solid fa-check"></i> Güncelle
+            </button>
+        </div>
+    </form>
+</div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        // 🎨 İkon seçimi
+        document.querySelectorAll('.icon-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.icon-option').forEach(i => i.classList.remove('selected'));
+                el.classList.add('selected');
+                const icon = el.dataset.icon;
+                document.getElementById("FeatureIcon").value = icon;
+                document.getElementById("iconPreview").innerHTML = `<i class="${icon} text-warning fs-2"></i>`;
+            });
+        });
 
+        // ✅ Form gönderimi
+        document.getElementById("updateFeatureForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Emin misin?",
+                text: "Bu özellik güncellenecek!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#ffc107",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, güncelle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+
+        const success = '@TempData["SuccessMessage"]';
+        if (success) {
+            Swal.fire({
+                icon: 'success',
+                title: success,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    </script>
+
+    <style>
+        .icon-option {
+            transition: all .2s ease;
+        }
+
+            .icon-option.selected {
+                border: 2px solid #ffc107 !important;
+                background: #fff8e1;
+            }
+    </style>
+}
