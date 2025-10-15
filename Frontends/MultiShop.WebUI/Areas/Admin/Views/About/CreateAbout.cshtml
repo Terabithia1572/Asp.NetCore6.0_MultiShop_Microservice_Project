@@ -1,15 +1,14 @@
-﻿@model CreateAboutDTO
-@{
+﻿@{
     ViewData["Title"] = "Yeni Hakkımda Bilgisi Ekle";
     Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-4">
     <div>
-        <h4 class="fw-semibold mb-1">
+        <h4 class="fw-semibold mb-1 text-dark">
             <i class="fa-solid fa-user-plus text-warning me-2"></i>Yeni Hakkımda Bilgisi Ekle
         </h4>
-        <div class="text-muted">Kendiniz veya firmanız hakkında bilgi ekleyin.</div>
+        <div class="text-muted">Hakkınızda açıklama, adres, mail ve telefon bilgilerini ekleyebilirsiniz.</div>
     </div>
     <a href="/Admin/About/Index" class="btn btn-light border shadow-sm">
         <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
@@ -17,24 +16,24 @@
 </div>
 
 <div class="fade-in" style="max-width:850px;margin:auto;">
-    <form asp-action="CreateAbout" method="post" id="aboutForm">
+    <form asp-action="CreateAbout" method="post" id="createForm">
         <div class="card border-0 shadow-sm p-4 rounded-3 bg-white">
             <div class="row g-3">
                 <div class="col-md-12">
-                    <label asp-for="AboutDescription" class="form-label fw-semibold">Hakkımda Açıklaması</label>
-                    <textarea asp-for="AboutDescription" class="form-control shadow-sm" rows="3" placeholder="Kendiniz veya şirketiniz hakkında bilgi..." required></textarea>
+                    <label class="form-label fw-semibold">Açıklama</label>
+                    <textarea name="AboutDescription" class="form-control shadow-sm" rows="3" placeholder="Kendiniz veya markanız hakkında açıklama..." required></textarea>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="AboutAddress" class="form-label fw-semibold">Adres</label>
-                    <input asp-for="AboutAddress" class="form-control shadow-sm" placeholder="Adresinizi giriniz..." />
+                    <label class="form-label fw-semibold">Adres</label>
+                    <input name="AboutAddress" class="form-control shadow-sm" placeholder="Adres giriniz..." />
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="AboutEmail" class="form-label fw-semibold">E-posta</label>
-                    <input asp-for="AboutEmail" type="email" class="form-control shadow-sm" placeholder="E-posta adresinizi giriniz..." />
+                    <label class="form-label fw-semibold">E-posta</label>
+                    <input name="AboutEmail" type="email" class="form-control shadow-sm" placeholder="E-posta adresiniz..." />
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="AboutPhone" class="form-label fw-semibold">Telefon</label>
-                    <input asp-for="AboutPhone" class="form-control shadow-sm" placeholder="Telefon numaranız..." />
+                    <label class="form-label fw-semibold">Telefon</label>
+                    <input name="AboutPhone" class="form-control shadow-sm" placeholder="Telefon numaranız..." />
                 </div>
             </div>
 
@@ -50,33 +49,36 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const form = document.getElementById("aboutForm");
-        form.addEventListener("submit", function (e) {
+        document.getElementById("createForm").addEventListener("submit", async function (e) {
             e.preventDefault();
-            Swal.fire({
-                title: 'Bilgiler eklendi!',
-                text: 'Yeni hakkımda bilgisi başarıyla kaydedildi.',
-                icon: 'success',
-                confirmButtonColor: '#ffc107',
-                confirmButtonText: 'Tamam'
-            }).then(() => {
-                form.submit();
-            });
-        });
-    </script>
 
-    <style>
-        .fade-in {
-            opacity: 0;
-            transition: opacity .6s ease;
-        }
+            const fd = new FormData(this);
+            const res = await fetch("/Admin/About/CreateAboutAjax", { method: "POST", body: fd });
+            const data = await res.json();
 
-            .fade-in.show {
-                opacity: 1;
+            if (!data.success) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "İşlem Engellendi",
+                    text: data.message,
+                    confirmButtonColor: "#ffc107"
+                });
+                return;
             }
-    </style>
 
-    <script>
-        window.addEventListener("load", () => document.querySelector(".fade-in").classList.add("show"));
+            Swal.fire({
+                icon: "success",
+                title: "Eklendi!",
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => window.location.href = "/Admin/About/Index");
+        });
+
+        document.querySelector('.fade-in').style.opacity = 0;
+        setTimeout(() => {
+            document.querySelector('.fade-in').style.transition = 'opacity .6s ease';
+            document.querySelector('.fade-in').style.opacity = 1;
+        }, 150);
     </script>
 }

@@ -4,7 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<!-- 🔸 Üst Alan -->
+<!-- 🟡 Üst Başlık -->
 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
     <div class="d-flex align-items-center gap-2">
         <h4 class="fw-semibold text-dark mb-0">
@@ -34,17 +34,15 @@
     {
         foreach (var a in Model)
         {
-            <div class="about-card reveal visible position-relative" id="about-@a.AboutID">
-                <div class="card-body">
-                    <h6 class="fw-bold mb-2 text-dark">
-                        <i class="fa-solid fa-align-left text-warning me-2"></i>@a.AboutDescription
-                    </h6>
+            <div class="about-card position-relative" id="about-@a.AboutID">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold mb-2 text-dark"><i class="fa-solid fa-align-left text-warning me-2"></i>@a.AboutDescription</h6>
                     <ul class="list-unstyled small text-muted mb-3">
                         <li><i class="fa-solid fa-location-dot text-warning me-2"></i>@a.AboutAddress</li>
                         <li><i class="fa-solid fa-envelope text-warning me-2"></i>@a.AboutEmail</li>
                         <li><i class="fa-solid fa-phone text-warning me-2"></i>@a.AboutPhone</li>
                     </ul>
-                    <div class="mt-2 d-flex justify-content-center gap-2">
+                    <div class="mt-3 d-flex justify-content-center gap-2">
                         <a href="/Admin/About/UpdateAbout/@a.AboutID" class="btn btn-sm btn-outline-warning fw-semibold px-3">
                             <i class="fa-solid fa-pen-to-square"></i> Güncelle
                         </a>
@@ -58,8 +56,8 @@
     }
 </div>
 
-<!-- 🟡 Hızlı Hakkımda Ekle Modal -->
-<div class="modal fade" id="addAboutModal" tabindex="-1" aria-labelledby="addAboutLabel" aria-hidden="true">
+<!-- 🟨 Hızlı Hakkımda Ekle Modal -->
+<div class="modal fade" id="addAboutModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
@@ -116,7 +114,7 @@
         // 🔥 Silme işlemi
         function confirmDelete(id) {
             Swal.fire({
-                title: "Emin misin?",
+                title: "Emin misiniz?",
                 text: "Bu kayıt kalıcı olarak silinecek!",
                 icon: "warning",
                 showCancelButton: true,
@@ -130,20 +128,14 @@
                         .then(r => {
                             if (r.ok) {
                                 document.getElementById(`about-${id}`)?.remove();
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "Silindi!",
-                                    text: "Kayıt başarıyla silindi.",
-                                    showConfirmButton: false,
-                                    timer: 1300
-                                });
+                                Swal.fire({ icon: "success", title: "Silindi!", showConfirmButton: false, timer: 1300 });
                             }
                         });
                 }
             });
         }
 
-        // ⚡ Hızlı Ekleme – AJAX
+        // ⚡ Hızlı Ekleme – AJAX + DOM + localStorage “Yeni Eklendi”
         document.getElementById("quickAboutForm").addEventListener("submit", function (e) {
             e.preventDefault();
             const desc = document.getElementById("AboutDescription").value.trim();
@@ -156,32 +148,30 @@
                 return;
             }
 
-            const data = new FormData();
-            data.append("AboutDescription", desc);
-            data.append("AboutAddress", addr);
-            data.append("AboutEmail", mail);
-            data.append("AboutPhone", phone);
+            const fd = new FormData();
+            fd.append("AboutDescription", desc);
+            fd.append("AboutAddress", addr);
+            fd.append("AboutEmail", mail);
+            fd.append("AboutPhone", phone);
 
-            fetch("/Admin/About/CreateAboutAjax", {
-                method: "POST",
-                body: data
-            })
+            fetch("/Admin/About/CreateAboutAjax", { method: "POST", body: fd })
             .then(r => r.json())
             .then(res => {
-                if (res && res.aboutID) {
+                if (res && res.success) {
                     const grid = document.getElementById("aboutGrid");
                     const card = document.createElement("div");
-                    card.className = "about-card visible animate__animated animate__fadeIn highlight-new";
+                    card.className = "about-card highlight-new";
                     card.id = `about-${res.aboutID}`;
                     card.innerHTML = `
-                        <div class="card-body">
+                        <div class="card-body text-center">
                             <h6 class="fw-bold mb-2 text-dark"><i class="fa-solid fa-align-left text-warning me-2"></i>${desc}</h6>
                             <ul class="list-unstyled small text-muted mb-3">
                                 <li><i class="fa-solid fa-location-dot text-warning me-2"></i>${addr}</li>
                                 <li><i class="fa-solid fa-envelope text-warning me-2"></i>${mail}</li>
                                 <li><i class="fa-solid fa-phone text-warning me-2"></i>${phone}</li>
                             </ul>
-                            <div class="mt-2 d-flex justify-content-center gap-2">
+                            <div class="new-badge">✨ Yeni Eklendi</div>
+                            <div class="mt-3 d-flex justify-content-center gap-2">
                                 <a href="/Admin/About/UpdateAbout/${res.aboutID}" class="btn btn-sm btn-outline-warning fw-semibold px-3">
                                     <i class="fa-solid fa-pen-to-square"></i> Güncelle
                                 </a>
@@ -189,47 +179,47 @@
                                     <i class="fa-solid fa-trash"></i> Sil
                                 </button>
                             </div>
-                            <div class="new-badge">✨ Yeni Eklendi</div>
                         </div>`;
                     grid.prepend(card);
 
-                    Swal.fire({
-                        icon: "success",
-                        title: "Eklendi!",
-                        text: "Yeni hakkımda bilgisi başarıyla eklendi.",
-                        showConfirmButton: false,
-                        timer: 1300
-                    });
-
-                    document.getElementById("quickAboutForm").reset();
-                    const modal = bootstrap.Modal.getInstance(document.getElementById("addAboutModal"));
-                    modal.hide();
-
-                    // 3 gün boyunca göster
-                    const now = new Date().getTime();
-                    const expire = now + (3 * 24 * 60 * 60 * 1000);
+                    const now = Date.now(), expire = now + (3 * 24 * 60 * 60 * 1000);
                     const store = JSON.parse(localStorage.getItem("newAbouts") || "{}");
                     store[res.aboutID] = expire;
                     localStorage.setItem("newAbouts", JSON.stringify(store));
+
+                    Swal.fire({ icon: "success", title: "Eklendi!", text: res.message, showConfirmButton: false, timer: 1200 });
+                    this.reset();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("addAboutModal"));
+                    modal.hide();
                 } else {
-                    Swal.fire({ icon: "error", title: "Hata", text: "Sunucudan geçerli bir yanıt alınamadı." });
+                    Swal.fire({ icon: "warning", title: "İşlem Engellendi", text: res.message });
                 }
             });
         });
 
-        // ✨ Sayfa yüklenince localStorage kontrolü
+        // ✨ 3 Gün “Yeni Eklendi” etiketi
         document.addEventListener("DOMContentLoaded", () => {
+            const newId = '@TempData["NewAboutID"]';
+            if (newId) {
+                const now = Date.now(), expire = now + (3 * 24 * 60 * 60 * 1000);
+                const store = JSON.parse(localStorage.getItem("newAbouts") || "{}");
+                store[newId] = expire;
+                localStorage.setItem("newAbouts", JSON.stringify(store));
+            }
+
             const stored = JSON.parse(localStorage.getItem("newAbouts") || "{}");
-            const now = new Date().getTime();
-            for (const [id, expire] of Object.entries(stored)) {
-                if (expire > now) {
+            const now2 = Date.now();
+            for (const [id, exp] of Object.entries(stored)) {
+                if (exp > now2) {
                     const card = document.getElementById(`about-${id}`);
-                    if (card && !card.querySelector(".new-badge")) {
-                        const badge = document.createElement("div");
-                        badge.className = "new-badge";
-                        badge.innerHTML = "✨ Yeni Eklendi";
-                        card.appendChild(badge);
+                    if (card) {
                         card.classList.add("highlight-new");
+                        if (!card.querySelector(".new-badge")) {
+                            const badge = document.createElement("div");
+                            badge.className = "new-badge";
+                            badge.innerHTML = "✨ Yeni Eklendi";
+                            card.appendChild(badge);
+                        }
                     }
                 } else delete stored[id];
             }
@@ -242,9 +232,9 @@
             background: #fff;
             border-radius: 16px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            padding: 25px 20px;
-            transition: all .3s ease;
             border: 1px solid rgba(255,193,7,0.3);
+            transition: all .3s ease;
+            position: relative;
         }
 
             .about-card:hover {
@@ -253,9 +243,7 @@
             }
 
         .highlight-new {
-            box-shadow: 0 0 20px rgba(255,215,0,0.8);
-            transform: scale(1.02);
-            position: relative;
+            box-shadow: 0 0 18px rgba(255,215,0,0.8) !important;
         }
 
         .new-badge {
@@ -265,9 +253,10 @@
             background: linear-gradient(90deg,#ffd700,#ffb703);
             color: #222;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: .8rem;
             padding: 4px 8px;
             border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             animation: twinkle 1.6s infinite;
         }
 
