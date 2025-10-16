@@ -1,16 +1,97 @@
 ﻿@model List<ResultSpecialOfferDTO>
+
 <div class="col-lg-4">
     @foreach (var item in Model)
     {
-        <div class="product-offer mb-30" style="height: 200px;">
-            <img class="img-fluid" src="@item.SpecialOfferImageUrl" alt="">
-            <div class="offer-text">
-                <h6 class="text-white text-uppercase">@item.SpecialOfferTitle</h6>
-                <h3 class="text-white mb-3">@item.SpecialOfferSubTitle</h3>
-                <a href="" class="btn btn-primary">Fırsatı Kaçırmayın</a>
+        <div class="special-offer-card position-relative overflow-hidden rounded-4 mb-3">
+            <img src="@item.SpecialOfferImageUrl" alt="@item.SpecialOfferTitle" class="w-100 h-100 object-fit-cover">
+            <div class="offer-overlay"></div>
+            <div class="offer-content">
+                <h6 class="text-uppercase fw-bold">@item.SpecialOfferTitle</h6>
+                <h4 class="fw-bold">@item.SpecialOfferSubTitle</h4>
+                <a href="#" class="btn fw-semibold rounded-pill">
+                    Fırsatı Kaçırmayın
+                </a>
             </div>
         </div>
-
     }
-   
 </div>
+
+<style>
+    /* === Premium Kampanya Kartları (final) === */
+    .special-offer-card {
+        height: 210px;
+        border-radius: 18px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+        transition: all .35s ease;
+    }
+
+        .special-offer-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0,0,0,.18);
+        }
+
+        .special-offer-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            transition: transform .6s ease;
+        }
+
+        .special-offer-card:hover img {
+            transform: scale(1.08);
+        }
+
+    .offer-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.75));
+        border-radius: 18px;
+    }
+
+    .offer-content {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding: 1.5rem 1.25rem;
+        color: #fff;
+    }
+
+        .offer-content h6 {
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            opacity: .9;
+            color: #f2c200;
+        }
+
+        .offer-content h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,.6);
+        }
+
+        .offer-content .btn {
+            margin-top: .75rem;
+            border: 2px solid #f2c200;
+            color: #f2c200;
+            background: transparent;
+            border-radius: 50px;
+            padding: .45rem 1.5rem;
+            font-weight: 600;
+            transition: all .25s ease;
+        }
+
+            .offer-content .btn:hover {
+                background: #f2c200;
+                color: #111;
+            }
+</style>
