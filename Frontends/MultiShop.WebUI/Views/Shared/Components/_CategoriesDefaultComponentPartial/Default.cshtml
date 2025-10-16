@@ -1,49 +1,313 @@
 ﻿@model List<ResultCategoryDTO>
 
-<div class="container-fluid pt-5">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Kategoriler</span></h2>
-    <div class="row px-xl-5 pb-3">
-      @foreach (var category in Model)
-        {
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none d-block" href="@Url.Action("Index", "Category", new { id = category.CategoryID })">
-                    <div class="cat-item d-flex align-items-center mb-4 p-2 bg-white rounded shadow-sm">
-                        <div class="thumb flex-shrink-0">
-                            <img class="w-100 h-100" src="@(string.IsNullOrWhiteSpace(category.CategoryImageURL)
-                                                                                                     ? Url.Content("~/multishop/img/placeholder-200x200.jpg")
-                                                                                                     : category.CategoryImageURL)"
-                             alt="@category.CategoryName">
-                    </div>
-                    <div class="flex-grow-1 pl-3">
-                        <h6 class="mb-1 text-dark">@category.CategoryName</h6>
-                        <small class="text-body">@category.ProductCount Ürün</small>
-                    </div>
+<section class="premium-category-showcase py-5">
+    <div class="container-fluid px-5">
+        <h2 class="premium-title text-center mb-5">
+            KATEGORİLERİ KEŞFET
+            <span class="subtitle d-block">Sana özel premium kategorilerle alışveriş keyfini yaşa</span>
+        </h2>
+
+        <div class="category-grid">
+            <!-- 🟨 Sol tarafta büyük kategori -->
+            @if (Model.Any())
+            {
+                var featuredCategory = Model.FirstOrDefault();
+                <a href="@Url.Action("Index", "Category", new { id = featuredCategory.CategoryID })" class="category-card big">
+                    <img src="@(string.IsNullOrWhiteSpace(featuredCategory.CategoryImageURL)
+                                                 ? Url.Content("~/multishop/img/placeholder-200x200.jpg")
+                                                 : featuredCategory.CategoryImageURL)" alt="@featuredCategory.CategoryName" />
+                <div class="overlay">
+                    <h3>@featuredCategory.CategoryName</h3>
+                    <p>@featuredCategory.ProductCount Ürün</p>
+                    <span class="btn-discover">Keşfet</span>
                 </div>
             </a>
+                        }
+
+            <!-- 🟨 Sağ tarafta küçük kategoriler -->
+            @foreach (var category in Model.Skip(1).Take(4))
+            {
+                <a href="@Url.Action("Index", "Category", new { id = category.CategoryID })" class="category-card small">
+                    <img src="@(string.IsNullOrWhiteSpace(category.CategoryImageURL)
+                                                 ? Url.Content("~/multishop/img/placeholder-200x200.jpg")
+                                                 : category.CategoryImageURL)" alt="@category.CategoryName" />
+                <div class="overlay">
+                    <h5>@category.CategoryName</h5>
+                    <small>@category.ProductCount Ürün</small>
+                </div>
+            </a>
+                        }
         </div>
-
-        }
-
-
     </div>
-</div>
+</section>
+
 <style>
-    .cat-item {
-        height: 110px;
+    /* === Arka Plan Animasyonu (temiz beyaz tonlar) === */
+    .premium-category-showcase {
+        background: linear-gradient(120deg, #ffffff, #f8f8f8, #ffffff);
+        background-size: 200% 200%;
+        animation: backgroundShift 10s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    @@keyframes backgroundShift {
+        0%
+
+    {
+        background-position: 0% 50%;
     }
 
-        .cat-item .thumb {
-            width: 100px;
-            height: 100px;
-            overflow: hidden;
-            border-radius: 8px;
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
+    /* === Parlaklık Dalgası === */
+    .premium-category-showcase::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.3), transparent 70%);
+        opacity: 0;
+        animation: softGlow 12s infinite ease-in-out;
+        pointer-events: none;
+        z-index: 0;
+    }
+    @@keyframes softGlow {
+        0%, 100%
+
+    {
+        opacity: 0.05;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+
+    }
+
+    /* === Başlık === */
+    .premium-title {
+        font-size: 2.3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: relative;
+    }
+
+        .premium-title::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #f6d365, #fda085);
         }
 
-            .cat-item .thumb img {
-                width: 100%;
+    .subtitle {
+        font-size: 1rem;
+        color: #555;
+        margin-top: 5px;
+        opacity: 0.9;
+    }
+
+    /* === Grid Yapısı === */
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas:
+            "big small1 small2"
+            "big small3 small4";
+        gap: 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .category-card {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: transform .6s ease, box-shadow .6s ease;
+    }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .6s ease, filter .6s ease;
+            filter: brightness(0.9);
+        }
+
+        .category-card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1);
+        }
+
+        .category-card.big {
+            grid-area: big;
+            height: 500px;
+        }
+
+        .category-card.small {
+            height: 240px;
+        }
+
+        /* === Overlay === */
+        .category-card .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding: 30px;
+            color: #fff;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.05));
+            transition: background .5s ease;
+        }
+
+        .category-card:hover .overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.1));
+        }
+
+        .category-card h3, .category-card h5 {
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .category-card h3 {
+            font-size: 2rem;
+        }
+
+        .category-card h5 {
+            font-size: 1.3rem;
+        }
+
+        /* === Ürün Sayısı Premium Etiket === */
+        .category-card p,
+        .category-card small {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+            color: #fff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            transition: all 0.4s ease;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .category-card p::before,
+            .category-card small::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -60%;
+                width: 50%;
                 height: 100%;
-                object-fit: cover;
-                display: block;
+                background: linear-gradient(120deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
+                transform: skewX(-20deg);
+                transition: left 1s ease;
             }
 
-</style>
+            .category-card p:hover::before,
+            .category-card small:hover::before {
+                left: 120%;
+            }
+
+            .category-card p:hover,
+            .category-card small:hover {
+                background: linear-gradient(90deg, rgba(255, 215, 0, 0.25), rgba(255, 255, 255, 0.15));
+                box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
+                transform: scale(1.05);
+            }
+
+    /* === Keşfet Butonu === */
+    .btn-discover {
+        position: relative;
+        background: linear-gradient(90deg, #f6d365, #fda085);
+        padding: 8px 22px;
+        border-radius: 999px;
+        color: #000;
+        font-weight: 600;
+        overflow: hidden;
+        transition: all .4s ease;
+        box-shadow: 0 0 20px rgba(255, 207, 0, 0.4);
+        margin-top: 10px;
+    }
+
+        .btn-discover::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.7), rgba(255,255,255,0));
+            transform: skewX(-20deg);
+            transition: all .6s ease;
+        }
+
+        .btn-discover:hover::before {
+            left: 130%;
+            transition: left 1.2s ease;
+        }
+
+        .btn-discover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(255, 207, 0, 0.7);
+        }
+
+    /* === Responsive === */
+    @@media (max-width: 991px) {
+        .category-grid
+
+    {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "big big"
+            "small1 small2"
+            "small3 small4";
+    }
+
+    .category-card.big {
+        height: 360px;
+    }
+
+    }
+    @@media (max-width: 576px) {
+        .category-grid
+
+    {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "big"
+            "small1"
+            "small2"
+            "small3"
+            "small4";
+    }
+
+    .category-card {
+        height: 220px;
+    }
+
+    }</style>

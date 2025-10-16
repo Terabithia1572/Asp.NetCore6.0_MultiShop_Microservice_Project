@@ -8,8 +8,6 @@ using MultiShop.Catalog.Services.ProductServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
-    // [AllowAnonymous] // Bu controller'a anonim erişime izin veriyoruz, yani yetkilendirme gerekmiyor.
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -29,6 +27,8 @@ namespace MultiShop.Catalog.Controllers
             _productDiscountCollection = database.GetCollection<ProductDiscount>("ProductDiscounts"); // İndirim koleksiyonu
         }
 
+        // 🔓 [AllowAnonymous] — Ürün listesi public (ön yüzde herkes görebilsin)
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> ProductList()
         {
@@ -40,6 +40,8 @@ namespace MultiShop.Catalog.Controllers
             return Ok(values); // Ürünler bulunduysa 200 OK ile birlikte Ürünleri döndürüyoruz
         }
 
+        // 🔓 [AllowAnonymous] — Belirli bir ürünü herkes görebilsin
+        [AllowAnonymous]
         [HttpGet("{id}")] // Belirli bir Ürün için id parametresi alıyoruz 
         public async Task<IActionResult> GetProductByID(string id)
         {
@@ -48,9 +50,11 @@ namespace MultiShop.Catalog.Controllers
             {
                 return NotFound("Ürün Bulunamadı."); // Eğer Ürün bulunamazsa 404 döndürüyoruz
             }
-            return Ok(value); // Ürün bulunduysa 200 OK ile birlikte Ürünyi döndürüyoruz
+            return Ok(value); // Ürün bulunduysa 200 OK ile birlikte Ürünü döndürüyoruz
         }
 
+        // 🔒 [Authorize] — Yeni ürün oluşturma sadece admin içindir
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateProduct(CreateProductDTO createProductDTO)
         {
@@ -58,20 +62,26 @@ namespace MultiShop.Catalog.Controllers
             return Ok("Ürün Başarıyla Oluşturuldu."); // Ürün başarıyla oluşturulduysa 200 OK ile birlikte mesaj döndürüyoruz
         }
 
-        [HttpDelete] // Ürün silme işlemi için
+        // 🔒 [Authorize] — Ürün silme işlemi için admin yetkisi gerekir
+        [Authorize]
+        [HttpDelete]
         public async Task<IActionResult> DeleteProduct(string id)
         {
             await _productService.DeleteProductAsync(id); // Product Service üzerinden id ile Ürün siliyoruz
             return Ok("Ürün Başarıyla Silindi."); // Ürün başarıyla silindiyse 200 OK ile birlikte mesaj döndürüyoruz
         }
 
-        [HttpPut] // Ürün güncelleme işlemi için
+        // 🔒 [Authorize] — Ürün güncelleme işlemi sadece admin için
+        [Authorize]
+        [HttpPut]
         public async Task<IActionResult> UpdateProduct(UpdateProductDTO updateProductDTO)
         {
             await _productService.UpdateProductAsync(updateProductDTO); // Product Service üzerinden güncelleme işlemi yapıyoruz
             return Ok("Ürün Başarıyla Güncellendi."); // Ürün başarıyla güncellendiyse 200 OK ile birlikte mesaj döndürüyoruz
         }
 
+        // 🔓 [AllowAnonymous] — Kategorilerle birlikte Ürünleri getirme işlemi public olabilir
+        [AllowAnonymous]
         [HttpGet("ProductListWithCategory")] // Kategorilerle birlikte Ürünleri getirme işlemi için
         public async Task<IActionResult> ProductListWithCategory()
         {
@@ -83,6 +93,8 @@ namespace MultiShop.Catalog.Controllers
             return Ok(values); // Ürünler bulunduysa 200 OK ile birlikte Ürünleri döndürüyoruz
         }
 
+        // 🔓 [AllowAnonymous] — Belirli kategorideki ürünleri getirme işlemi de public
+        [AllowAnonymous]
         [HttpGet("ProductListWithCategoryByCategoryID/{id}")]
         public async Task<IActionResult> ProductListWithCategoryByCategoryID(string id)
         {
@@ -95,7 +107,8 @@ namespace MultiShop.Catalog.Controllers
         }
 
         // 🆕 🟢 ÜRÜNLERİ İNDİRİMLERLE DÖNDÜREN ENDPOINT
-        [AllowAnonymous] // Üyelik olmadan da anasayfada listeleyebilmek için bu endpoint'i anonim açtık (İstersen kaldırabilirsin)
+        // 🔓 [AllowAnonymous] — Ön yüzde kullanıcı login olmasa da anasayfada indirimli ürünler görebilmeli
+        [AllowAnonymous]
         [HttpGet("GetProductsWithDiscount")]
         public async Task<IActionResult> GetProductsWithDiscount()
         {

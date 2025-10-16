@@ -6,7 +6,7 @@ using MultiShop.Catalog.Services.CategoryServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
+   // [Authorize] // Bu controller'a erişim için yetkilendirme gereklidir.
    // [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
@@ -18,6 +18,7 @@ namespace MultiShop.Catalog.Controllers
         {
             _categoryService = categoryService; // Constructor üzerinden Category Service'i alıyoruz
         }
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> CategoryList()
         {
@@ -28,6 +29,7 @@ namespace MultiShop.Catalog.Controllers
             }
             return Ok(values); // Kategoriler bulunduysa 200 OK ile birlikte kategorileri döndürüyoruz
         }
+        [AllowAnonymous]
         [HttpGet("{id}")] // Belirli bir kategori için id parametresi alıyoruz 
         public async Task<IActionResult> GetCategoryByID(string id)
         {
@@ -38,18 +40,21 @@ namespace MultiShop.Catalog.Controllers
             }
             return Ok(value); // Kategori bulunduysa 200 OK ile birlikte kategoriyi döndürüyoruz
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryDTO createCategoryDTO)
         {
             await _categoryService.CreateCategoryAsync(createCategoryDTO); // Category Service üzerinden yeni kategori oluşturuyoruz
             return Ok("Kategori Başarıyla Oluşturuldu."); // Kategori başarıyla oluşturulduysa 200 OK ile birlikte mesaj döndürüyoruz
         }
+        [Authorize]
         [HttpDelete] // Kategori silme işlemi için
         public async Task<IActionResult> DeleteCategory(string id)
         {
             await _categoryService.DeleteCategoryAsync(id); // Category Service üzerinden id ile kategori siliyoruz
             return Ok("Kategori Başarıyla Silindi."); // Kategori başarıyla silindiyse 200 OK ile birlikte mesaj döndürüyoruz
         }
+        [Authorize]
         [HttpPut] // Kategori güncelleme işlemi için
         public async Task<IActionResult> UpdateCategory(UpdateCategoryDTO updateCategoryDTO)
         {
