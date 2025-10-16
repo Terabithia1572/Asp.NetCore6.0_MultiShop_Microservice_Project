@@ -1,0 +1,230 @@
+﻿@model IEnumerable<ResultProductDTO>
+
+@{
+    var categories = ViewBag.Categories as IDictionary<string, string>;
+    var discounts = ViewBag.Discounts as IDictionary<string, decimal>;
+}
+
+<section class="trend-deluxe-section py-5">
+    <div class="container-fluid px-5">
+
+        <!-- Başlık -->
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-dark mb-2 display-6">Trend Ürünler</h2>
+            <p class="text-muted mb-0">Gerçek fırsatlar burada. En popüler ürünleri keşfet!</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var p in Model.Take(8))
+                {
+                    string categoryName = categories != null && categories.ContainsKey(p.CategoryID)
+                    ? categories[p.CategoryID]
+                    : "Genel";
+
+                    bool hasDiscount = discounts != null && discounts.ContainsKey(p.ProductID);
+                    decimal discountRate = hasDiscount ? discounts[p.ProductID] : 0;
+                    decimal discountedPrice = hasDiscount ? p.ProductPrice * (1 - discountRate / 100m) : p.ProductPrice;
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="trend-deluxe-card position-relative rounded-4 overflow-hidden">
+
+                            <!-- Görsel -->
+                            <div class="trend-deluxe-img">
+                                <img src="@p.ProductImageURL" alt="@p.ProductName" />
+
+                                @if (hasDiscount)
+                                {
+                                    <span class="discount-badge">-%@discountRate</span>
+                                }
+
+                                <span class="fav-icon"><i class="bi bi-heart"></i></span>
+
+                                <div class="trend-overlay d-flex flex-column justify-content-end align-items-center">
+                                    <a href="/ProductList/ProductDetail/@p.ProductID" class="trend-btn">Detaylı Gör</a>
+                                </div>
+                            </div>
+
+                            <!-- Bilgi -->
+                            <div class="trend-deluxe-body p-3 text-center bg-white">
+                                <h6 class="product-name text-truncate mb-1 fw-semibold" title="@p.ProductName">@p.ProductName</h6>
+
+                                <div class="price-wrapper">
+                                    @if (hasDiscount)
+                                    {
+                                        <span class="old-price">@String.Format("{0:0.##}", p.ProductPrice)₺</span>
+                                        <span class="new-price">@String.Format("{0:0.##}", discountedPrice)₺</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="new-price">@String.Format("{0:0.##}", p.ProductPrice)₺</span>
+                                    }
+                                </div>
+
+                                <div class="mt-2 small text-muted">
+                                    <span class="me-2"><i class="bi bi-tag"></i> @categoryName</span>
+                                    <span class="text-success"><i class="bi bi-check2-circle"></i> Stokta Var</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center text-muted py-5">Şu anda trend ürün bulunmamaktadır.</div>
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .trend-deluxe-section {
+        background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+    }
+
+    /* Kart ana gövde */
+    .trend-deluxe-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+        transition: all .3s ease;
+    }
+
+        .trend-deluxe-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, .15);
+        }
+
+    /* Görsel */
+    .trend-deluxe-img {
+        position: relative;
+        height: 260px;
+        overflow: hidden;
+    }
+
+        .trend-deluxe-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s ease, filter .4s ease;
+        }
+
+    .trend-deluxe-card:hover .trend-deluxe-img img {
+        transform: scale(1.08);
+        filter: brightness(0.9);
+    }
+
+    /* Hover overlay */
+    .trend-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        background: linear-gradient(to top, rgba(0, 0, 0, .55), rgba(0, 0, 0, 0) 60%);
+        opacity: 0;
+        transition: opacity .3s ease;
+    }
+
+    .trend-deluxe-card:hover .trend-overlay {
+        opacity: 1;
+    }
+
+    /* Buton */
+    .trend-btn {
+        background: rgba(255, 255, 255, .88);
+        color: #111;
+        font-weight: 600;
+        font-size: .9rem;
+        border-radius: 999px;
+        padding: 6px 18px;
+        margin-bottom: 14px;
+        text-decoration: none;
+        transition: all .25s ease;
+    }
+
+        .trend-btn:hover {
+            background: #f2c200;
+            color: #111;
+        }
+
+    /* Rozetler */
+    .discount-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(45deg, #f2c200, #ffe98a);
+        color: #111;
+        font-weight: 700;
+        font-size: .8rem;
+        border-radius: 99px;
+        padding: 4px 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+    }
+
+    .fav-icon {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255, 255, 255, .9);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, .15);
+        transition: all .25s ease;
+        color: #111;
+        cursor: pointer;
+    }
+
+        .fav-icon:hover {
+            background: #f2c200;
+            color: #111;
+            transform: scale(1.1);
+        }
+
+    /* Kart gövdesi */
+    .trend-deluxe-body {
+        border-top: 1px solid #f1f1f1;
+    }
+
+    .product-name {
+        color: #1f2328;
+        font-size: .95rem;
+    }
+
+    .price-wrapper {
+        margin-top: 6px;
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        color: #a0a0a0;
+        margin-right: 6px;
+        font-size: .9rem;
+    }
+
+    .new-price {
+        color: #f2c200;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 575.98px) {
+        .trend-deluxe-img
+
+    {
+        height: 220px;
+    }
+
+    .trend-deluxe-card {
+        border-radius: 14px;
+    }
+
+    }
+</style>

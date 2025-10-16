@@ -1,0 +1,323 @@
+﻿@model ResultProductDiscountDTO
+
+<!-- 🔥 Başlık -->
+<h2 class="deal-section-title">GÜNÜN FIRSATI</h2>
+
+<section class="deal-premium-section py-5">
+    <div class="container-fluid px-5">
+        <div class="deal-premium-card position-relative overflow-hidden rounded-4 shadow-lg">
+
+            <!-- Arka Blur -->
+            <div class="deal-bg"></div>
+
+            <!-- Görsel -->
+            <div class="deal-img-wrapper">
+                <img src="@Model.ProductImageURL" alt="@Model.ProductName" class="deal-premium-img" />
+            </div>
+
+            <!-- İçerik -->
+            <div class="deal-content">
+                <span class="deal-badge">% @Model.DiscountRate İndirim</span>
+                <h2 class="fw-bold mt-3">@Model.ProductName</h2>
+                <p class="opacity-75 mb-4">Bugüne özel inanılmaz fırsatı kaçırma! Sadece sınırlı süreyle aktif.</p>
+
+                <div id="countdown" class="deal-countdown mb-4"></div>
+
+                <a href="/ProductList/ProductDetail/@Model.ProductID" class="btn btn-light fw-semibold px-4 py-2 rounded-pill">
+                    Fırsatı Yakala 🔥
+                </a>
+                <div class="deal-valid small mt-2">
+                    Geçerli: @Model.StartDate.ToString("dd.MM.yyyy") - @Model.EndDate.ToString("dd.MM.yyyy")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* --- Genel yapı --- */
+    .deal-premium-section {
+        background: #f9fafb;
+        padding-top: 70px;
+        position: relative;
+    }
+
+    /* 🔥 Başlık */
+    .deal-section-title {
+        text-align: center;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1f1f1f;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        margin-bottom: 45px;
+        display: block;
+    }
+
+        .deal-section-title::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #e8b65c, #fddc8f);
+            animation: glowline 3s infinite alternate;
+        }
+
+    @@keyframes glowline {
+        from
+
+    {
+        box-shadow: 0 0 8px rgba(255,215,0,0.4);
+    }
+
+    to {
+        box-shadow: 0 0 20px rgba(255,215,0,0.9);
+    }
+
+    }
+
+    /* --- Ana Kart --- */
+    .deal-premium-card {
+        position: relative;
+        height: 340px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+        background: linear-gradient(120deg, #fff8e6, #fde9b5, #f9d976);
+        border-radius: 20px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+        /* ✨ IŞIK HUZMESİ (SHIMMER) */
+        .deal-premium-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.4), rgba(255,255,255,0.15), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 8s infinite linear;
+            z-index: 4;
+            mix-blend-mode: screen;
+        }
+
+    @@keyframes shimmer {
+        0%
+
+    {
+        left: -60%;
+    }
+
+    50% {
+        left: 110%;
+    }
+
+    100% {
+        left: 110%;
+    }
+
+    }
+
+    /* Görsel */
+    .deal-img-wrapper {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 50%;
+        overflow: hidden;
+        z-index: 2;
+    }
+
+    .deal-premium-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 1s ease, filter .6s ease;
+        filter: brightness(0.9) contrast(0.95);
+    }
+
+    .deal-premium-card:hover .deal-premium-img {
+        transform: scale(1.08);
+        filter: brightness(1);
+    }
+
+    /* 💫 PARILTILI DAMLA EFEKTİ */
+    .deal-img-wrapper::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+        animation: sparkleMove 6s infinite linear;
+        mix-blend-mode: screen;
+        z-index: 3;
+    }
+
+    @@keyframes sparkleMove {
+        0%
+
+    {
+        transform: translate(-10%, -10%) rotate(0deg);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translate(20%, 20%) rotate(180deg);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translate(-10%, -10%) rotate(360deg);
+        opacity: 0.3;
+    }
+
+    }
+
+    /* İçerik */
+    .deal-content {
+        position: relative;
+        z-index: 5;
+        width: 50%;
+        padding: 50px;
+        color: #1a1a1a;
+    }
+
+        .deal-content h2 {
+            font-size: 2rem;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .deal-content p {
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+    /* İndirim etiketi */
+    .deal-badge {
+        background: linear-gradient(90deg, #ffec80, #f5c842);
+        color: #222;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-radius: 999px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Sayaç */
+    .deal-countdown {
+        display: flex;
+        gap: 10px;
+    }
+
+        .deal-countdown div {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            color: #333;
+            border-radius: 10px;
+            padding: 10px 12px;
+            min-width: 70px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
+        }
+
+        .deal-countdown span {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .deal-countdown small {
+            display: block;
+            font-size: 0.75rem;
+            opacity: .7;
+        }
+
+    /* Buton */
+    .btn.btn-light {
+        background: #222;
+        color: #f9d976 !important;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+        .btn.btn-light:hover {
+            background: #000;
+            color: #fff9c4 !important;
+            transform: scale(1.05);
+        }
+
+    /* Alt yazı */
+    .deal-valid {
+        color: #444 !important;
+        opacity: 0.8;
+    }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .deal-premium-card
+
+    {
+        flex-direction: column;
+        height: auto;
+        text-align: center;
+    }
+
+    .deal-img-wrapper {
+        position: relative;
+        width: 100%;
+        height: 240px;
+    }
+
+    .deal-content {
+        width: 100%;
+        padding: 30px 20px;
+    }
+
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const countdown = document.getElementById("countdown");
+        const endDate = new Date("@Model.EndDate.ToString("yyyy-MM-ddTHH:mm:ss")").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = endDate - now;
+
+            if (diff <= 0) {
+                countdown.innerHTML = "<div class='text-danger fw-bold'>Süre doldu!</div>";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            countdown.innerHTML = `
+                <div><span>${days}</span><small>Gün</small></div>
+                <div><span>${hours}</span><small>Saat</small></div>
+                <div><span>${minutes}</span><small>Dakika</small></div>
+                <div><span>${seconds}</span><small>Saniye</small></div>
+            `;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
+</script>
