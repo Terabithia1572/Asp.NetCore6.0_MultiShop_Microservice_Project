@@ -1,52 +1,220 @@
 ﻿@model List<ResultSpecialOfferDTO>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] = "Özel Teklifler";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<!-- Üst Alan -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex align-items-center gap-2">
+        <h4 class="fw-semibold text-dark mb-0">
+            <i class="fa-solid fa-gift text-warning me-2"></i>Özel Teklifler
+        </h4>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#addOfferModal">
+            <i class="fa-solid fa-bolt me-1"></i> Hızlı Teklif Ekle
+        </button>
+        <a href="/Admin/SpecialOffer/CreateSpecialOffer" class="btn btn-outline-warning fw-semibold shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Tam Sayfada Ekle
+        </a>
+    </div>
+</div>
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>İndirim Listesi</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>İndirim Başlığı</th>
-                                <th>İndirim Alt Başlığı</th>
-                                <th>İndirim Görseli</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.SpecialOfferTitle</td>
-                                    <td>@item.SpecialOfferSubTitle</td>
-                                    <td>@item.SpecialOfferImageUrl</td>
-                                    <td><a href="/Admin/SpecialOffer/DeleteSpecialOffer/@item.SpecialOfferID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/SpecialOffer/UpdateSpecialOffer/@item.SpecialOfferID" class="btn btn-success">Güncelle</a></td>
-
-                                </tr>
-                            }
-
-                        </tbody>
-                    </table>
-                    <a href="/Admin/SpecialOffer/CreateSpecialOffer/" class="btn btn-primary">Yeni İndirim Girişi</a>
+<!-- Listeleme Alanı -->
+<div id="offerGrid" class="offer-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px;">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-light border text-center py-4">
+            <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+            Henüz özel teklif eklenmemiş.
+        </div>
+    }
+    else
+    {
+        foreach (var offer in Model)
+        {
+            <div class="offer-card" id="offer-@offer.SpecialOfferID">
+                <div class="offer-image">
+                    <img src="@offer.SpecialOfferImageUrl" alt="@offer.SpecialOfferTitle" class="img-fluid rounded-3 shadow-sm" />
+                </div>
+                <div class="p-3 text-center">
+                    <h5 class="fw-bold text-dark">@offer.SpecialOfferTitle</h5>
+                    <p class="text-muted small">@offer.SpecialOfferSubTitle</p>
+                    <div class="mt-3 d-flex justify-content-center gap-2">
+                        <a href="/Admin/SpecialOffer/UpdateSpecialOffer/@offer.SpecialOfferID" class="btn btn-sm btn-outline-warning fw-semibold px-3">
+                            <i class="fa-solid fa-pen-to-square"></i> Güncelle
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger fw-semibold px-3" onclick="confirmDelete('@offer.SpecialOfferID')">
+                            <i class="fa-solid fa-trash"></i> Sil
+                        </button>
+                    </div>
                 </div>
             </div>
+        }
+    }
+</div>
+
+<!-- 🟨 Hızlı Teklif Ekle Modal -->
+<div class="modal fade" id="addOfferModal" tabindex="-1" aria-labelledby="addOfferLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-warning text-dark py-3 px-4 border-0">
+                <h5 class="modal-title fw-semibold">
+                    <i class="fa-solid fa-bolt me-2"></i>Hızlı Özel Teklif Ekle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+
+            <form id="quickOfferForm" class="bg-light py-3 px-4">
+                <div class="row g-3">
+                    <!-- Sol: Görsel -->
+                    <div class="col-md-5">
+                        <div id="dropZoneQuick" class="image-dropzone text-center p-3 rounded shadow-sm">
+                            <input type="file" id="imageInputQuick" accept="image/*" hidden />
+                            <img id="previewImageQuick" src="https://dummyimage.com/600x400/efefef/aaa&text=Teklif+Görseli"
+                                 class="img-fluid rounded mb-2" style="object-fit:cover; height:200px; width:100%;">
+                            <div class="text-muted small mb-2">Dosyanı buraya sürükle veya seçmek için tıkla</div>
+                            <button type="button" id="selectImageBtnQuick" class="btn btn-sm btn-outline-warning fw-semibold">
+                                <i class="fa-solid fa-upload me-1"></i> Görsel Seç
+                            </button>
+                            <input type="hidden" id="SpecialOfferImageUrlQuick" />
+                        </div>
+                    </div>
+
+                    <!-- Sağ: Alanlar -->
+                    <div class="col-md-7">
+                        <div class="card border-0 shadow-sm p-3 rounded-3 bg-white">
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Teklif Başlığı</label>
+                                <input type="text" id="SpecialOfferTitleQuick" class="form-control form-control-sm shadow-sm" required />
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Alt Başlık</label>
+                                <input type="text" id="SpecialOfferSubTitleQuick" class="form-control form-control-sm shadow-sm" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light border shadow-sm px-3" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark"></i> İptal
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm px-4">
+                        <i class="fa-solid fa-check me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
         </div>
-
     </div>
-</section>
+</div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Silme
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Emin misin?",
+                text: "Bu özel teklif kalıcı olarak silinecek!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, sil!",
+                cancelButtonText: "İptal"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(`/Admin/SpecialOffer/DeleteSpecialOffer/${id}`, { method: "GET" })
+                        .then(r => {
+                            if (r.ok) {
+                                document.getElementById(`offer-${id}`)?.remove();
+                                Swal.fire({ icon: "success", title: "Silindi!", showConfirmButton: false, timer: 1300 });
+                            }
+                        });
+                }
+            });
+        }
 
+        // Drag & Drop (Hızlı Ekle)
+        const dropQuick = document.getElementById("dropZoneQuick");
+        const inputQuick = document.getElementById("imageInputQuick");
+        const previewQuick = document.getElementById("previewImageQuick");
+        const hiddenUrlQuick = document.getElementById("SpecialOfferImageUrlQuick");
+        document.getElementById("selectImageBtnQuick").addEventListener("click", () => inputQuick.click());
+        dropQuick.addEventListener("dragover", e => { e.preventDefault(); dropQuick.classList.add("drag-over"); });
+        dropQuick.addEventListener("dragleave", () => dropQuick.classList.remove("drag-over"));
+        dropQuick.addEventListener("drop", e => { e.preventDefault(); dropQuick.classList.remove("drag-over"); handleQuick(e.dataTransfer.files[0]); });
+        inputQuick.addEventListener("change", e => handleQuick(e.target.files[0]));
+        function handleQuick(file) {
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = (e) => { previewQuick.src = e.target.result; hiddenUrlQuick.value = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Hızlı Ekle – AJAX
+        document.getElementById("quickOfferForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const title = document.getElementById("SpecialOfferTitleQuick").value.trim();
+            const sub = document.getElementById("SpecialOfferSubTitleQuick").value.trim();
+            const img = document.getElementById("SpecialOfferImageUrlQuick").value.trim();
+
+            if (!title || !sub || !img) {
+                Swal.fire({ icon: "warning", title: "Eksik Bilgi", text: "Lütfen tüm alanları doldurun ve görsel seçin." });
+                return;
+            }
+
+            const fd = new FormData();
+            fd.append("SpecialOfferTitle", title);
+            fd.append("SpecialOfferSubTitle", sub);
+            fd.append("SpecialOfferImageUrl", img);
+
+            fetch("/Admin/SpecialOffer/CreateSpecialOfferAjax", { method: "POST", body: fd })
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.specialOfferID) {
+                        Swal.fire({ icon: "success", title: "Eklendi!", text: "Özel teklif başarıyla eklendi.", showConfirmButton: false, timer: 1200 });
+                        location.reload();
+                    }
+                });
+        });
+    </script>
+
+    <style>
+        .offer-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,193,7,0.3);
+            overflow: hidden;
+            transition: all .3s ease;
+            position: relative;
+        }
+
+            .offer-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 10px 20px rgba(255,193,7,0.35);
+            }
+
+        .offer-image img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+        }
+
+        .image-dropzone {
+            border: 2px dashed #ddd;
+            transition: all .3s ease;
+            background: #fafafa;
+        }
+
+            .image-dropzone.drag-over {
+                border-color: #ffc107;
+                background: #fffbe6;
+                transform: scale(1.02);
+            }
+    </style>
+}

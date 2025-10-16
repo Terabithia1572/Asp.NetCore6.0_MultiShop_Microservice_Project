@@ -43,6 +43,23 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
             await _specialOfferService.CreateSpecialOfferAsync(createSpecialOfferDTO); // Yeni indirim oluşturur.
             return RedirectToAction("Index", "SpecialOffer", new { area = "Admin" }); // İndirim listesine yönlendirilir.
         }
+        [HttpPost]
+        public async Task<IActionResult> CreateSpecialOfferAjax(CreateSpecialOfferDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.SpecialOfferTitle) ||
+                string.IsNullOrWhiteSpace(dto.SpecialOfferSubTitle) ||
+                string.IsNullOrWhiteSpace(dto.SpecialOfferImageUrl))
+            {
+                return BadRequest(new { error = "Eksik alanlar var." });
+            }
+
+            await _specialOfferService.CreateSpecialOfferAsync(dto);
+
+            // ✅ AJAX dönüşü için ID dönelim (servis dönüşünde ID yoksa mock ID oluştur)
+            var newId = Guid.NewGuid().ToString();
+            return Json(new { specialOfferID = newId });
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteSpecialOffer(string id)
         {

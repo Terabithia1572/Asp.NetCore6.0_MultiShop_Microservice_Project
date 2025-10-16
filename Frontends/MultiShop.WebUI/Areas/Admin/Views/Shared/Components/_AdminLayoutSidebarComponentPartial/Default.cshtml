@@ -21,13 +21,13 @@
                 <a href="/Admin/Dashboard/Index" class="@(path.Contains("/admin/dashboard") ? "active" : "")">
                     <i class="fa-solid fa-gauge"></i> Dashboard
                 </a>
-                <a href="/Admin/Product/Index" class="@(path.Contains("/admin/product") ? "active" : "")">
+                <a href="/Admin/Product/Index" class="@(path.StartsWith("/admin/product/") || path.Equals("/admin/product/index") ? "active" : "")">
                     <i class="fa-solid fa-box"></i> Ürünler
                 </a>
-                <a href="/Admin/Category/Index" class="@(path.Contains("/admin/category") ? "active" : "")">
+                <a href="/Admin/Category/Index" class="@(path.StartsWith("/admin/category/") || path.Equals("/admin/category/index") ? "active" : "")">
                     <i class="fa-solid fa-list"></i> Kategoriler
                 </a>
-                <a href="/Admin/FeatureSlider/Index" class="@(path.Contains("/admin/featureslider") ? "active" : "")">
+                <a href="/Admin/FeatureSlider/Index" class="@(path.StartsWith("/admin/featureslider/") ? "active" : "")">
                     <i class="fa-solid fa-panorama"></i> Slider Yönetimi
                 </a>
             </nav>
@@ -35,16 +35,16 @@
             <!-- 🟨 KAMPANYA -->
             <div class="sec-title">Kampanya</div>
             <nav class="nav">
-                <a href="/Admin/ProductDiscount/Index" class="@(path.Contains("/admin/productdiscount") ? "active" : "")">
+                <a href="/Admin/ProductDiscount/Index" class="@(path.StartsWith("/admin/productdiscount/") ? "active" : "")">
                     <i class="fa-solid fa-percent"></i> Ürün İndirimleri
                 </a>
-                <a href="/Admin/Feature/Index" class="@(path.Contains("/admin/feature/") && !path.Contains("/admin/featureslider")) ? " active" : "" )">
+                <a href="/Admin/Feature/Index" class="@(path.StartsWith("/admin/feature/") ? "active" : "")">
                     <i class="fa-solid fa-star"></i> Öne Çıkan Özellikler
                 </a>
-                <a href="/Admin/OfferDiscount/Index" class="@(path.Contains("/admin/offerdiscount") ? "active" : "")">
+                <a href="/Admin/OfferDiscount/Index" class="@(path.StartsWith("/admin/offerdiscount/") ? "active" : "")">
                     <i class="fa-solid fa-ticket"></i> Kampanyalar
                 </a>
-                <a href="/Admin/Brand/Index" class="@(path.Contains("/admin/brand") ? "active" : "")">
+                <a href="/Admin/Brand/Index" class="@(path.StartsWith("/admin/brand/") ? "active" : "")">
                     <i class="fa-solid fa-registered"></i> Markalar
                 </a>
             </nav>
@@ -52,22 +52,22 @@
             <!-- 🟨 MAĞAZA -->
             <div class="sec-title">Mağaza</div>
             <nav class="nav">
-                <a href="/Admin/About/Index" class="@(path.Contains("/admin/about") ? "active" : "")">
+                <a href="/Admin/About/Index" class="@(path.StartsWith("/admin/about/") ? "active" : "")">
                     <i class="fa-solid fa-circle-info"></i> Hakkımızda
                 </a>
-                <a href="/Admin/Comment/Index" class="@(path.Contains("/admin/comment") ? "active" : "")">
+                <a href="/Admin/Comment/Index" class="@(path.StartsWith("/admin/comment/") ? "active" : "")">
                     <i class="fa-solid fa-comments"></i> Yorumlar
                 </a>
-                <a href="/Admin/User/Index" class="@(path.Contains("/admin/user") ? "active" : "")">
+                <a href="/Admin/User/Index" class="@(path.StartsWith("/admin/user/") ? "active" : "")">
                     <i class="fa-solid fa-users"></i> Kullanıcılar
                 </a>
-                <a href="/Admin/Cargo/Index" class="@(path.Contains("/admin/cargo") ? "active" : "")">
+                <a href="/Admin/Cargo/CargoCompanyList" class="@(path.Contains("/admin/cargo/") ? "active" : "")">
                     <i class="fa-solid fa-dolly"></i> Kargo İşlemleri
                 </a>
-                <a href="/Admin/Statistic/Index" class="@(path.Contains("/admin/statistic") ? "active" : "")">
+                <a href="/Admin/Statistic/Index" class="@(path.StartsWith("/admin/statistic/") ? "active" : "")">
                     <i class="fa-solid fa-chart-line"></i> İstatistikler
                 </a>
-                <a href="/Admin/SpecialOffer/Index" class="@(path.Contains("/admin/specialoffer") ? "active" : "")">
+                <a href="/Admin/SpecialOffer/Index" class="@(path.StartsWith("/admin/specialoffer/") ? "active" : "")">
                     <i class="fa-solid fa-gift"></i> Özel Teklifler
                 </a>
             </nav>
@@ -75,10 +75,10 @@
             <!-- 🟨 MESAJ & GALERİ -->
             <div class="sec-title">İletişim & Medya</div>
             <nav class="nav">
-                <a href="/Admin/Message/Index" class="@(path.Contains("/admin/message") ? "active" : "")">
+                <a href="/Admin/Message/Index" class="@(path.StartsWith("/admin/message/") ? "active" : "")">
                     <i class="fa-solid fa-envelope"></i> Mesajlar
                 </a>
-                <a href="/Admin/Gallery/Index" class="@(path.Contains("/admin/gallery") ? "active" : "")">
+                <a href="/Admin/Gallery/Index" class="@(path.StartsWith("/admin/gallery/") ? "active" : "")">
                     <i class="fa-solid fa-image"></i> Galeri
                 </a>
             </nav>
@@ -86,7 +86,7 @@
             <!-- 🟨 SİSTEM -->
             <div class="sec-title">Sistem</div>
             <nav class="nav">
-                <a href="/Admin/Setting/Index" class="@(path.Contains("/admin/setting") ? "active" : "")">
+                <a href="/Admin/Setting/Index" class="@(path.StartsWith("/admin/setting/") ? "active" : "")">
                     <i class="fa-solid fa-gear"></i> Ayarlar
                 </a>
                 <a href="/Login/Logout">
