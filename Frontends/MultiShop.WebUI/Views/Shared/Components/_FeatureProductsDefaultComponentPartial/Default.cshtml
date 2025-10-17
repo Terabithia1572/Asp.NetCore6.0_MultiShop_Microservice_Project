@@ -1,204 +1,326 @@
 ﻿@model List<ResultProductWithDiscountDTO>
 
-<!-- ÖNE ÇIKAN ÜRÜNLER -->
-<div class="container-fluid pt-5 pb-3">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-        <span class="bg-secondary pr-3">Öne Çıkan Ürünler</span>
-    </h2>
+<section class="premium-featured-showcase py-5">
+    <div class="container-fluid px-5">
 
-    <div class="row px-xl-5">
-        @foreach (var item in Model)
-        {
-            // 🔹 Rozet tipi (indirim varsa % değeri, yoksa fallback)
-            string badgeText = item.DiscountRate.HasValue
-                ? "-" + item.DiscountRate.Value + "%"
-                : "YENİ";
+        <!-- 🪩 Başlık -->
+        <h2 class="premium-title text-center mb-5">
+            ÖNE ÇIKAN ÜRÜNLER
+            <span class="subtitle d-block">En çok ilgi gören ürünleri keşfet ve premium alışveriş keyfini yaşa</span>
+        </h2>
 
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 pb-3 d-flex">
-                <div class="product-item bg-light">
-                    <div class="product-img position-relative overflow-hidden">
-                        <span class="product-badge">@badgeText</span>
-                        <img src="@item.ProductImageURL" alt="@item.ProductName">
-                        <div class="product-action">
-                            <a href="javascript:void(0)"
-                               class="btn btn-outline-dark btn-square btn-add-basket"
-                               data-id="@item.ProductID">
-                                <i class="fa fa-shopping-cart"></i>
+        <!-- Ürün Kartları -->
+        <div class="row gx-4 gy-4">
+            @foreach (var item in Model)
+            {
+                var badgeText = item.DiscountRate.HasValue ? ("-" + item.DiscountRate.Value + "%") : "YENİ";
+
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex">
+                    <div class="featured-card flex-fill">
+                        <div class="img-wrapper">
+                            <img src="@item.ProductImageURL" alt="@item.ProductName" class="product-img" />
+                            <span class="badge-tag">@badgeText</span>
+
+                            <div class="card-actions">
+                                <a href="javascript:void(0)" class="action-btn add-to-cart" data-id="@item.ProductID" title="Sepete Ekle">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                                <a href="#" class="action-btn" title="Favorilere Ekle">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <a href="/ProductList/ProductDetail/@item.ProductID" class="action-btn" title="Detay">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="text-center px-3 py-4">
+                            <a href="/ProductList/ProductDetail/@item.ProductID" class="fw-semibold text-decoration-none text-dark d-block mb-2 text-truncate">
+                                @item.ProductName
                             </a>
-                            <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href="/ProductList/ProductDetail/@item.ProductID"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
 
-                    <div class="text-center py-4 flex-grow-1 d-flex flex-column justify-content-between">
-                        <a class="h6 text-decoration-none text-truncate" href="/ProductList/ProductDetail/@item.ProductID">
-                            @item.ProductName
-                        </a>
+                            <div class="d-flex justify-content-center align-items-center mb-2">
+                                <h5 class="fw-bold text-dark mb-0">@item.DiscountedPrice ₺</h5>
+                                @if (item.DiscountRate.HasValue)
+                                {
+                                    <h6 class="text-muted ms-2 mb-0"><del>@item.ProductPrice ₺</del></h6>
+                                }
+                            </div>
 
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>@item.DiscountedPrice ₺</h5>
-
-                            @if (item.DiscountRate.HasValue)
-                            {
-                                <h6 class="text-muted ml-2"><del>@item.ProductPrice ₺</del></h6>
-                            }
-                        </div>
-
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-warning mr-1"></small>
-                            <small class="fa fa-star text-warning mr-1"></small>
-                            <small class="fa fa-star text-warning mr-1"></small>
-                            <small class="fa fa-star text-warning mr-1"></small>
-                            <small class="fa fa-star text-warning mr-1"></small>
-                            <small>(@Model.Count)</small>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <small class="fa fa-star text-warning me-1"></small>
+                                <small class="fa fa-star text-warning me-1"></small>
+                                <small class="fa fa-star text-warning me-1"></small>
+                                <small class="fa fa-star text-warning me-1"></small>
+                                <small class="fa fa-star text-warning me-1"></small>
+                                <small>(@Model.Count)</small>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
+</section>
 
-<!-- TASARIM DÜZENLEME CSS -->
 <style>
-    /* === ÜRÜN KARTLARI === */
-    .product-item {
-        border: 1px solid #eee;
-        border-radius: 6px;
-        background-color: #fff;
-        text-align: center;
-        transition: all 0.3s ease-in-out;
+    /* === Arka Plan Animasyonu === */
+    .premium-featured-showcase {
+        background: linear-gradient(120deg, #ffffff, #fafafa, #ffffff);
+        background-size: 200% 200%;
+        animation: backgroundShift 12s ease-in-out infinite;
+    }
+    @@keyframes backgroundShift {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
+    /* === Başlık === */
+    .premium-title {
+        font-size: 2.3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-transform: uppercase;
+        position: relative;
+        letter-spacing: 1px;
+    }
+
+        .premium-title::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #f6d365, #fda085);
+        }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #555;
+        margin-top: 5px;
+        opacity: 0.9;
+    }
+
+    /* === Kartlar === */
+    .featured-card {
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        transition: all .5s ease;
         overflow: hidden;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
         position: relative;
     }
 
-    .product-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        .featured-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 50px rgba(255, 195, 0, 0.25);
+        }
+
+        .featured-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 240, 200, 0.12), transparent 70%);
+            opacity: 0;
+            transition: opacity .6s ease;
+            pointer-events: none;
+        }
+
+        .featured-card:hover::after {
+            opacity: 1;
+        }
+
+    /* === Görsel === */
+    .img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px 18px 0 0;
     }
 
-    /* === ROZET === */
-    .product-badge {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: #ff4242;
-        color: #fff;
-        font-size: 13px;
-        font-weight: 600;
-        padding: 5px 10px;
-        border-radius: 4px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        z-index: 2;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Farklı türler için renk */
-    .product-badge.new { background-color: #28a745; }
-    .product-badge.sale { background-color: #007bff; }
-
-    /* === GÖRSEL === */
-    .product-item img {
+    .product-img {
         width: 100%;
         height: 250px;
         object-fit: cover;
-        transition: transform 0.4s ease;
+        transition: transform .6s ease, filter .6s ease;
+        filter: brightness(0.95);
     }
 
-    .product-item:hover img {
-        transform: scale(1.05);
+    .featured-card:hover .product-img {
+        transform: scale(1.08);
+        filter: brightness(1.1);
     }
 
-    /* === AKSİYON BUTONLARI === */
-    .product-action {
+    /* === Rozet === */
+    .badge-tag {
         position: absolute;
-        bottom: 10px;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(90deg, #f6d365, #fda085);
+        color: #000;
+        padding: 5px 10px;
+        font-size: 13px;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+    }
+
+    /* === Aksiyon Butonları === */
+    .card-actions {
+        position: absolute;
+        bottom: 15px;
         left: 50%;
         transform: translateX(-50%);
         opacity: 0;
-        transition: all 0.4s ease;
         display: flex;
-        gap: 5px;
+        gap: 10px;
+        transition: all .4s ease;
+        z-index: 5;
     }
 
-    .product-item:hover .product-action {
+    .featured-card:hover .card-actions {
         opacity: 1;
-        bottom: 15px;
+        bottom: 25px;
     }
 
-    .product-action .btn {
-        width: 38px;
-        height: 38px;
-        line-height: 36px;
+    .action-btn {
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
-        padding: 0;
-    }
-
-    /* === ÜRÜN BİLGİLERİ === */
-    .product-item .text-center {
-        padding: 15px 10px;
-        flex-grow: 1;
-    }
-
-    .product-item h6 {
-        font-size: 16px;
-        font-weight: 500;
-        margin-bottom: 8px;
+        background: rgba(255, 255, 255, 0.95);
         color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all .3s ease;
+        position: relative;
+        z-index: 10;
     }
 
-    .product-item .price {
-        font-size: 18px;
-        font-weight: 600;
-        color: #222;
-    }
-
-    .product-item .price del {
-        color: #888;
-        font-size: 14px;
-        margin-left: 6px;
-    }
-
-    /* === YILDIZLAR === */
-    .fa-star { color: #f7c300 !important; }
-
-    /* === GRID DÜZENİ (4'LÜ GÖRÜNÜM) === */
-    .col-xl-3, .col-lg-3 {
-        flex: 0 0 25%;
-        max-width: 25%;
-    }
-
-    /* === RESPONSIVE === */
-    @@media (max-width: 992px) {
-        .col-md-4 {
-            flex: 0 0 33.3333%;
-            max-width: 33.3333%;
+        .action-btn:hover {
+            background: linear-gradient(90deg, #f6d365, #fda085);
+            color: #000;
+            transform: scale(1.1);
         }
 
-        .product-item img { height: 220px; }
+    /* === Toast (Cam Efektli Premium) === */
+    .toast-box {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        color: #111;
+        padding: 14px 18px;
+        border-radius: 14px;
+        box-shadow: 0 8px 30px rgba(255, 193, 7, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        z-index: 9999;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all .3s ease;
     }
 
-    @@media (max-width: 768px) {
-        .col-sm-6 {
-            flex: 0 0 50%;
-            max-width: 50%;
+        .toast-box.show {
+            opacity: 1;
+            transform: translateY(0);
         }
+    @@keyframes bump {
+        0%
 
-        .product-item img { height: 200px; }
+    {
+        transform: scale(1);
     }
 
-    @@media (max-width: 576px) {
-        .col-sm-6 {
-            flex: 0 0 100%;
-            max-width: 100%;
-        }
+    50% {
+        transform: scale(1.15);
+    }
 
-        .product-item img { height: 180px; }
+    100% {
+        transform: scale(1);
+    }
+
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.add-to-cart');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const id = btn.dataset.id;
+
+                try {
+                    const resp = await fetch(`/ShoppingCart/AddBasketItem?id=${id}`, { credentials: 'include' });
+                    if (resp.status === 401) {
+                        window.location.href = '/Login/Index';
+                        return;
+                    }
+                    if (resp.ok) {
+                        showToast('🛒 Ürün sepete eklendi!');
+                        await updateCartCount();
+                        await updateMiniCart();
+                    } else {
+                        showToast('⚠️ Sepete ekleme başarısız!');
+                    }
+                } catch {
+                    showToast('⚠️ Sunucu hatası!');
+                }
+            });
+        });
+
+        async function updateCartCount() {
+            const countElement = document.querySelector('#cart-count');
+            try {
+                const resp = await fetch('/ShoppingCart/GetCartCount', { credentials: 'include' });
+                if (resp.ok) {
+                    const count = await resp.text();
+                    countElement.textContent = count;
+                    countElement.style.animation = 'bump .4s ease';
+                    setTimeout(() => countElement.style.animation = '', 400);
+                }
+            } catch {}
+        }
+
+        async function updateMiniCart() {
+            const cart = document.querySelector('#mini-cart');
+            try {
+                const resp = await fetch('/ShoppingCart/GetMiniCart', { credentials: 'include' });
+                if (resp.ok) {
+                    const html = await resp.text();
+                    cart.innerHTML = html;
+                }
+            } catch {}
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-box';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 1800);
+        }
+    });
+</script>
