@@ -1,0 +1,571 @@
+﻿@{
+    ViewData["Title"] = "Canlı Destek — Admin Paneli";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<section class="lc-wrap container-fluid px-0">
+    <div class="lc-card shadow-sm">
+        <header class="lc-header d-flex align-items-center justify-content-between px-3 px-md-4 py-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-comments text-warning fs-5"></i>
+                <h5 class="mb-0 fw-semibold text-dark">Canlı Destek <span class="text-warning">— Admin Paneli</span></h5>
+            </div>
+            <span id="chatStatus" class="badge rounded-pill bg-success">Bağlı</span>
+        </header>
+
+        <div class="lc-body">
+            <!-- Sol: Aktif Kullanıcılar -->
+            <aside class="lc-users">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-semibold text-dark"><i class="fa-solid fa-circle-nodes text-warning me-2"></i>Aktif Kullanıcılar</span>
+                    <span class="badge bg-light text-muted small" id="userCount">0</span>
+                </div>
+                <ul id="userList" class="list-unstyled m-0 lc-userlist"></ul>
+            </aside>
+
+            <!-- Sağ: Sohbet Alanı -->
+            <main class="lc-chat">
+                <!-- Sekmeler -->
+                <ul class="nav nav-tabs gap-1 px-2" id="userTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="default-tab" data-bs-toggle="tab" href="#defaultChat" role="tab">
+                            <i class="fa-regular fa-message me-1"></i> Genel
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Sekme içerikleri -->
+                <div class="tab-content lc-stream" id="tabContent">
+                    <div class="tab-pane fade show active p-3" id="defaultChat" role="tabpanel">
+                        <div class="lc-info">
+                            <i class="fa-regular fa-comments me-2 text-warning"></i>
+                            <span class="text-muted">Sohbet bildirimleri burada görünecek…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giriş -->
+                <footer class="lc-input d-flex align-items-center gap-2 p-2 p-md-3">
+                    <input type="text" id="adminMessageInput" class="form-control lc-inputbox" placeholder="Mesajınızı yazın…" />
+                    <button id="adminSendBtn" class="btn btn-warning fw-semibold px-3">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Gönder
+                    </button>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Ses -->
+    <audio id="notifySound" preload="auto">
+        <source src="/sounds/notify.mp3" type="audio/mpeg">
+    </audio>
+</section>
+
+<style>
+    /* === Shell === */
+    .lc-wrap {
+        margin-top: .5rem;
+    }
+
+    .lc-card {
+        background: #fff;
+        border: 1px solid rgba(255,193,7,.35);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    }
+
+    .lc-header {
+        background: linear-gradient(180deg,#fff,#fff);
+        border-bottom: 1px dashed rgba(255,193,7,.45);
+    }
+
+    /* === Layout === */
+    .lc-body {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 0;
+    }
+    @@media (max-width: 992px) {
+        .lc-body
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .lc-users {
+        order: 2
+    }
+
+    }
+
+    /* === Users panel === */
+    .lc-users {
+        padding: 1rem;
+        border-right: 1px solid rgba(0,0,0,.06);
+        background: #fffef9;
+    }
+
+    .lc-userlist li {
+        border: 1px solid rgba(255,193,7,.35);
+        background: #fff;
+        border-radius: 12px;
+        padding: .6rem .7rem;
+        margin-bottom: .5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .6rem;
+        cursor: pointer;
+        transition: .25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .lc-userlist li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(255,193,7,.20);
+        }
+
+    .lc-user {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        min-width: 0;
+    }
+
+    .lc-dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+    }
+
+        .lc-dot.on {
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34,197,94,.15);
+        }
+
+        .lc-dot.off {
+            background: #ef4444;
+            box-shadow: 0 0 0 4px rgba(239,68,68,.12);
+        }
+
+    .lc-username {
+        font-weight: 600;
+        color: #1f2937;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .lc-sid {
+        color: #6b7280;
+        font-size: .8rem;
+        white-space: nowrap;
+    }
+
+    .lc-pill {
+        font-size: .75rem;
+        padding: .2rem .45rem;
+        border-radius: 999px;
+        background: #fff7d6;
+        color: #b45309;
+        border: 1px solid rgba(255,193,7,.55);
+    }
+
+        .lc-pill.unread {
+            background: #ffd666;
+            color: #111;
+            animation: pulse 1.5s infinite;
+        }
+    @@keyframes pulse {
+        0%
+
+    {
+        box-shadow: 0 0 0 0 rgba(255,193,7,.55)
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255,193,7,0)
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255,193,7,0)
+    }
+
+    }
+
+    /* === Chat area === */
+    .lc-chat {
+        display: flex;
+        flex-direction: column;
+        min-height: 560px;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid rgba(0,0,0,.06)
+    }
+
+        .nav-tabs .nav-link {
+            color: #6b7280;
+            border: 1px solid rgba(255,193,7,.3);
+            background: #fff;
+            border-radius: 10px 10px 0 0;
+            padding: .55rem .9rem;
+            position: relative;
+            transition: .2s;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #111;
+                background: linear-gradient(180deg,#ffeeb3,#ffd666);
+                font-weight: 700;
+                border-color: #ffc107;
+                box-shadow: 0 6px 0 -4px rgba(255,193,7,.6) inset;
+            }
+
+    .lc-badge {
+        position: absolute;
+        top: -8px;
+        right: -6px;
+        background: #ef4444;
+        color: #fff;
+        font-weight: 700;
+        font-size: .7rem;
+        border-radius: 999px;
+        padding: 0 .35rem;
+        min-width: 18px;
+        text-align: center;
+        transform: translateY(0);
+    }
+
+        .lc-badge.hide {
+            display: none
+        }
+
+    .lc-stream {
+        flex: 1;
+        overflow: auto;
+        background: radial-gradient(60% 120% at 0% 0%, #fff9e6 0%, #ffffff 65%);
+    }
+
+    .lc-info {
+        background: #fffbe6;
+        border: 1px dashed rgba(255,193,7,.6);
+        padding: .6rem .8rem;
+        border-radius: 10px;
+        color: #6b7280;
+        animation: fadeIn .4s ease-out;
+    }
+
+    /* Messages */
+    .lc-msg {
+        max-width: 72%;
+        padding: .6rem .85rem;
+        border-radius: 14px;
+        margin: .35rem 0;
+        font-size: .95rem;
+        animation: pop .15s ease-out;
+    }
+
+        .lc-msg.user {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,.08);
+            color: #111
+        }
+
+        .lc-msg.admin {
+            background: linear-gradient(90deg,#ffe38f,#ffc34d);
+            color: #111;
+            border: 1px solid rgba(255,193,7,.65);
+            margin-left: auto;
+        }
+    @@keyframes pop {
+        from
+
+    {
+        transform: translateY(6px);
+        opacity: 0
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1
+    }
+
+    }
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+
+    }
+
+    /* Input */
+    .lc-input {
+        border-top: 1px dashed rgba(255,193,7,.45);
+        background: #fff;
+    }
+
+    .lc-inputbox {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 12px;
+        padding: .8rem .9rem;
+        transition: .2s;
+    }
+
+        .lc-inputbox:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 .2rem rgba(255,193,7,.25)
+        }
+
+    /* Utility */
+    .clickable {
+        cursor: pointer
+    }
+
+    .muted {
+        color: #9ca3af
+    }
+
+    .sidchip {
+        font-family: ui-monospace,SFMono-Regular,Menlo,monospace;
+        font-size: .8rem;
+        color: #6b7280
+    }
+    /* Sekmelerde hover kontrast düzeltme */
+    .nav-tabs .nav-link:hover {
+        color: #000 !important;
+        background: linear-gradient(180deg,#fffdeb,#ffe580) !important;
+        border-color: #ffc107 !important;
+    }
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+        function decodeHtmlEntities(str) {
+        if (!str) return "";
+        var txt = document.createElement("textarea");
+        txt.innerHTML = str;
+        return txt.value;
+    }
+    (function () {
+        const input = document.getElementById("adminMessageInput");
+        const sendBtn = document.getElementById("adminSendBtn");
+        const status = document.getElementById("chatStatus");
+        const userTabs = document.getElementById("userTabs");
+        const tabContent = document.getElementById("tabContent");
+        const userList = document.getElementById("userList");
+        const userCount = document.getElementById("userCount");
+        const notifySound = document.getElementById("notifySound");
+
+        // sessionId -> {username, tabId, paneId, badgeEl}
+        const sessions = new Map();
+
+        // ========= SignalR =========
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:7046/hubs/livechat?role=admin")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start().then(() => {
+            status.textContent = "Bağlı";
+            status.classList.remove("bg-danger");
+            status.classList.add("bg-success");
+            console.log("✅ Admin LiveChat connected");
+        }).catch(err => {
+            status.textContent = "Bağlantı Hatası";
+            status.classList.remove("bg-success");
+            status.classList.add("bg-danger");
+            console.error("❌ SignalR:", err);
+        });
+
+        // Yeni kullanıcı bağlandı
+        connection.on("NewUserConnected", (username, sessionId) => {
+            createUserItems(username || "Kullanıcı", sessionId, true);
+            // Genel panele bilgi düş
+            infoLine(`👤 <b>${escapeHtml(username || "Kullanıcı")}</b> (<span class="sidchip">${short(sessionId)}</span>) kullanıcısıyla konuşma başladı.`);
+        });
+
+        // Kullanıcı ayrıldı
+        connection.on("UserDisconnected", (sessionId) => {
+            const it = sessions.get(sessionId);
+            if (!it) return;
+            // kullanıcı listesinde OFF yap
+            const li = document.querySelector(`[data-li="${sessionId}"]`);
+            if (li) {
+                li.querySelector(".lc-dot").classList.remove("on");
+                li.querySelector(".lc-dot").classList.add("off");
+                li.querySelector(".lc-pill").textContent = "Ayrıldı";
+                li.querySelector(".lc-pill").classList.remove("unread");
+            }
+            // sekme badge’ini gri yap
+            const badge = it.badgeEl;
+            if (badge) { badge.classList.add("hide"); badge.textContent = "0"; }
+            // bilgi satırı
+            infoLine(`🚪 Oturum kapandı: <span class="sidchip">${short(sessionId)}</span>`);
+            refreshUserCount();
+        });
+
+        // Mesaj geldi (kullanıcıdan)
+        connection.on("ReceiveMessage", (user, message, role, sessionId) => {
+            if (role !== "user") return;
+            const sess = sessions.get(sessionId);
+            if (!sess) {
+                // güvenlik: tab ve list yoksa oluştur
+                createUserItems(user || "Kullanıcı", sessionId, true);
+            }
+            const pane = document.getElementById(`chat-${sessionId}`);
+            appendMsg(pane, `${decodeHtmlEntities(user)}: ${decodeHtmlEntities(message)}`, "user");
+
+            // aktif sekme değilse badge artır + ses
+            const tabLink = document.getElementById(`tab-${sessionId}`);
+            if (!tabLink.classList.contains("active")) {
+                incBadge(sessionId);
+            }
+            safePlay(notifySound);
+        });
+
+        // ========= UI =========
+        sendBtn.addEventListener("click", sendMessage);
+        input.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+
+        // User listesinde tıklayınca ilgili sekmeye geç
+        userList.addEventListener("click", (e) => {
+            const li = e.target.closest("li[data-li]");
+            if (!li) return;
+            const sid = li.getAttribute("data-li");
+            document.getElementById(`tab-${sid}`)?.click();
+        });
+
+        // Sekme değişince okunmamışları sıfırla
+        userTabs.addEventListener("shown.bs.tab", (e) => {
+            const id = e.target.id; // tab-xxx
+            if (id && id.startsWith("tab-")) {
+                const sid = id.replace("tab-", "");
+                resetBadge(sid);
+            }
+        });
+
+        function sendMessage() {
+            const msg = (input.value || "").trim();
+            if (!msg) return;
+
+            const activeTab = userTabs.querySelector(".nav-link.active");
+            if (!activeTab || !activeTab.id.startsWith("tab-")) {
+                infoLine("❗ Lütfen bir kullanıcı sekmesi seçin.");
+                return;
+            }
+            const sid = activeTab.id.replace("tab-", "");
+            const pane = document.getElementById(`chat-${sid}`);
+            appendMsg(pane, `Admin: ${msg}`, "admin");
+
+            connection.invoke("SendMessageToSession", "Admin", msg, "admin", sid)
+                .catch(err => console.error("invoke error:", err));
+
+            input.value = "";
+        }
+
+        // ======== helpers ========
+        function createUserItems(username, sessionId, online) {
+            if (sessions.has(sessionId)) return;
+
+            // Sekme
+            const li = document.createElement("li");
+            li.className = "nav-item";
+            li.innerHTML = `
+                <a class="nav-link" id="tab-${sessionId}" data-bs-toggle="tab" href="#chat-${sessionId}" role="tab">
+                    <i class="fa-solid fa-user me-1"></i>${escapeHtml(username)} <span class="muted">(${short(sessionId)})</span>
+                    <span class="lc-badge hide" id="badge-${sessionId}">0</span>
+                </a>`;
+            userTabs.appendChild(li);
+
+            // İçerik
+            const pane = document.createElement("div");
+            pane.className = "tab-pane fade p-3";
+            pane.id = `chat-${sessionId}`;
+            pane.setAttribute("role","tabpanel");
+            pane.innerHTML = `
+                <div class="lc-info"><i class="fa-regular fa-message me-2 text-warning"></i>
+                <span class="text-muted">${escapeHtml(username)} (<span class="sidchip">${short(sessionId)}</span>) kullanıcısıyla konuşma başladı.</span></div>`;
+            tabContent.appendChild(pane);
+
+            // Sol list
+            const liUser = document.createElement("li");
+            liUser.setAttribute("data-li", sessionId);
+            liUser.innerHTML = `
+                <div class="lc-user">
+                    <span class="lc-dot ${online ? "on":"off"}"></span>
+                    <div class="d-flex flex-column">
+                        <span class="lc-username">${escapeHtml(username)}</span>
+                        <span class="lc-sid">${short(sessionId)}</span>
+                    </div>
+                </div>
+                <span class="lc-pill ${online ? "" : "muted"}">${online ? "Aktif":"Ayrıldı"}</span>`;
+            userList.prepend(liUser);
+
+            sessions.set(sessionId, {
+                username, tabId: `tab-${sessionId}`, paneId:`chat-${sessionId}`,
+                badgeEl: li.querySelector(`#badge-${sessionId}`)
+            });
+            refreshUserCount();
+        }
+
+        function appendMsg(container, text, who){
+            if (!container) return;
+            const div = document.createElement("div");
+            div.className = `lc-msg ${who}`;
+            div.textContent = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function infoLine(html){
+            const def = document.getElementById("defaultChat");
+            const box = document.createElement("div");
+            box.className = "lc-info mt-2";
+            box.innerHTML = html;
+            def.appendChild(box);
+            def.scrollTop = def.scrollHeight;
+        }
+
+        function incBadge(sessionId){
+            const sess = sessions.get(sessionId);
+            if (!sess) return;
+            const b = sess.badgeEl;
+            if (!b) return;
+            const n = parseInt(b.textContent || "0", 10) + 1;
+            b.textContent = String(n);
+            b.classList.remove("hide");
+            // sol listedeki "Aktif" pill’ine unread efekti
+            const li = document.querySelector(`[data-li="${sessionId}"] .lc-pill`);
+            if (li){ li.classList.add("unread"); }
+        }
+        function resetBadge(sessionId){
+            const sess = sessions.get(sessionId);
+            if (!sess) return;
+            const b = sess.badgeEl;
+            if (b){ b.textContent = "0"; b.classList.add("hide"); }
+            const li = document.querySelector(`[data-li="${sessionId}"] .lc-pill`);
+            if (li){ li.classList.remove("unread"); }
+        }
+        function refreshUserCount(){
+            userCount.textContent = String(userList.querySelectorAll("li").length);
+        }
+        function short(id){ return (id || "").substring(0,6); }
+        // function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+        function escapeHtml(s){ return s || ""; }
+        function safePlay(audioEl){
+            try{ audioEl.currentTime = 0; audioEl.play().catch(()=>{});}catch(_){}
+        }
+    })();
+</script>
