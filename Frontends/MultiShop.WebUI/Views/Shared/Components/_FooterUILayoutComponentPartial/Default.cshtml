@@ -1,73 +1,766 @@
 ﻿@model List<ResultAboutDTO>
-<div class="container-fluid bg-dark text-secondary mt-5 pt-5">
-    <div class="row px-xl-5 pt-5">
-        @foreach (var item in Model)
-        {
-            <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
-                <h5 class="text-secondary text-uppercase mb-4">Hakkımızda</h5>
-                <p class="mb-4">@item.AboutDescription</p>
-                <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>@item.AboutAddress</p>
-                <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>@item.AboutEmail</p>
-                <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>@item.AboutPhone</p>
+
+<footer class="footer-luxury py-5">
+    <div class="container px-5">
+        <div class="row g-4">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
+                    <h5 class="footer-title">HAKKIMIZDA</h5>
+                    <p class="footer-text">@item.AboutDescription</p>
+                    <ul class="footer-contact list-unstyled">
+                        <li><i class="fa fa-map-marker-alt"></i> @item.AboutAddress</li>
+                        <li><i class="fa fa-envelope"></i> @item.AboutEmail</li>
+                        <li><i class="fa fa-phone"></i> @item.AboutPhone</li>
+                    </ul>
+                </div>
+            }
+
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-title">HIZLI ALIŞVERİŞ</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="/Default/Index">Ana Sayfa</a></li>
+                    <li><a href="/ProductList/Index">Ürünlerimiz</a></li>
+                    <li><a href="/Discount/Index">Günün Fırsatı</a></li>
+                    <li><a href="/Basket/Index">Sepetim</a></li>
+                    <li><a href="/Contact/Index">Bize Yazın</a></li>
+                </ul>
             </div>
-        }
-       
-        <div class="col-lg-8 col-md-12">
-            <div class="row">
-                <div class="col-md-4 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">Hızlı Alışveriş</h5>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Ana Sayfa</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Ürünlerimiz</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Günün Fırsatı</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>İndirimler</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Sepetim</a>
-                        <a class="text-secondary" href="#"><i class="fa fa-angle-right mr-2"></i>Bize Yazın</a>
-                    </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h5 class="footer-title">HESABIM</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="#">Profilim</a></li>
+                    <li><a href="#">Alışverişlerim</a></li>
+                    <li><a href="#">Sepet Detaylarım</a></li>
+                    <li><a href="#">İndirimlerim</a></li>
+                    <li><a href="#">İletişim</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <h5 class="footer-title">MAİL BÜLTENİ</h5>
+                <p class="footer-text">En son indirimler ve kampanyalar için hemen abone olun!</p>
+                <div class="newsletter-box">
+                    <input type="email" placeholder="Email adresiniz..." class="newsletter-input" />
+                    <button class="newsletter-btn">Abone Ol</button>
                 </div>
-                <div class="col-md-4 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">Hesabım</h5>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Profilim</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Alışverişlerim</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Sepet Detaylarım</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Geçmiş Ürünlerim</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>İndirimlerim</a>
-                        <a class="text-secondary" href="#"><i class="fa fa-angle-right mr-2"></i>İletişim</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">Mail Bülteni</h5>
-                    <p>En son indirimler ve kampanyalar için hemen abone olun!</p>
-                    <form action="">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Email Adresiniz">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary">Abone Ol</button>
-                            </div>
-                        </div>
-                    </form>
-                    <h6 class="text-secondary text-uppercase mt-4 mb-3">Bizi Takip Edin</h6>
-                    <div class="d-flex">
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
+                <div class="social-links mt-4">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/yunusiinan" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
+
         </div>
-    </div>
-    <div class="row border-top mx-xl-5 py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="col-md-6 px-xl-0">
-            <p class="mb-md-0 text-center text-md-left text-secondary">
-                &copy; <a class="text-primary" href="#">MultiShop</a>. Tüm hakları saklıdır.
 
+        <hr class="footer-divider my-4" />
 
+        <div class="text-center footer-bottom mt-3">
+            <p class="m-0 text-light">
+                © Copyright
+                <a href="https://www.instagram.com/yunusiinan" target="_blank" class="footer-author">Yunus İNAN</a>
+                — Tüm Hakları Saklıdır.
+                <br />
+                <small class="designer">
+                    Tasarlayan
+                    <a href="https://www.instagram.com/yunusiinan" target="_blank" class="footer-designer">Yunus İNAN</a>
+                </small>
             </p>
         </div>
-        <div class="col-md-6 px-xl-0 text-center text-md-right">
-            <img class="img-fluid" src="~/online-shop-website-template/img/payments.png" alt="">
+    </div>
+</footer>
+
+<!-- Chat Balonu (ikon: comments) -->
+<div id="liveChatBubble" class="chat-bubble">
+    <i class="fa fa-comments"></i>
+    <span id="unreadBadge" class="chat-unread-badge" style="display:none;">0</span>
+</div>
+
+<!-- Chat Penceresi -->
+<div id="liveChatWindow" class="chat-window">
+    <div id="chatHeader" class="chat-header">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fa fa-robot text-warning"></i>
+            <span class="chat-title">Canlı Destek</span>
+        </div>
+        <div class="chat-theme-icons">
+            <i id="themeClassic" class="fa fa-paint-brush theme-icon" title="Classic"></i>
+            <i id="themeBright" class="fa fa-sun theme-icon" title="Bright"></i>
+            <i id="themeDeep" class="fa fa-moon theme-icon" title="Deep"></i>
+            <span id="chatClose">&times;</span>
         </div>
     </div>
+
+    <div class="chat-body" id="chatMessages">
+        <div class="message bot">Merhaba 👋 Ben MultiShop Asistanı. Size nasıl yardımcı olabilirim?</div>
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="userMessage" placeholder="Mesajınızı yazın..." />
+        <button id="sendMessage"><i class="fa fa-paper-plane"></i></button>
+    </div>
 </div>
+
+<audio id="chatNotifyAudio" preload="auto">
+    <source src="/sounds/notify.mp3" type="audio/mpeg" />
+</audio>
+
+<style>
+    /* === FOOTER === */
+    .footer-luxury {
+        background: radial-gradient(circle at 20% 30%, #1a1c20 0%, #0d0e10 70%, #08090a 100%);
+        color: #d1d1d1;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .footer-luxury::before {
+            content: "";
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.04), transparent 70%);
+            animation: goldenPulse 20s infinite linear;
+            pointer-events: none;
+        }
+    @@keyframes goldenPulse {
+        0%
+
+    {
+        transform: translate(0, 0);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: translate(-80px, 60px);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translate(0, 0);
+        opacity: 0.4;
+    }
+
+    }
+
+    .footer-title {
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: 1.1rem;
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+        .footer-title::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 45px;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd36b, #ff9f6c);
+            border-radius: 10px;
+        }
+
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .footer-links a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffd36b;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+    .footer-text {
+        font-size: 0.95rem;
+        color: #b5b5b5;
+        margin-bottom: 12px;
+        line-height: 1.6;
+    }
+
+    .footer-contact li {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .footer-contact i {
+        color: #ffd36b;
+        margin-right: 8px;
+    }
+
+    .newsletter-box {
+        display: flex;
+        background: rgba(255,255,255,0.08);
+        border-radius: 30px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .newsletter-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: #fff;
+        padding: 10px 15px;
+        outline: none;
+    }
+
+    .newsletter-btn {
+        background: linear-gradient(90deg, #f6d365, #fda085);
+        border: none;
+        color: #000;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 0 30px 30px 0;
+        cursor: pointer;
+        transition: all 0.4s ease;
+    }
+
+        .newsletter-btn:hover {
+            background: linear-gradient(90deg, #ffd36b, #ffc107);
+            box-shadow: 0 0 25px rgba(255,215,0,0.5);
+        }
+
+    .social-links a {
+        color: #fff;
+        font-size: 1rem;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+    }
+
+        .social-links a:hover {
+            color: #ffd36b;
+            transform: translateY(-3px);
+        }
+
+    .footer-divider {
+        border: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent);
+    }
+
+    .footer-author, .footer-designer a {
+        color: #ffd36b;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.4s ease;
+        background: linear-gradient(90deg, #ffd36b, #fda085);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: goldShine 6s infinite linear;
+    }
+    @@keyframes goldShine {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
+    .footer-author:hover, .footer-designer a:hover {
+        text-shadow: 0 0 15px rgba(255,215,0,0.6);
+    }
+
+    /* === CHAT BALONU === */
+    .chat-bubble {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #ffd36b, #fda085);
+        color: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(255,215,0,0.4);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 999;
+        font-size: 22px;
+    }
+
+        .chat-bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255,215,0,0.7);
+        }
+
+    /* (Aynı bloğu orijinalindeki gibi ikinci kez bırakıyoruz) */
+    .chat-bubble {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #ffd36b, #fda085);
+        color: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(255,215,0,0.4);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 999;
+        font-size: 22px;
+    }
+
+        .chat-bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255,215,0,0.7);
+        }
+
+    /* === CHAT PENCERESİ === */
+    .chat-window {
+        position: fixed;
+        bottom: 90px;
+        right: 30px;
+        width: 320px;
+        background: #1a1a1a;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+        animation-fill-mode: forwards;
+    }
+
+    .chat-header {
+        background: linear-gradient(90deg, #f6d365, #fda085);
+        color: #000;
+        padding: 10px 15px;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-theme-icons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .theme-icon {
+        cursor: pointer;
+        font-size: 16px;
+        opacity: .7;
+        transition: .3s;
+    }
+
+        .theme-icon:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+    .chat-body {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #111;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+
+    .message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        max-width: 80%;
+    }
+
+        .message.user {
+            background: linear-gradient(90deg, #f6d365, #fda085);
+            color: #000;
+            align-self: flex-end;
+        }
+
+        .message.admin {
+            background: #2f3640;
+            color: #f1c40f;
+            align-self: flex-start;
+        }
+
+        .message.bot {
+            background: rgba(255,255,255,0.1);
+            color: #ccc;
+            align-self: flex-start;
+        }
+
+    .chat-input {
+        display: flex;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+        .chat-input input {
+            flex: 1;
+            border: none;
+            background: #222;
+            color: #fff;
+            padding: 10px;
+            outline: none;
+        }
+
+        .chat-input button {
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+    .chat-unread-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 10px;
+        background: #e53935;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: scale(0);
+        transition: transform .2s ease;
+    }
+
+        .chat-unread-badge.show {
+            transform: scale(1);
+        }
+
+    /* === ANİMASYONLAR === */
+    @@keyframes chatFadeIn {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    }
+
+    .chat-window.show-anim {
+        animation: chatFadeIn .35s ease forwards;
+    }
+    @@keyframes bubblePulse {
+        0%
+
+    {
+        box-shadow: 0 0 0 0 rgba(255,215,0,.6);
+    }
+
+    70% {
+        box-shadow: 0 0 0 12px rgba(255,215,0,0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255,215,0,0);
+    }
+
+    }
+
+    .chat-bubble.pulse {
+        animation: bubblePulse 1.2s ease-out 2;
+    }
+    @@keyframes glow {
+        0%,100%
+
+    {
+        filter: drop-shadow(0 0 0 rgba(255,215,0,0));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 10px rgba(255,215,0,.9));
+    }
+
+    }
+
+    .chat-header.glow {
+        animation: glow 1.2s ease 2;
+    }
+
+    /* === TEMA: Header + Button + Bubble === */
+    .chat-theme-classic .chat-input button {
+        background: linear-gradient(90deg,#f6d365,#fda085);
+        color: #000;
+    }
+
+    .chat-theme-bright .chat-input button {
+        background: linear-gradient(90deg,#60a5fa,#22d3ee);
+        color: #0b1220;
+    }
+
+    .chat-theme-deep .chat-input button {
+        background: linear-gradient(90deg,#8b5cf6,#ec4899);
+        color: #fff;
+    }
+
+    .chat-theme-classic .chat-header {
+        background: linear-gradient(90deg,#f6d365,#fda085);
+        color: #000;
+    }
+
+    .chat-theme-bright .chat-header {
+        background: linear-gradient(90deg,#60a5fa,#22d3ee);
+        color: #0b1220;
+    }
+
+    .chat-theme-deep .chat-header {
+        background: linear-gradient(90deg,#8b5cf6,#ec4899);
+        color: #fff;
+    }
+
+    .chat-theme-classic .chat-bubble {
+        background: linear-gradient(135deg,#ffd36b,#fda085);
+        color: #000;
+    }
+
+    .chat-theme-bright .chat-bubble {
+        background: linear-gradient(135deg,#7dd3fc,#60a5fa);
+        color: #0b1220;
+    }
+
+    .chat-theme-deep .chat-bubble {
+        background: linear-gradient(135deg,#8b5cf6,#ec4899);
+        color: #fff;
+    }
+
+    /* === TEMA: Chat Body (arka plan + yazı) === */
+    .chat-theme-classic .chat-body {
+        background: #111;
+        color: #fff;
+    }
+
+    .chat-theme-bright .chat-body {
+        background: #eaf6ff;
+        color: #0b1220;
+    }
+
+    .chat-theme-deep .chat-body {
+        background: linear-gradient(180deg, #1e1b2e, #2b0f2e);
+        color: #f1d8ff;
+    }
+
+    /* === TEMA: Mesaj kartları (admin de tema ile değişsin) === */
+    /* Classic (mevcut hali) */
+    .chat-theme-classic .message.admin {
+        background: #2f3640;
+        color: #f1c40f;
+    }
+    /* Bright */
+    .chat-theme-bright .message.admin {
+        background: #dbeafe; /* açık mavi */
+        color: #0b3a6e; /* koyu mavi metin */
+        border: 1px solid #93c5fd;
+    }
+    /* Deep */
+    .chat-theme-deep .message.admin {
+        background: linear-gradient(135deg,#4b3b73,#9b6ee8);
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(155,110,232,0.4);
+    }
+
+    /* Kullanıcı ve bot mesajları da temaya adapte */
+    .chat-theme-bright .message.user {
+        background: linear-gradient(90deg,#60a5fa,#22d3ee);
+        color: #000;
+    }
+
+    .chat-theme-bright .message.bot {
+        background: rgba(255,255,255,0.7);
+        color: #333;
+    }
+
+    .chat-theme-deep .message.user {
+        background: linear-gradient(90deg,#8b5cf6,#ec4899);
+        color: #fff;
+    }
+
+    .chat-theme-deep .message.bot {
+        background: rgba(255,255,255,0.15);
+        color: #e2e2e2;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const bubble = document.getElementById("liveChatBubble");
+        const chatWindow = document.getElementById("liveChatWindow");
+        const closeBtn = document.getElementById("chatClose");
+        const sendBtn = document.getElementById("sendMessage");
+        const input = document.getElementById("userMessage");
+        const chatBody = document.getElementById("chatMessages");
+        const unreadBadge = document.getElementById("unreadBadge");
+        const notifyAudio = document.getElementById("chatNotifyAudio");
+
+        const themeClassic = document.getElementById("themeClassic");
+        const themeBright  = document.getElementById("themeBright");
+        const themeDeep    = document.getElementById("themeDeep");
+
+        let unreadCount = 0;
+        const currentUser = "@(User.Identity.IsAuthenticated? User.Identity.Name : "Kullanıcı")";
+        let sessionId = "";
+
+        /* Tema yönetimi */
+        const CHAT_THEME_KEY = "ms_chat_theme";
+        function applyTheme(theme) {
+            document.body.classList.remove("chat-theme-classic", "chat-theme-bright", "chat-theme-deep");
+            if (theme === "bright") {
+                document.body.classList.add("chat-theme-bright");
+            } else if (theme === "deep") {
+                document.body.classList.add("chat-theme-deep");
+            } else {
+                document.body.classList.add("chat-theme-classic");
+            }
+            localStorage.setItem(CHAT_THEME_KEY, theme);
+        }
+        applyTheme(localStorage.getItem(CHAT_THEME_KEY) || "classic");
+        themeClassic.addEventListener("click", () => applyTheme("classic"));
+        themeBright .addEventListener("click", () => applyTheme("bright"));
+        themeDeep   .addEventListener("click", () => applyTheme("deep"));
+
+        /* SignalR */
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(`http://localhost:7046/hubs/livechat?role=user&username=${encodeURIComponent(currentUser)}`)
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("SetSessionId", id => {
+            sessionId = id;
+            console.log("SessionId:", id);
+        });
+
+        try {
+            await connection.start();
+            console.log("SignalR connected");
+        } catch (err) {
+            console.error("SignalR error:", err);
+        }
+
+        /* Mesaj gönderme */
+        sendBtn.addEventListener("click", sendMessage);
+        input.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+
+        function sendMessage() {
+            const msg = input.value.trim();
+            if (!msg || !sessionId) return;
+            appendMessage(msg, "user");
+            connection.invoke("SendMessage", currentUser, msg, "user", sessionId);
+            input.value = "";
+        }
+
+        /* Mesaj alma */
+        connection.on("ReceiveMessage", (user, message, role) => {
+            if (role === "user") return;
+
+            appendMessage(`${user}: ${message}`, "admin");
+
+            const isVisible = chatWindow.style.display === "flex";
+            if (!isVisible) {
+                unreadCount++;
+                unreadBadge.textContent = unreadCount > 99 ? "99+" : unreadCount;
+                unreadBadge.style.display = "flex";
+                unreadBadge.classList.add("show");
+
+                bubble.classList.add("pulse");
+                setTimeout(() => bubble.classList.remove("pulse"), 1400);
+            }
+
+            const header = document.getElementById("chatHeader");
+            header.classList.add("glow");
+            setTimeout(() => header.classList.remove("glow"), 1400);
+
+            try {
+                notifyAudio.currentTime = 0;
+                notifyAudio.play();
+            } catch (e) {}
+
+            if (navigator.vibrate) { navigator.vibrate([60, 40, 60]); }
+        });
+
+        /* Mesaj oluşturma */
+        function appendMessage(text, sender) {
+            const div = document.createElement("div");
+            div.classList.add("message", sender);
+            div.textContent = text;
+            chatBody.appendChild(div);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        /* Aç/Kapa */
+        function openChat() {
+            chatWindow.style.display = "flex";
+            unreadCount = 0;
+            unreadBadge.style.display = "none";
+            unreadBadge.classList.remove("show");
+            requestAnimationFrame(() => {
+                chatWindow.classList.remove("show-anim");
+                void chatWindow.offsetWidth;
+                chatWindow.classList.add("show-anim");
+            });
+        }
+        function closeChat() {
+            chatWindow.style.display = "none";
+        }
+        function toggleChat() {
+            const visible = chatWindow.style.display === "flex";
+            if (visible) closeChat(); else openChat();
+        }
+
+        bubble.addEventListener("click", toggleChat);
+            // Başlık kısmına tıklayınca da pencereyi kapat / aç
+    document.getElementById("chatHeader").addEventListener("click", function (e) {
+        if (!e.target.classList.contains("theme-icon") && e.target.id !== "chatClose") {
+            toggleChat();
+        }
+    });
+
+        closeBtn.addEventListener("click", toggleChat);
+    });
+</script>

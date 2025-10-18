@@ -1,21 +1,397 @@
 ﻿@model List<ResultOfferDiscountDTO>
 
-<div class="container-fluid pt-5 pb-3">
-    <div class="row px-xl-5">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="@item.OfferDiscountImageUrl" alt="">
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">@item.OfferDiscountTitle</h6>
-                        <h3 class="text-white mb-3">@item.OfferDiscountSubTitle</h3>
-                        <a href="" class="btn btn-primary">@item.OfferDiscountButtonTitle</a>
+<section class="premium-offer-showcase py-5">
+    <div class="container-fluid px-5">
+        <h2 class="premium-title text-center mb-5">
+            GÜNÜN FIRSATLARI
+            <span class="subtitle d-block">Sana özel fırsatları kaçırma — premium alışveriş ayrıcalığını yaşa</span>
+            <span class="gold-flow"></span>
+        </h2>
+
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6">
+                    <div class="offer-card position-relative overflow-hidden rounded-4 shadow-sm">
+                        <img src="@item.OfferDiscountImageUrl" class="img-fluid offer-image" alt="@item.OfferDiscountTitle" />
+
+                        <!-- 🔹 Yeni Cam-Blur Amber Etiket -->
+                        <div class="glow-discount-badge">
+                            <span class="glow-text">✨ @item.OfferDiscountTitle</span>
+                        </div>
+
+                        <!-- 🔹 ALTTA COUNTDOWN -->
+                        <div class="countdown-bar">
+                            <span class="timer-label">
+                                <span class="timer-icon"></span> Kampanya sona eriyor
+                            </span>
+                            <span class="countdown" data-time="@DateTime.Now.AddHours(3).ToString("yyyy-MM-ddTHH:mm:ss")">00:00:00</span>
+                        </div>
+
+
+                        <div class="offer-overlay d-flex flex-column justify-content-center align-items-start p-4">
+                            <h3 class="text-light fw-bold mb-3">@item.OfferDiscountSubTitle</h3>
+                            <a href="#" class="btn btn-premium-animated">@item.OfferDiscountButtonTitle</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-      
-      
+            }
+        </div>
     </div>
-</div>
+</section>
+
+<style>
+    /* === Arka Plan === */
+    .premium-offer-showcase {
+        background: linear-gradient(120deg, #ffffff, #fafafa, #ffffff);
+        background-size: 200% 200%;
+        animation: backgroundShift 12s ease-in-out infinite;
+    }
+    @@keyframes backgroundShift {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
+    /* === Başlık === */
+    .premium-title {
+        font-size: 2.3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-transform: uppercase;
+        position: relative;
+        letter-spacing: 1px;
+    }
+
+        .premium-title .gold-flow {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 4px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(255,215,0,0.2), #ffd36b, rgba(255,215,0,0.2));
+            background-size: 300% 100%;
+            animation: goldFlow 5s infinite linear;
+        }
+    @@keyframes goldFlow {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #555;
+        margin-top: 5px;
+        opacity: 0.9;
+    }
+
+    /* === Kartlar === */
+    .offer-card {
+        height: 320px;
+        border-radius: 22px;
+        overflow: hidden;
+        position: relative;
+        background: rgba(255,255,255,0.5);
+        transition: all .6s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+        .offer-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 50px rgba(255, 200, 0, 0.3);
+        }
+
+    /* === Görsel === */
+    .offer-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.8);
+        transition: transform 1.2s ease, filter 1.2s ease;
+    }
+
+    .offer-card:hover .offer-image {
+        transform: scale(1.08);
+        filter: brightness(1);
+    }
+
+    /* === Overlay === */
+    .offer-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.25));
+        color: white;
+        z-index: 2;
+        transition: background .5s ease;
+    }
+
+    .offer-card:hover .offer-overlay {
+        background: linear-gradient(to right, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+    }
+
+    /* === Countdown Bar === */
+    .countdown-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 20px;
+        color: #fff;
+        font-size: 0.9rem;
+        z-index: 3;
+    }
+
+        .countdown-bar .countdown {
+            font-family: "Courier New", monospace;
+            font-weight: 700;
+            color: #ffd36b;
+        }
+
+    /* === Premium Animated Button === */
+    .btn-premium-animated {
+        position: relative;
+        background: linear-gradient(90deg, #f6d365, #fda085);
+        border: none;
+        color: #000;
+        font-weight: 700;
+        letter-spacing: .3px;
+        padding: 10px 28px;
+        border-radius: 50px;
+        overflow: hidden;
+        z-index: 1;
+        transition: all .4s ease;
+        box-shadow: 0 0 20px rgba(255, 200, 0, 0.3);
+    }
+
+        .btn-premium-animated::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
+            transform: skewX(-20deg);
+            transition: left 0.8s ease;
+        }
+
+        .btn-premium-animated:hover::before {
+            left: 130%;
+        }
+
+        .btn-premium-animated:hover {
+            transform: scale(1.07);
+            background: linear-gradient(90deg, #ffd36b, #ffae53);
+            color: #111;
+            box-shadow: 0 0 35px rgba(255, 200, 0, 0.6);
+        }
+
+    /* === Yeni Amber Cam Etiket === */
+    .glow-discount-badge {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        z-index: 4;
+        background: rgba(255, 215, 0, 0.15);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: #ffd36b;
+        padding: 6px 14px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 0 15px rgba(255, 200, 0, 0.3);
+        transition: all 0.5s ease;
+    }
+
+        .glow-discount-badge:hover {
+            box-shadow: 0 0 25px rgba(255, 200, 0, 0.6);
+            transform: scale(1.05);
+        }
+
+    .glow-text {
+        background: linear-gradient(90deg, #ffd36b, #fff5c2, #ffd36b);
+        background-size: 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shineText 5s linear infinite;
+    }
+    @@keyframes shineText {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+
+    }
+    /* === Countdown Bar Gold Shimmer (Premium) === */
+    .countdown-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 20px;
+        color: #fff;
+        font-size: 0.9rem;
+        z-index: 3;
+        overflow: hidden;
+    }
+
+        /* 🔹 Yavaşça kayan altın ışık */
+        .countdown-bar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.4), rgba(255,215,0,0.15), rgba(255,255,255,0));
+            transform: skewX(-20deg);
+            animation: shimmerMove 6s infinite linear;
+            pointer-events: none;
+        }
+    @@keyframes shimmerMove {
+        0%
+
+    {
+        left: -50%;
+    }
+
+    100% {
+        left: 120%;
+    }
+
+    }
+
+    /* 🔹 Hover’da parlaklık artışı */
+    .offer-card:hover .countdown-bar::before {
+        background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,215,0,0.3), rgba(255,255,255,0));
+        animation-duration: 4s;
+    }
+
+    /* === ⏳ Premium Dönen Saat İkonu === */
+    .countdown-bar .timer-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Saat simgesi */
+    .timer-icon {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #ffd36b;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        animation: rotateClock 12s linear infinite;
+    }
+
+        /* Saatin ibresi */
+        .timer-icon::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 8px;
+            width: 1.5px;
+            height: 6px;
+            background-color: #ffd36b;
+            border-radius: 2px;
+            transform-origin: bottom center;
+            animation: rotateNeedle 6s linear infinite;
+        }
+
+    /* Dönen dış çerçeve animasyonu */
+    @@keyframes rotateClock {
+        0%
+
+    {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+
+    }
+
+    /* İbre animasyonu */
+    @@keyframes rotateNeedle {
+        0%
+
+    {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+
+    }
+
+    /* Hover’da ekstra parlama efekti */
+    .offer-card:hover .timer-icon {
+        box-shadow: 0 0 16px rgba(255, 220, 0, 0.8);
+        border-color: #ffde6b;
+    }
+
+
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".countdown").forEach(el => {
+            const targetTime = new Date(el.dataset.time).getTime();
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const diff = targetTime - now;
+                if (diff <= 0) { el.textContent = "00:00:00"; return; }
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                el.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    });
+</script>

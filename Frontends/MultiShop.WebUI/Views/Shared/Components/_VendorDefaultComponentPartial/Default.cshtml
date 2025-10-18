@@ -1,17 +1,317 @@
 ﻿@model List<ResultBrandDTO>
-<div class="container-fluid py-5">
-    <div class="row px-xl-5">
-        <div class="col">
-            <div class="owl-carousel vendor-carousel">
-                @foreach (var item in Model)
+
+<section class="premium-brands py-5">
+    <div class="container-fluid px-5">
+        <!-- 🏷️ Başlık -->
+        <h2 class="premium-title text-center mb-5">
+            GÜVENİLİR MARKALAR
+            <span class="subtitle d-block">MultiShop’un premium iş ortaklarıyla tanış</span>
+            <span class="gold-flow"></span>
+        </h2>
+
+        <!-- 🔁 Sonsuz kayan marka bandı -->
+        <div class="brand-carousel mb-5">
+            <div class="brand-track">
+                @foreach (var brand in Model)
                 {
-                    <div class="bg-light p-4">
-                        <img src="@item.BrandImageURL" alt="@item.BrandName">
+                    <div class="brand-slide">
+                        <img src="@brand.BrandImageURL" alt="@brand.BrandName" />
                     </div>
                 }
-               
-               
+                @foreach (var brand in Model)
+                {
+                    <div class="brand-slide">
+                        <img src="@brand.BrandImageURL" alt="@brand.BrandName" />
+                    </div>
+                }
             </div>
         </div>
+
+        <!-- 💠 Premium Grid -->
+       
+
+        <!-- ⚡ Alt kısım: prestij kapanış mesajı -->
+        <div class="premium-footer mt-5 text-center">
+            <hr class="footer-line" />
+            <p class="footer-text">✨ MultiShop’a güvenen <strong>100’den fazla premium marka</strong> ile alışverişin ayrıcalığını yaşa ✨</p>
+        </div>
     </div>
-</div>
+</section>
+
+<style>
+    /* === Arka Plan + Altın Toz Efekti === */
+    .premium-brands {
+        background: linear-gradient(180deg, #ffffff, #fafafa, #ffffff);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .premium-brands::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 215, 0, 0.07) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: floatDust 20s linear infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+    @@keyframes floatDust {
+        0%
+
+    {
+        background-position: 0 0;
+        opacity: 0.3;
+    }
+
+    50% {
+        background-position: 0 -120px;
+        opacity: 0.5;
+    }
+
+    100% {
+        background-position: 0 0;
+        opacity: 0.3;
+    }
+
+    }
+
+    /* === Başlık === */
+    .premium-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+        .premium-title .gold-flow {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 4px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(255,215,0,0.3), #ffd36b, rgba(255,215,0,0.3));
+            background-size: 300% 100%;
+            animation: goldFlow 6s infinite linear;
+        }
+    @@keyframes goldFlow {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #555;
+        opacity: 0.9;
+        margin-top: 6px;
+    }
+
+    /* === Sonsuz kayan marka bandı === */
+    .brand-carousel {
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(90deg, #ffffff, #f9f9f9, #ffffff);
+        padding: 25px 0;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        position: relative;
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .brand-track {
+        display: flex;
+        gap: 60px;
+        width: max-content;
+        animation: scrollBrands 40s linear infinite;
+    }
+
+    .brand-slide img {
+        height: 60px;
+        filter: grayscale(100%) opacity(0.8);
+        transition: all 0.4s ease;
+    }
+
+    .brand-slide:hover img {
+        filter: grayscale(0%) opacity(1);
+        transform: scale(1.1);
+    }
+    @@keyframes scrollBrands {
+        0%
+
+    {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+
+    }
+
+    /* === Premium Marka Grid === */
+    .brand-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 35px;
+        justify-items: center;
+        align-items: center;
+        z-index: 2;
+        position: relative;
+    }
+
+    .brand-card {
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(8px);
+        border-radius: 18px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 25px;
+        transition: all .5s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .brand-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
+            transform: skewX(-20deg);
+            transition: all .8s ease;
+        }
+
+        .brand-card:hover::before {
+            left: 130%;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.25);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+    /* === Logo Görünümü === */
+    .brand-logo-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .brand-logo {
+        max-width: 140px;
+        max-height: 70px;
+        transition: all 0.4s ease;
+        filter: grayscale(100%) opacity(0.8);
+    }
+
+    .brand-card:hover .brand-logo {
+        filter: grayscale(0%) opacity(1);
+        transform: scale(1.05);
+    }
+
+    /* === Hover Tooltip === */
+    .brand-tooltip {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(6px);
+        color: #333;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(255,215,0,0.25);
+        opacity: 0;
+        transition: all 0.4s ease;
+    }
+
+    .brand-card:hover .brand-tooltip {
+        bottom: -40px;
+        opacity: 1;
+    }
+
+    /* === Altın Aura === */
+    .brand-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(255,215,0,0.0), rgba(255,215,0,0.5), rgba(255,215,0,0.0));
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+
+    .brand-card:hover::after {
+        opacity: 1;
+        animation: glowMove 4s linear infinite;
+    }
+    @@keyframes glowMove {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+
+    }
+
+    /* === Premium Footer === */
+    .premium-footer {
+        position: relative;
+        margin-top: 60px;
+    }
+
+    .footer-line {
+        width: 60%;
+        margin: 0 auto 20px;
+        border: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ffd36b, transparent);
+    }
+
+    .footer-text {
+        font-size: 1rem;
+        color: #444;
+        font-weight: 500;
+        background: linear-gradient(90deg, #ffd36b, #fda085, #ffd36b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: textFlow 8s linear infinite;
+    }
+    @@keyframes textFlow {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+
+    }
+</style>
