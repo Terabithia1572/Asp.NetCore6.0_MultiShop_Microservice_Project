@@ -1,27 +1,313 @@
-﻿<div class="container-fluid">
+﻿<!-- === TOPBAR PREMIUM V3 === -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
-        <div class="col-lg-4">
-            <a href="" class="text-decoration-none">
-                <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
-                <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+<!-- 🔸 Üst İnce Header -->
+<div class="micro-header d-none d-lg-flex justify-content-between align-items-center px-xl-5 py-1">
+    <div class="micro-left d-flex align-items-center text-muted small">
+        <span><i class="fa fa-truck text-gold me-1"></i> 500₺ Üzeri Ücretsiz Kargo</span>
+        <span><i class="fa fa-shield-halved text-gold me-1"></i> Güvenli Ödeme</span>
+        <span><i class="fa fa-clock text-gold me-1"></i> Hızlı Teslimat</span>
+    </div>
+    <div class="micro-right d-flex align-items-center small">
+        <a href="#" class="toplink"><i class="fa fa-bell me-1"></i> Kampanyalar</a>
+        <a href="#" class="toplink"><i class="fa fa-globe me-1"></i> TR | EN</a>
+        <a href="#" class="toplink"><i class="fa fa-headset me-1"></i> Destek</a>
+    </div>
+</div>
+
+<!-- 🔹 Ana Topbar -->
+<div class="container-fluid topbar-premium py-3 px-xl-5">
+    <div class="row align-items-center">
+        <!-- 🔸 Logo -->
+        <div class="col-lg-3 col-md-12 text-center text-lg-left mb-3 mb-lg-0">
+            <a href="/" class="text-decoration-none d-inline-flex align-items-center justify-content-center">
+                <span class="h1 text-uppercase text-gold bg-dark px-2 rounded-start">Multi</span>
+                <span class="h1 text-uppercase text-dark bg-gold px-2 rounded-end ms-n1">Shop</span>
             </a>
         </div>
-        <div class="col-lg-4 col-6 text-left">
-            <form action="">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Aranacak Ürünü Giriniz..">
-                    <div class="input-group-append">
-                        <span class="input-group-text bg-transparent text-primary">
-                            <i class="fa fa-search"></i>
-                        </span>
-                    </div>
+
+        <!-- 🔸 Arama Alanı -->
+        <div class="col-lg-5 col-md-6">
+            <form action="/Search/Index" method="get" class="position-relative">
+                <div class="input-group glass-input">
+                    <input type="text" class="form-control border-0 text-dark" placeholder="Aranacak ürünü giriniz..." name="q">
+                    <button class="btn btn-search" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
                 </div>
             </form>
         </div>
-        <div class="col-lg-4 col-6 text-right">
-            <p class="m-0">Telefon Numarası</p>
-            <h5 class="m-0">+90 123 456 78 99</h5>
+
+        <!-- 🔸 Telefon & Sosyal -->
+        <div class="col-lg-4 col-md-6 text-center text-lg-right mt-3 mt-lg-0">
+            <div class="contact-social-wrapper d-inline-flex align-items-center justify-content-end gap-4">
+
+                <!-- 📞 Telefon Bloğu -->
+                <div class="contact-box d-flex align-items-center gap-3 px-3 py-2 rounded">
+                    <i class="fa fa-phone-alt text-gold fs-5 d-flex align-items-center justify-content-center"></i>
+                    <div class="text-start lh-1">
+                        <p class="m-0 small text-muted fw-semibold">7/24 Destek Hattı</p>
+                        <h6 class="m-0 fw-bold text-gold">+90 123 456 78 99</h6>
+                    </div>
+                </div>
+
+                <!-- 🌐 Sosyal Medya -->
+                <div class="social-icons d-flex align-items-center justify-content-end gap-3">
+                    <a href="#" class="social"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* === MICRO HEADER === */
+    .micro-header {
+        background: linear-gradient(180deg, #f8f8f8, #ffffff);
+        border-bottom: 1px solid #eaeaea;
+        font-size: 13px;
+    }
+
+    .micro-left span {
+        margin-right: 20px;
+    }
+
+        .micro-left span:last-child {
+            margin-right: 0;
+        }
+
+    .micro-right a {
+        margin-left: 18px;
+    }
+
+        .micro-right a:first-child {
+            margin-left: 0;
+        }
+
+    .toplink {
+        color: #555;
+        text-decoration: none;
+        transition: all .3s ease;
+    }
+
+        .toplink:hover {
+            color: #ffcc00;
+            text-shadow: 0 0 6px rgba(255,204,0,0.4);
+        }
+
+    .text-gold {
+        color: #ffcc00 !important;
+    }
+
+    /* === ANA TOPBAR === */
+    .topbar-premium {
+        background: #ffffff;
+        border-bottom: 2px solid #ffcc00;
+        position: relative;
+        z-index: 1500;
+    }
+
+    .bg-gold {
+        background: #ffcc00 !important;
+        color: #111 !important;
+    }
+
+    /* === ARAMA === */
+    .glass-input {
+        background: rgba(255,255,255,0.5);
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .glass-input:focus-within {
+            box-shadow: 0 0 10px rgba(255,204,0,0.4);
+        }
+
+        .glass-input .form-control {
+            background: transparent !important;
+            border: none;
+            height: 46px;
+            font-size: 15px;
+        }
+
+    .btn-search {
+        background: transparent;
+        border: none;
+        color: #ffcc00;
+        font-size: 18px;
+        padding: 0 14px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-search:hover {
+            color: #111;
+            text-shadow: 0 0 8px rgba(255,204,0,0.5);
+            transform: rotate(360deg);
+        }
+
+    /* === TELEFON BLOĞU === */
+    .contact-box {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255,204,0,0.25);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 6px rgba(255,204,0,0.15);
+    }
+
+        .contact-box:hover {
+            box-shadow: 0 0 10px rgba(255,204,0,0.35);
+            transform: translateY(-2px);
+        }
+
+        .contact-box i {
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-box .lh-1 {
+            line-height: 1.1 !important;
+        }
+
+    /* === SOSYAL === */
+    .social-icons {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+    }
+
+    .social {
+        color: #666;
+        font-size: 17px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        transition: all .3s ease;
+    }
+
+        .social:hover {
+            color: #111;
+            background: #ffcc00;
+            box-shadow: 0 0 10px rgba(255,204,0,0.4);
+            transform: translateY(-2px);
+        }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 991px) {
+        .micro-header
+
+    {
+        display: none !important;
+    }
+
+    .topbar-premium {
+        padding: 10px 15px;
+        text-align: center;
+    }
+
+    .social-icons {
+        display: none;
+    }
+
+    }
+
+    .topbar-premium, .micro-header {
+        position: relative;
+        overflow: hidden;
+    }
+
+        /* Yansıma çizgisi tanımı */
+        .topbar-premium::after,
+        .micro-header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 100%;
+            background: linear-gradient( 120deg, transparent 0%, rgba(255, 255, 255, 0.05) 10%, rgba(255, 255, 255, 0.25) 40%, rgba(255, 220, 80, 0.3) 50%, rgba(255, 255, 255, 0.25) 60%, rgba(255, 255, 255, 0.05) 90%, transparent 100% );
+            transform: skewX(-25deg);
+            opacity: 0;
+            pointer-events: none;
+            filter: blur(0.5px) brightness(1.15);
+        }
+
+    /* Animasyon tanımı */
+    @@keyframes glassShine {
+        0%
+
+    {
+        left: -150%;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.6;
+    }
+
+    50% {
+        left: 100%;
+        opacity: 0.8;
+    }
+
+    80% {
+        opacity: 0.4;
+    }
+
+    100% {
+        left: 150%;
+        opacity: 0;
+    }
+
+    }
+
+    /* Animasyon tetiklendiğinde */
+    .topbar-premium.shine::after,
+    .micro-header.shine::after {
+        animation: glassShine 3.8s ease-in-out forwards;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const topbar = document.querySelector(".topbar-premium");
+        const micro = document.querySelector(".micro-header");
+
+        if (!topbar || !micro) return;
+
+        // İlk ışıltı (sayfa açılışında)
+        setTimeout(() => {
+            topbar.classList.add("shine");
+            setTimeout(() => micro.classList.add("shine"), 500); // 0.5sn gecikme
+            setTimeout(() => {
+                topbar.classList.remove("shine");
+                micro.classList.remove("shine");
+            }, 4000);
+        }, 1000);
+
+        // Her 10 saniyede bir tekrarlansın
+        setInterval(() => {
+            topbar.classList.add("shine");
+            setTimeout(() => micro.classList.add("shine"), 500);
+            setTimeout(() => {
+                topbar.classList.remove("shine");
+                micro.classList.remove("shine");
+            }, 4000);
+        }, 10000);
+    });
+</script>

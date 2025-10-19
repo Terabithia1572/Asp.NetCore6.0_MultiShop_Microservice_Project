@@ -1,84 +1,80 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+﻿<!-- === NAVBAR === -->
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @model List<ResultCategoryDTO>
 
-<div class="container-fluid bg-dark mb-30">
-    <div class="row px-xl-5">
-        <div class="col-lg-3 d-none d-lg-block">
-            <a class="btn d-flex align-items-center justify-content-between bg-primary w-100"
-               data-toggle="collapse" href="#navbar-vertical"
-               style="height: 65px; padding: 0 30px;">
-                <h6 class="text-dark m-0">
-                    <i class="fa fa-bars mr-2"></i>@localizer["Kategoriler"]
+<div class="container-fluid navbar-premium mb-30 shadow-sm position-relative">
+    <div class="row px-xl-5 align-items-center">
+        <!-- 🔸 Kategoriler -->
+        <div class="col-lg-3 d-none d-lg-block position-relative" style="z-index: 1100;">
+            <button id="btn-cat-toggle" class="btn w-100 ms-cat-trigger d-flex align-items-center justify-content-between">
+                <h6 class="m-0">
+                    <i class="fa fa-bars me-2"></i>
+                    <span class="cat-text">@localizer["Kategoriler"]</span>
                 </h6>
-                <i class="fa fa-angle-down text-dark"></i>
-            </a>
-            <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light"
-                 id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
-                <div class="navbar-nav w-100">
-                    @foreach (var item in Model)
-                    {
-                        <a href="/ProductList/Index/@item.CategoryID" class="nav-item nav-link">@item.CategoryName</a>
-                    }
-                </div>
+                <i class="fa fa-angle-down"></i>
+            </button>
+
+            <nav id="ms-cat-panel" class="ms-cat-panel">
+                @foreach (var item in Model)
+                {
+                    <a href="/ProductList/Index/@item.CategoryID" class="ms-cat-item">@item.CategoryName</a>
+                }
             </nav>
         </div>
 
-        <div class="col-lg-9">
-            <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-0">
-                <a href="" class="text-decoration-none d-block d-lg-none">
-                    <span class="h1 text-uppercase text-dark bg-light px-2">Multi</span>
-                    <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">Shop</span>
-                </a>
-
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
+        <!-- 🔹 Menü -->
+        <div class="col-lg-9 position-relative" style="z-index: 1000;">
+            <nav class="navbar navbar-expand-lg navbar-dark py-3 py-lg-0 px-0">
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
-                        <a href="/Default/Index/" class="nav-item nav-link">@localizer["Ana Sayfa"]</a>
-                        <a href="shop.html" class="nav-item nav-link">@localizer["Ürünler"]</a>
-                        <a href="detail.html" class="nav-item nav-link">@localizer["Ürün Detayları"]</a>
-                        <a href="detail.html" class="nav-item nav-link">@localizer["Günün Fırsatı"]</a>
+                        <a href="/Default/Index" class="nav-item nav-link nav-underline">Ana Sayfa</a>
+                        <a href="/ProductList/Index" class="nav-item nav-link nav-underline">Ürünler</a>
+                        <a href="/Discount/Index" class="nav-item nav-link nav-underline">Günün Fırsatı</a>
+                        <a href="/Popular/Index" class="nav-item nav-link nav-underline">Popüler Ürünler</a>
+                        <a href="/About/Index" class="nav-item nav-link nav-underline">Hakkımızda</a>
+                        <a href="/Contact/Index" class="nav-item nav-link nav-underline">İletişim</a>
+                    </div>
 
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                                @localizer["Sayfalar"]
-                                <i class="fa fa-angle-down mt-1"></i>
-                            </a>
-                            <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
-                                <a href="cart.html" class="dropdown-item">@localizer["Sepetim"]</a>
-                                <a href="checkout.html" class="dropdown-item">@localizer["Ödeme"]</a>
-                                <a href="/Register/Index/" class="dropdown-item">@localizer["Kayıt Ol"]</a>
-                                <a href="/Login/Index/" class="dropdown-item">@localizer["Giriş Yap"]</a>
+                    <!-- 🔸 Sağ taraf -->
+                    <div class="d-flex align-items-center position-relative" style="gap:18px; z-index:1200;">
+                        <!-- 🧍 Kullanıcı Menü -->
+                        <div class="user-menu position-relative" style="z-index: 1200;">
+                            <div id="userIcon" class="user-trigger">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <div id="userDropdown" class="user-dropdown shadow">
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <div class="user-header">
+                                        <i class="fa fa-user-circle me-2"></i>
+                                        <strong class="username-glow">@User.Identity.Name</strong>
+                                    </div>
+                                    <hr class="dropdown-divider my-2" />
+                                    <a href="/Profile/Index" class="dropdown-link"><i class="fa fa-user me-2"></i>Profilim</a>
+                                    <a href="/Order/Index" class="dropdown-link"><i class="fa fa-box me-2"></i>Siparişlerim</a>
+                                    <a href="/Login/Logout" class="dropdown-link exit-link">
+                                        <i class="fa fa-sign-out-alt me-2"></i>Çıkış Yap
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="/Login/Index" class="dropdown-link"><i class="fa fa-sign-in-alt me-2"></i>Giriş Yap</a>
+                                    <a href="/Register/Index" class="dropdown-link"><i class="fa fa-user-plus me-2"></i>Kayıt Ol</a>
+                                }
                             </div>
                         </div>
 
-                        <a href="/Contact/Index/" class="nav-item nav-link">@localizer["İletişim"]</a>
-                    </div>
-
-                    <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                        <a href="" class="btn px-0">
-                            <i class="fas fa-heart text-primary"></i>
-                            <span class="badge text-secondary border border-secondary rounded-circle"
-                                  style="padding-bottom: 2px;">0</span>
-                        </a>
-
-                        <div class="btn px-0 ml-3 position-relative" id="header-cart">
+                        <!-- 🛒 Sepet -->
+                        <div class="btn px-0 position-relative" id="header-cart" style="z-index: 1100;">
                             <a href="javascript:void(0)" id="cartIcon" class="text-decoration-none text-light">
-                                <i class="fa fa-shopping-cart"></i>
+                                <i class="fa fa-shopping-cart fs-5"></i>
                                 <span class="badge bg-warning text-dark rounded-circle position-absolute top-0 start-100 translate-middle"
                                       id="cart-count">0</span>
                             </a>
-
                             <div id="mini-cart" class="position-absolute end-0 mt-2 shadow bg-white rounded">
-                                <div class="p-3 text-center text-muted small">
-                                    Sepet yükleniyor...
-                                </div>
+                                <div class="p-3 text-center text-muted small">Sepet yükleniyor...</div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </nav>
@@ -86,3 +82,270 @@
     </div>
 </div>
 
+<style>
+    /* === NAVBAR === */
+    .navbar-premium {
+        background: linear-gradient(180deg, #3a3a3a, #2d2d2d);
+        border-bottom: 2px solid #ffcc00;
+        position: relative;
+        overflow: visible !important; /* 🔥 Dropdown'un arkada kalmasını engeller */
+        z-index: 100;
+    }
+
+    /* === NAVBAR LİNK HOVER EFEKTİ === */
+    /* Metal parıltı kaldırıldı, yerinde alt çizgi animasyonu var */
+    .nav-underline {
+        color: #efefef !important;
+        font-weight: 600;
+        position: relative;
+        transition: all .3s ease;
+    }
+
+        .nav-underline::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ffcc00, #fff3a3, #ffcc00);
+            border-radius: 2px;
+            transform: translateX(-50%);
+            transition: all .3s ease;
+        }
+
+        .nav-underline:hover::after {
+            width: 80%;
+        }
+
+        .nav-underline:hover {
+            color: #ffcc00 !important;
+            text-shadow: 0 0 8px rgba(255,204,0,.4);
+        }
+
+    /* === KATEGORİ PANEL === */
+    .ms-cat-trigger {
+        background: #ffcc00;
+        color: #111;
+        font-weight: 700;
+        height: 60px;
+        border-radius: 4px;
+        border: none;
+        transition: all .3s ease;
+    }
+
+        .ms-cat-trigger:hover {
+            background: #ffd84a;
+            box-shadow: 0 0 10px rgba(255,204,0,0.3);
+        }
+
+    .cat-text {
+        display: inline-block;
+        animation: fadeSlide 3s ease-in-out infinite;
+    }
+    @@keyframes fadeSlide {
+        0%, 100%
+
+    {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translateX(2px);
+        opacity: 0.85;
+    }
+
+    }
+
+    .ms-cat-panel {
+        display: none;
+        position: absolute;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #e4e4e4;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border-radius: 6px;
+        z-index: 1050;
+    }
+
+        .ms-cat-panel.show {
+            display: block;
+            animation: fadeIn .25s ease;
+        }
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .ms-cat-item {
+        display: block;
+        padding: 11px 18px;
+        color: #333;
+        font-weight: 500;
+        text-decoration: none;
+        border-bottom: 1px solid #f1f1f1;
+        transition: all .2s ease;
+    }
+
+        .ms-cat-item:hover {
+            background: #ffcc00;
+            color: #111 !important;
+            padding-left: 22px;
+        }
+
+    /* === USER MENU === */
+    .user-menu {
+        position: relative;
+        z-index: 1200;
+    }
+
+    .user-trigger {
+        cursor: pointer;
+        color: #ffcc00;
+        font-size: 1.05rem;
+        transition: .3s;
+        padding: 6px 8px;
+    }
+
+        .user-trigger:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,204,0,.6);
+            transform: scale(1.05);
+        }
+
+    /* === Gri Dropdown === */
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 120%;
+        background: linear-gradient(180deg, #3a3a3a, #2d2d2d);
+        border-radius: 10px;
+        min-width: 210px;
+        border: 1px solid rgba(255,204,0,0.15);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+        padding: 8px 0;
+        animation: dropdownFade .25s ease;
+        z-index: 1300;
+    }
+
+        .user-dropdown.show {
+            display: block;
+        }
+    @@keyframes dropdownFade {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .user-header {
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        color: #ffcc00;
+        font-weight: 700;
+        font-size: 15px;
+        gap: 6px;
+    }
+
+    .username-glow {
+        background: linear-gradient(90deg,#ffcc00,#fff099,#ffcc00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 3s linear infinite;
+    }
+    @@keyframes shimmer {
+        0%
+
+    {
+        background-position: -100px;
+    }
+
+    100% {
+        background-position: 200px;
+    }
+
+    }
+
+    .dropdown-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #f1f1f1;
+        text-decoration: none;
+        padding: 10px 16px;
+        font-size: 14.5px;
+        transition: all .25s ease;
+    }
+
+        .dropdown-link:hover {
+            background: rgba(255,204,0,0.08);
+            color: #ffcc00 !important;
+            padding-left: 22px;
+        }
+
+    .exit-link {
+        color: #ff7575;
+        font-weight: 600;
+    }
+
+        .exit-link:hover {
+            color: #ff3b3b !important;
+            background: rgba(255,0,0,0.08);
+            text-shadow: 0 0 8px rgba(255,80,80,0.6);
+        }
+</style>
+
+<script>
+    (function(){
+      // === Kategoriler ===
+      const catBtn=document.getElementById('btn-cat-toggle');
+      const catPanel=document.getElementById('ms-cat-panel');
+      if(catBtn&&catPanel){
+        catBtn.addEventListener('click',e=>{
+          e.stopPropagation();
+          catPanel.classList.toggle('show');
+        });
+        document.addEventListener('click',e=>{
+          if(!catPanel.contains(e.target)&&!catBtn.contains(e.target)){
+            catPanel.classList.remove('show');
+          }
+        });
+      }
+
+      // === Kullanıcı Menüsü ===
+      const userIcon=document.getElementById('userIcon');
+      const userDropdown=document.getElementById('userDropdown');
+      if(userIcon && userDropdown){
+        userIcon.addEventListener('click',e=>{
+          e.stopPropagation();
+          userDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click',e=>{
+          if(!userDropdown.contains(e.target)&&!userIcon.contains(e.target)){
+            userDropdown.classList.remove('show');
+          }
+        });
+      }
+    })();
+</script>
