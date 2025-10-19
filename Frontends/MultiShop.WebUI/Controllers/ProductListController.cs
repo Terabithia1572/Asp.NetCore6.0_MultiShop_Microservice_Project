@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
 using MultiShop.DTOLayer.CommentDTOs;
+using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
+using MultiShop.WebUI.Services.CatalogServices.ProductServices;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -9,18 +11,35 @@ namespace MultiShop.WebUI.Controllers
     public class ProductListController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public ProductListController(IHttpClientFactory httpClientFactory)
+        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
+
+        public ProductListController(IHttpClientFactory httpClientFactory, ICategoryService categoryService, IProductService productService)
         {
             _httpClientFactory = httpClientFactory;
+            _categoryService = categoryService;
+            _productService = productService;
         }
-        public IActionResult Index(string id)
+        public async Task< IActionResult> Index(string id)
         {
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
-            ViewBag.directory3 = "Ürün Listesi";
+            ViewBag.directory3 = "Ürün Listesi"; 
             ViewBag.id = id;
-            return View();
+            var products = await _productService.GetProductsWithByCategoryByCategoryIDAsync(id);
+            ViewBag.ProductCount = products?.Count() ?? 0;
+            ViewBag.CategoryName = products?.FirstOrDefault()?.Category?.CategoryName ?? "Ürünler";
+
+            // 🔹 Kategori bilgisi authentication istemeden çekilir
+            var category = await _categoryService.GetByIDCategoryAsync(id);
+            if (category != null)
+                ViewBag.CategoryName = category.CategoryName;
+            else
+                ViewBag.CategoryName = "Kategori";
+
+            return View(products);
         }
+        
 
         public IActionResult ProductDetail(string id)
         {
@@ -53,7 +72,17 @@ namespace MultiShop.WebUI.Controllers
             }
             return View();
         }
-    }
+        // 🔥 GÜNCELLENMİŞ FİYAT FİLTRELEME
+        [HttpGet]
+        public IActionResult FilterByPrice(string ranges, string? categoryId)
+        {
+            // ❗ PartialView YOK, doğrudan ViewComponent çağırıyoruz
+            // ranges: "all" | "₺1000 - ₺5000, ₺20000+"
+            return ViewComponent("_ProductListComponentPartial", new { id = categoryId ?? "", ranges = ranges ?? "all" });
+        }
 
     }
+
+
+}
 

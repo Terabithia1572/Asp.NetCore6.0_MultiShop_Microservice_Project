@@ -10,32 +10,282 @@
     }
     .Where(x => !string.IsNullOrWhiteSpace(x))
     .ToList();
+
+    if (!images.Any())
+    {
+        images.Add("/img/placeholders/no-image.png");
+    }
 }
 
-<div class="col-lg-5 mb-30">
-    <div id="product-carousel" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner bg-light">
-            @if (images.Count > 0)
+<div class="col-lg-5 mb-4">
+    <div class="detail-gallery">
+        <!-- Ana Görsel -->
+        <div class="main-image-container" id="main-image-wrapper">
+            <img id="main-product-image" src="@images.First()" alt="Ürün Görseli" class="main-image" />
+            <div class="zoom-icon">
+                <i class="bi bi-zoom-in"></i>
+            </div>
+        </div>
+
+        <!-- Thumbnail Alanı -->
+        <div class="thumb-gallery mt-3 d-flex gap-2 flex-wrap justify-content-center">
+            @foreach (var (img, index) in images.Select((v, i) => (v, i)))
             {
-                for (int i = 0; i < images.Count; i++)
-                {
-                    <div class="carousel-item @(i == 0 ? "active" : "")">
-                        <img class="w-100 h-100" src="@images[i]" alt="Image">
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="carousel-item active">
-                    <img class="w-100 h-100" src="/img/placeholders/no-image.png" alt="No image">
+                <div class="thumb-item @(index == 0 ? "active" : "")" data-img="@img">
+                    <img src="@img" alt="thumb @(index + 1)" />
                 </div>
             }
         </div>
-        <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
-            <i class="fa fa-2x fa-angle-left text-dark"></i>
-        </a>
-        <a class="carousel-control-next" href="#product-carousel" data-slide="next">
-            <i class="fa fa-2x fa-angle-right text-dark"></i>
-        </a>
     </div>
 </div>
+
+<!-- 🔍 Zoom Modal -->
+<div id="zoom-modal" class="zoom-modal">
+    <span class="close-zoom">&times;</span>
+    <img class="zoom-modal-content" id="zoomed-image">
+    <div class="zoom-nav prev"><i class="bi bi-chevron-left"></i></div>
+    <div class="zoom-nav next"><i class="bi bi-chevron-right"></i></div>
+</div>
+
+<style>
+    .detail-gallery {
+        background: #fff;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .detail-gallery:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+    .main-image-container {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f7f7f7;
+        cursor: zoom-in;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        transition: transform 0.4s ease, filter 0.3s ease;
+    }
+
+    .main-image-container:hover .main-image {
+        transform: scale(1.06);
+        filter: brightness(0.95);
+    }
+
+    .zoom-icon {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(255, 204, 0, 0.9);
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        color: #111;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+    }
+
+    .main-image-container:hover .zoom-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .thumb-item {
+        border-radius: 10px;
+        overflow: hidden;
+        width: 78px;
+        height: 65px;
+        border: 2px solid transparent;
+        transition: all 0.25s ease;
+        cursor: pointer;
+    }
+
+        .thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumb-item.active {
+            border-color: #f2c200;
+            box-shadow: 0 0 0 4px rgba(242, 194, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .thumb-item:hover {
+            border-color: #f2c200;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+    /* 🔍 Zoom Modal */
+    .zoom-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgba(0,0,0,0.85);
+        transition: opacity 0.3s ease;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .zoom-modal.open {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+    .zoom-modal-content {
+        max-width: 85%;
+        max-height: 85%;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        transform: scale(0.95);
+        transition: transform 0.25s ease;
+    }
+
+    .zoom-modal.open .zoom-modal-content {
+        transform: scale(1);
+    }
+
+    .close-zoom {
+        position: absolute;
+        top: 30px;
+        right: 50px;
+        color: #fff;
+        font-size: 40px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        .close-zoom:hover {
+            color: #f2c200;
+        }
+
+    .zoom-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+        font-size: 2rem;
+        cursor: pointer;
+        background: rgba(0,0,0,0.3);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .zoom-nav:hover {
+            background: rgba(242,194,0,0.7);
+            color: #111;
+        }
+
+        .zoom-nav.prev {
+            left: 50px;
+        }
+
+        .zoom-nav.next {
+            right: 50px;
+        }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .main-image
+
+    {
+        height: 320px;
+    }
+
+    .thumb-item {
+        width: 72px;
+        height: 58px;
+    }
+
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const thumbs = document.querySelectorAll(".thumb-item");
+        const mainImg = document.getElementById("main-product-image");
+        const zoomModal = document.getElementById("zoom-modal");
+        const zoomedImage = document.getElementById("zoomed-image");
+        const closeZoom = document.querySelector(".close-zoom");
+        const prevBtn = document.querySelector(".zoom-nav.prev");
+        const nextBtn = document.querySelector(".zoom-nav.next");
+
+        let currentIndex = 0;
+        const images = Array.from(thumbs).map(t => t.dataset.img);
+
+        // Thumbnail tıklanınca ana görsel değişsin
+        thumbs.forEach((t, index) => {
+            t.addEventListener("click", () => {
+                currentIndex = index;
+                mainImg.style.opacity = 0;
+                setTimeout(() => {
+                    mainImg.src = t.dataset.img;
+                    mainImg.onload = () => mainImg.style.opacity = 1;
+                }, 150);
+
+                thumbs.forEach(x => x.classList.remove("active"));
+                t.classList.add("active");
+            });
+        });
+
+        // Ana görsele tıklayınca modal aç
+        mainImg.addEventListener("click", () => {
+            zoomedImage.src = mainImg.src;
+            zoomModal.classList.add("open");
+        });
+
+        // Modal kapatma
+        closeZoom.onclick = () => zoomModal.classList.remove("open");
+        zoomModal.onclick = (e) => { if (e.target === zoomModal) zoomModal.classList.remove("open"); };
+        document.addEventListener("keydown", e => { if (e.key === "Escape") zoomModal.classList.remove("open"); });
+
+        // İleri / Geri navigasyon
+        nextBtn.onclick = () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            zoomedImage.src = images[currentIndex];
+        };
+        prevBtn.onclick = () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            zoomedImage.src = images[currentIndex];
+        };
+    });
+</script>

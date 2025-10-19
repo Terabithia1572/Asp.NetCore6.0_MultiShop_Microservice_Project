@@ -1,26 +1,243 @@
-﻿<div class="col-12 pb-1">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <div>
-            <button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
-            <button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button>
+﻿@{
+    var categoryName = ViewBag.CategoryName as string ?? "Ürünler";
+    var productCount = ViewBag.ProductCount ?? 0;
+}
+
+<div class="premium-toolbar d-flex flex-wrap align-items-center justify-content-between mb-4 shadow-sm p-3 rounded-4 animate-toolbar">
+    <!-- Sol -->
+    <div class="d-flex align-items-center flex-wrap gap-4">
+        <h4 class="category-heading m-0">
+            <i class="fa fa-layer-group me-2"></i>@categoryName
+        </h4>
+        <span class="count-pill d-flex align-items-center">
+            <i class="fa fa-box me-2"></i>@productCount Ürün
+        </span>
+    </div>
+
+    <!-- Sağ -->
+    <div class="d-flex align-items-center flex-wrap gap-3">
+        <div class="view-switch d-flex gap-2">
+            <button class="view-btn active" id="gridViewBtn" title="Izgara Görünümü">
+                <i class="fa fa-th-large"></i>
+            </button>
+            <button class="view-btn" id="listViewBtn" title="Liste Görünümü">
+                <i class="fa fa-bars"></i>
+            </button>
         </div>
-        <div class="ml-2">
-            <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sırala</button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">Son Ürünler</a>
-                    <a class="dropdown-item" href="#">Popüler Ürünler</a>
-                    <a class="dropdown-item" href="#">En İyi Ürünler</a>
-                </div>
-            </div>
-            <div class="btn-group ml-2">
-                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Göster</button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">10</a>
-                    <a class="dropdown-item" href="#">20</a>
-                    <a class="dropdown-item" href="#">30</a>
-                </div>
-            </div>
+
+        <div class="dropdown">
+            <button class="premium-dropdown-btn dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fa fa-sort me-2"></i>Sırala
+            </button>
+            <ul class="dropdown-menu premium-dropdown">
+                <li><a class="dropdown-item" href="#">En Yeni</a></li>
+                <li><a class="dropdown-item" href="#">Fiyata Göre Artan</a></li>
+                <li><a class="dropdown-item" href="#">Fiyata Göre Azalan</a></li>
+            </ul>
+        </div>
+
+        <div class="dropdown">
+            <button class="premium-dropdown-btn dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fa fa-eye me-2"></i>Göster
+            </button>
+            <ul class="dropdown-menu premium-dropdown">
+                <li><a class="dropdown-item" href="#">10</a></li>
+                <li><a class="dropdown-item" href="#">20</a></li>
+                <li><a class="dropdown-item" href="#">30</a></li>
+            </ul>
         </div>
     </div>
 </div>
+
+<style>
+    /* === Genel === */
+    .premium-toolbar {
+        background: #fff;
+        border: none;
+        transition: all .4s ease;
+        gap: 1.5rem;
+    }
+
+    /* === Giriş animasyonu === */
+    .animate-toolbar {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+        animation: fadeUpScale 0.7s ease forwards;
+    }
+
+    @@keyframes fadeUpScale {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    }
+
+    /* === Başlık ve Ürün Sayısı === */
+    .category-heading {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #111;
+        text-transform: capitalize;
+        display: flex;
+        align-items: center;
+        gap: 18px; /* Kategori adı ve ürün sayısı arasındaki boşluk */
+    }
+
+    .count-pill {
+        background: linear-gradient(90deg, #f2c200, #ffd84a);
+        color: #111;
+        font-weight: 600;
+        border-radius: 40px;
+        padding: 6px 18px;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* === Görünüm Butonları === */
+    .view-switch {
+        display: flex;
+        align-items: center;
+        gap: 12px; /* Grid ve List arasında estetik boşluk */
+    }
+
+        .view-switch .view-btn {
+            border: none;
+            background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+            color: #fff;
+            font-size: 1rem;
+            padding: 9px 14px;
+            border-radius: 12px;
+            transition: all .3s ease;
+        }
+
+            .view-switch .view-btn.active {
+                background: linear-gradient(90deg, #f2c200, #ffd84a);
+                color: #111;
+                box-shadow: 0 2px 10px rgba(255, 210, 0, 0.35);
+                transform: translateY(-2px);
+            }
+
+            .view-switch .view-btn:hover:not(.active) {
+                background: linear-gradient(180deg, #111, #2a2a2a);
+                transform: translateY(-2px);
+                color: #fff;
+            }
+
+    /* === Dropdownlar (Sırala / Göster) === */
+    .d-flex.align-items-center.flex-wrap.gap-3 > .dropdown {
+        margin-left: 12px; /* Sırala ve Göster arası boşluk */
+    }
+
+    .premium-dropdown-btn {
+        background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        border-radius: 40px;
+        padding: 8px 20px;
+        transition: all .3s ease;
+        letter-spacing: 0.3px;
+    }
+
+        .premium-dropdown-btn:hover,
+        .premium-dropdown-btn:focus {
+            background: linear-gradient(90deg, #f2c200, #ffd84a);
+            color: #111;
+            box-shadow: 0 0 10px rgba(255, 210, 0, 0.4);
+        }
+
+    .premium-dropdown {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        .premium-dropdown .dropdown-item:hover {
+            background: linear-gradient(90deg, #f2c200, #ffd84a);
+            color: #111;
+        }
+
+    /* === Liste Görünümü === */
+    .list-view .col-12.col-sm-6.col-lg-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .list-view .premium-card {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        transition: transform .3s ease;
+    }
+
+        .list-view .premium-card:hover {
+            transform: translateY(-4px);
+        }
+
+    .list-view .premium-img {
+        flex: 0 0 260px;
+        height: 180px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-right: 20px;
+    }
+
+        .list-view .premium-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .list-view .p-3.text-center {
+        flex: 1;
+        text-align: left !important;
+        padding: 0 !important;
+    }
+
+    .list-view h6 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: #111;
+    }
+
+    .list-view .new-price {
+        font-size: 1.1rem;
+        color: #f2c200;
+        font-weight: 700;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const gridBtn = document.getElementById("gridViewBtn");
+        const listBtn = document.getElementById("listViewBtn");
+        const container = document.querySelector(".row.g-4.justify-content-start");
+
+        gridBtn.addEventListener("click", () => {
+            gridBtn.classList.add("active");
+            listBtn.classList.remove("active");
+            container.classList.remove("list-view");
+        });
+
+        listBtn.addEventListener("click", () => {
+            listBtn.classList.add("active");
+            gridBtn.classList.remove("active");
+            container.classList.add("list-view");
+        });
+    });
+</script>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
+using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
 using MultiShop.WebUI.Services.CatalogServices.ProductServices;
 using Newtonsoft.Json;
 
@@ -13,11 +14,13 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
         //{
         //    _httpClientFactory = httpClientFactory;
         //}
-        private readonly IProductService _productService; // IProductService arayüzü, ürünle ilgili işlemleri sağlar.
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
-        public _ProductDetailFeatureComponentPartial(IProductService productService) // Yapıcı metod, IProductService bağımlılığını alır.
-        { 
-            _productService = productService; // IProductService bağımlılığı, yapıcı metod aracılığıyla enjekte edilir.
+        public _ProductDetailFeatureComponentPartial(IProductService productService, ICategoryService categoryService)
+        {
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
         public async Task< IViewComponentResult> InvokeAsync(string id)
@@ -34,8 +37,30 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
             //    return View(values); // Dönüştürülen DTO nesnesi view'e gönderilir.
             //}
             //return View(); // Başarısız ise aynı view döndürülür.
-            var values=await _productService.GetByIDProductAsync(id); // Ürün verisi, IProductService kullanılarak alınır.
-            return View(values); // Alınan ürün verisi view'e gönderilir.
+            //var values=await _productService.GetByIDProductAsync(id); // Ürün verisi, IProductService kullanılarak alınır.
+            //return View(values); // Alınan ürün verisi view'e gönderilir.
+            // Ürünü getir
+            UpdateProductDTO product = await _productService.GetByIDProductAsync(id);
+
+            // Kategori adını bul (isteğe bağlı, hataya düşmesin diye try)
+            string categoryName = "";
+            try
+            {
+                var categories = await _categoryService.GetAllCategoryAsync();
+                categoryName = categories.FirstOrDefault(c => c.CategoryID == product.CategoryID)?.CategoryName ?? "";
+            }
+            catch { /* yutuyoruz, kritik değil */ }
+
+            // Giyim/ayakkabı vb. ise varyantları göster
+            var fashionKeywords = new[] { "giyim", "ayakkabı", "tekstil", "elbise", "t-shirt", "pantolon", "kazak" };
+            bool showVariantOptions = !string.IsNullOrWhiteSpace(categoryName)
+                                      && fashionKeywords.Any(k => categoryName.ToLower().Contains(k));
+
+            ViewBag.ShowVariantOptions = showVariantOptions;
+            ViewBag.CategoryName = categoryName; // istersen view’da da kullanırsın
+
+            return View(product); // Default.cshtml (model: UpdateProductDTO)
         }
     }
-}
+    }
+

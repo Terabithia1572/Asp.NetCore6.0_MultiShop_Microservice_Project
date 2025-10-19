@@ -1,35 +1,371 @@
-﻿@model List<ResultProductWithCategoryDTO>
-@foreach (var item in Model)
-    {
-<div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-    
-        <div class="product-item bg-light mb-4">
-            <div class="product-img position-relative overflow-hidden">
-                <img class="img-fluid w-100" src="@item.ProductImageURL" alt="">
-                <div class="product-action">
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                </div>
-            </div>
-            <div class="text-center py-4">
-                <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
-                <div class="d-flex align-items-center justify-content-center mt-2">
-                    <h5>@item.ProductPrice ₺</h5><h6 class="text-muted ml-2"><del>0000 ₺</del></h6>
-                </div>
-                <div class="d-flex align-items-center justify-content-center mb-1">
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small>(99)</small>
-                </div>
-            </div>
-        </div>
-        
-   
-  
-</div>
+﻿@model IEnumerable<ResultProductWithCategoryDTO>
+
+@{
+    var categories = ViewBag.Categories as IDictionary<string, string>;
+    var discounts = ViewBag.Discounts as IDictionary<string, decimal>;
 }
+
+<div class="row g-4 justify-content-start">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var p in Model)
+        {
+            string categoryName = categories != null && categories.ContainsKey(p.CategoryID)
+            ? categories[p.CategoryID]
+            : "Genel";
+
+            bool hasDiscount = discounts != null && discounts.ContainsKey(p.ProductID);
+            decimal discountRate = hasDiscount ? discounts[p.ProductID] : 0;
+            decimal discountedPrice = hasDiscount ? p.ProductPrice * (1 - discountRate / 100m) : p.ProductPrice;
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="premium-card position-relative rounded-4 overflow-hidden bg-white shadow-sm">
+
+                    <!-- 🔸 Görsel -->
+                    <div class="premium-img position-relative">
+                        <img src="@p.ProductImageURL" alt="@p.ProductName" />
+
+                        @if (hasDiscount)
+                        {
+                            <span class="discount-badge">-%@discountRate</span>
+                        }
+
+                        <div class="premium-overlay d-flex justify-content-center align-items-center">
+                            <a href="javascript:void(0)" class="btn add-btn add-to-cart" data-id="@p.ProductID">
+                                <i class="fa fa-shopping-cart me-2"></i>Sepete Ekle
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 🔹 Bilgi -->
+                    <div class="p-3 text-center">
+                        <h6 class="fw-semibold text-dark mb-1 text-truncate">@p.ProductName</h6>
+                        <div class="price-wrapper">
+                            @if (hasDiscount)
+                            {
+                                <span class="old-price">@String.Format("{0:0.##}", p.ProductPrice)₺</span>
+                                <span class="new-price">@String.Format("{0:0.##}", discountedPrice)₺</span>
+                            }
+                            else
+                            {
+                                <span class="new-price">@String.Format("{0:0.##}", p.ProductPrice)₺</span>
+                            }
+                        </div>
+                        <div class="mt-2 small text-muted">
+                            <span class="me-2"><i class="bi bi-tag"></i> @categoryName</span>
+                            <span class="text-success"><i class="bi bi-check2-circle"></i> Stokta Var</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center text-muted py-5">Henüz ürün bulunmamaktadır.</div>
+    }
+</div>
+
+<style>
+    .premium-card {
+        transition: all .3s ease;
+        border-radius: 20px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.06);
+        border: 1px solid #f1f1f1;
+    }
+
+        .premium-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,.12);
+            border-color: #f2c200;
+        }
+
+    /* Görsel alanı */
+    .premium-img {
+        position: relative;
+        height: 260px;
+        overflow: hidden;
+    }
+
+        .premium-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s ease, filter .4s ease;
+        }
+
+    .premium-card:hover .premium-img img {
+        transform: scale(1.08);
+        filter: brightness(0.9);
+    }
+
+    /* Overlay Sepete Ekle */
+    .premium-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, .55), rgba(0, 0, 0, 0) 60%);
+        opacity: 0;
+        transition: opacity .3s ease;
+    }
+
+    .premium-card:hover .premium-overlay {
+        opacity: 1;
+    }
+
+    .add-btn {
+        background: rgba(255,255,255,.88);
+        color: #111;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 7px 18px;
+        text-decoration: none;
+        transition: all .25s ease;
+    }
+
+        .add-btn:hover {
+            background: #f2c200;
+            color: #111;
+        }
+
+    /* Rozet */
+    .discount-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(45deg, #f2c200, #ffe98a);
+        color: #111;
+        font-weight: 700;
+        font-size: .8rem;
+        border-radius: 99px;
+        padding: 4px 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+    }
+
+    /* Fiyat */
+    .price-wrapper {
+        margin-top: 6px;
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        color: #a0a0a0;
+        margin-right: 6px;
+        font-size: .9rem;
+    }
+
+    .new-price {
+        color: #f2c200;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    .toast-box {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        color: #111;
+        padding: 14px 18px;
+        border-radius: 14px;
+        box-shadow: 0 8px 30px rgba(255, 193, 7, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        z-index: 9999;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all .3s ease;
+    }
+
+        .toast-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    @@keyframes bump {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+    /* 🔹 Yükleme ekranı */
+    .loading-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+    }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid #f2c200;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+    }
+
+    @@keyframes spin {
+        to
+
+    {
+        transform: rotate(360deg);
+    }
+
+    }
+
+    /* 🔹 Fade ve blur geçiş efekti */
+    .product-grid {
+        position: relative;
+        transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+
+        .product-grid.loading {
+            filter: blur(3px);
+            opacity: 0.6;
+        }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.add-to-cart');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const id = btn.dataset.id;
+
+                try {
+                    // ✅ AJAX endpoint POST metodu ile çağrılıyor
+                    const resp = await fetch(`/ShoppingCart/AddBasketItemAjax?id=${id}`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    // 🔒 Giriş yapılmadıysa yönlendir
+                    if (resp.status === 401) {
+                        window.location.href = '/Login/Index';
+                        return;
+                    }
+
+                    // ✅ Başarılı ekleme
+                    if (resp.ok) {
+                        showToast('🛒 Ürün sepete eklendi!');
+                        await updateCartCount();
+                        await updateMiniCart(resp);
+                    } else {
+                        showToast('⚠️ Sepete ekleme başarısız!');
+                    }
+                } catch {
+                    showToast('⚠️ Sunucu hatası!');
+                }
+            });
+        });
+
+        // 🔢 Sepet sayısını güncelle
+        async function updateCartCount() {
+            const countElement = document.querySelector('#cart-count');
+            if (!countElement) return;
+
+            try {
+                const resp = await fetch('/ShoppingCart/GetCartCount', { credentials: 'include' });
+                if (resp.ok) {
+                    const count = await resp.text();
+                    countElement.textContent = count;
+                    countElement.style.animation = 'bump .4s ease';
+                    setTimeout(() => countElement.style.animation = '', 400);
+                }
+            } catch {}
+        }
+
+        // 🛍️ Mini sepet alanını canlı yenile
+        async function updateMiniCart(resp) {
+            const cart = document.querySelector('#mini-cart');
+            if (!cart) return;
+
+            try {
+                // AddBasketItemAjax zaten partial view döndürüyor
+                const html = await resp.text();
+                cart.innerHTML = html;
+            } catch {}
+        }
+
+        // 🌟 Premium toast bildirimi
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-box';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 1800);
+        }
+    });
+     document.addEventListener("DOMContentLoaded", () => {
+        const grid = document.querySelector(".row.g-4");
+        if (!grid) return;
+
+        // overlay container oluştur
+        const overlay = document.createElement("div");
+        overlay.className = "loading-overlay";
+        overlay.innerHTML = `<div class="spinner"></div>`;
+        grid.parentElement.style.position = "relative";
+        grid.parentElement.appendChild(overlay);
+
+        // filtre formundaki checkbox’lara dinleyici ekle
+        const form = document.getElementById("priceFilterForm");
+        if (!form) return;
+
+        form.querySelectorAll("input[name='price']").forEach(cb => {
+            cb.addEventListener("change", async () => {
+                const selected = Array.from(form.querySelectorAll("input[name='price']"))
+                    .filter(c => c.checked && c.value !== "all")
+                    .map(c => c.value);
+
+                const ranges = selected.length ? selected.join(",") : "all";
+                const categoryId = "@(ViewBag.CategoryId ?? ViewBag.id ?? "")";
+
+                try {
+                    // 🔹 Görünüm efektleri başlat
+                    grid.classList.add("loading");
+                    overlay.classList.add("active");
+
+                    const resp = await fetch(`/ProductList/FilterByPrice?categoryId=${encodeURIComponent(categoryId)}&ranges=${encodeURIComponent(ranges)}`);
+                    const html = await resp.text();
+
+                    // 🔹 İçeriği güncelle
+                    grid.innerHTML = html;
+
+                    // 🔹 Efektleri kaldır (smooth)
+                    setTimeout(() => {
+                        grid.classList.remove("loading");
+                        overlay.classList.remove("active");
+                    }, 350);
+                } catch {
+                    overlay.classList.remove("active");
+                }
+            });
+        });
+    });
+</script>
+

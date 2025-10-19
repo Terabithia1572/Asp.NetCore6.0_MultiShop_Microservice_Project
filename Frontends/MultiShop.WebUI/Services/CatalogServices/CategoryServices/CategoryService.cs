@@ -53,5 +53,17 @@ namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
            await _httpClient.PutAsJsonAsync<UpdateCategoryDTO>("categories", updateCategoryDTO); //HttpClient ile PUT isteği gönderilir
 
         }
+        public async Task<ResultCategoryByIDDTO> GetByIdCategoryAsync(string id)
+        {
+            var response = await _httpClient.GetAsync("categories/" + id);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+                var value = JsonConvert.DeserializeObject<ResultCategoryByIDDTO>(jsonData);
+                return value;
+            }
+            return null!;
+        }
+
     }
 }

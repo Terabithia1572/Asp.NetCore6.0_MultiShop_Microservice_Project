@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/UILayout/_UILayout.cshtml";
 }
@@ -10,14 +9,15 @@
 <div class="container-fluid">
     <div class="row px-xl-5">
         <div class="col-lg-3 col-md-4">
-            @await Component.InvokeAsync("_ProductListPriceFilterComponentPartial") <!-- Burada Biz Price Filter kodlarını _ProductListPriceFilterComponentPartial Tuttuk -->
+            @await Component.InvokeAsync("_ProductListPriceFilterComponentPartial",new { categoryId = (string)ViewBag.id })
+            <!-- Burada Biz Price Filter kodlarını _ProductListPriceFilterComponentPartial Tuttuk -->
             @await Component.InvokeAsync("_ProductListColorFilterComponentPartial") <!-- Burada Biz Color Filter kodlarını _ProductListColorFilterComponentPartial Tuttuk -->
             @await Component.InvokeAsync("_ProductListSizeFilterComponentPartial") <!-- Burada Biz Size Filter kodlarını _ProductListSizeFilterComponentPartial Tuttuk -->
         </div>
         <div class="col-lg-9 col-md-8">
             <div class="row pb-3">
                 @await Component.InvokeAsync("_ProductListGetProductCountComponentPartial") <!-- Burada Biz Ürün Sayısı kodlarını _ProductListGetProductCountComponentPartial Tuttuk -->
-                @await Component.InvokeAsync("_ProductListComponentPartial",new {id=ViewBag.id}) <!-- Burada Biz Ürün Listesi kodlarını _ProductListComponentPartial Tuttuk -->
+                @await Component.InvokeAsync("_ProductListComponentPartial", new { id = ViewBag.id }) <!-- Burada Biz Ürün Listesi kodlarını _ProductListComponentPartial Tuttuk -->
                 @await Component.InvokeAsync("_ProductListPaginationComponentPartial") <!-- Burada Biz Ürün Sayfalama kodlarını _ProductListPaginationComponentPartial Tuttuk -->
             </div>
         </div>
