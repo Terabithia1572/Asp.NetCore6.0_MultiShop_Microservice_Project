@@ -1,6 +1,100 @@
 ﻿@model UpdateProductDetailDTO
+
 <div class="tab-pane fade show active" id="tab-pane-1">
-    <h4 class="mb-3">Ürün Detayları</h4>
- 
-    <p>@Model.ProductDetailDescription</p>
+    <div class="premium-desc-box p-4 rounded-4 shadow-sm">
+        <h4 class="desc-title mb-3">
+            <i class="fa fa-info-circle desc-icon text-warning"></i>
+            Ürün Detayları
+        </h4>
+
+        <p class="desc-text">@Model.ProductDetailDescription</p>
+    </div>
 </div>
+
+<style>
+    /* === KUTU === */
+    .premium-desc-box {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 16px;
+        transition: all .3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .premium-desc-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #f2c200, #111);
+            transition: all .6s ease;
+        }
+
+        .premium-desc-box:hover::before {
+            left: 0;
+        }
+
+    /* === BAŞLIK === */
+    .desc-title {
+        font-weight: 700;
+        color: #111;
+        border-bottom: 2px solid #f2c200;
+        display: flex;
+        align-items: center;
+        padding-bottom: 5px;
+        gap: 8px; /* 🟡 ikon ve yazı arası boşluk */
+    }
+
+    .desc-icon {
+        font-size: 1.2rem;
+        margin-right: 6px; /* 👈 ekstra destek */
+    }
+
+
+    /* === METİN === */
+    .desc-text {
+        color: #444;
+        font-size: 1.05rem;
+        line-height: 1.75;
+        margin-top: 10px;
+        text-align: justify;
+        transition: all .3s ease;
+    }
+
+    .premium-desc-box:hover .desc-text {
+        color: #222;
+    }
+
+    /* === ANİMASYONLU AYIRICI === */
+    .premium-desc-box::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle at bottom right, rgba(242, 194, 0, 0.15), transparent 70%);
+        pointer-events: none;
+    }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 768px) {
+        .premium-desc-box
+
+    {
+        padding: 1.2rem;
+    }
+
+    .desc-title {
+        font-size: 1.15rem;
+    }
+
+    .desc-text {
+        font-size: 0.98rem;
+    }
+
+    }
+</style>
