@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace MultiShop.IdentityServer.Models
 {
@@ -7,5 +8,11 @@ namespace MultiShop.IdentityServer.Models
     {
         public string Name { get; set; }
         public string Surname { get; set; }
+        public string About { get; set; }
+        public string City { get; set; }
+        public string Gender { get; set; }
+        public DateTime? LastLoginDate { get; set; }
+        public string ProfileImageUrl { get; set; }
+        public DateTime RegisterDate { get; set; }
     }
 }

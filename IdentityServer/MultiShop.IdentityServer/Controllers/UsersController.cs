@@ -35,7 +35,14 @@ namespace MultiShop.IdentityServer.Controllers
                 Name = user.Name,
                 Surname = user.Surname,
                 Email = user.Email,
-                UserName = user.UserName
+                UserName = user.UserName,
+                imageUrl = user.ProfileImageUrl,
+
+                about = user.About,
+                city = user.City,
+                gender = user.Gender,
+                lastLoginDate = user.LastLoginDate,
+                registerDate = user.RegisterDate
             });
         }
         [HttpGet("GetAllUserList")]
