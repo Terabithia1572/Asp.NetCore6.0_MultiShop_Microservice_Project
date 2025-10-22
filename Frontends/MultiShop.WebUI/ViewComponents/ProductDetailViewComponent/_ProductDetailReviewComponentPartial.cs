@@ -38,6 +38,8 @@ namespace MultiShop.WebUI.ViewComponents.ProductDetailViewComponent
             // ViewData["ProductId"] = id; // id'yi View'e geçir
             //return View(list);          // asla null model dönme
             var values = await _commentService.GetCommentsByProductId(id);
+            // 💡 Burada id’yi View’e geçiriyoruz
+            ViewData["ProductID"] = id;
             return View(values);
         }
     }

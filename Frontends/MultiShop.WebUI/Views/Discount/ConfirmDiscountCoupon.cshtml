@@ -1,41 +1,228 @@
-﻿<div class="col-lg-4">
-    <form class="mb-30" asp-controller="Discount" asp-action="ConfirmDiscountCoupon" method="post">
-        <div class="input-group">
-            <input type="text" name="couponCode" value="@ViewBag.couponCode" class="form-control border-0 p-4" placeholder="Kupon Kodu">
-            <div class="input-group-append">
-                <button class="btn btn-primary">Kuponu Uygula</button>
-                <br />
-               
-            </div>
+﻿@{
+    var total = ViewBag.total ?? 0m;
+    var tax = ViewBag.tax ?? 0m;
+    var discountRate = ViewBag.discountRate ?? 0m;
+    var totalPriceWithTax = ViewBag.totalPriceWithTax ?? 0m;
+    var totalAfterDiscount = ViewBag.totalAfterDiscount ?? 0m;
+    var couponCode = ViewBag.couponCode ?? "";
+}
+
+<div class="col-lg-4">
+    <form id="couponForm" class="mb-4" asp-controller="Discount" asp-action="ConfirmDiscountCoupon" method="post">
+        <div class="coupon-box">
+            <input type="text" name="couponCode" value="@couponCode" class="form-control coupon-input" placeholder="Kupon Kodunu Gir">
+            <button type="submit" class="btn btn-apply">Kuponu Uygula</button>
         </div>
     </form>
-    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">SİPARİŞ ÖZETİ</span></h5>
-    <div class="bg-light p-30 mb-5">
-        <div class="border-bottom pb-2">
-            <div class="d-flex justify-content-between mb-1">
-                <h6>Toplam Ürün Fiyatı</h6>
-                <h6>@ViewBag.total ₺</h6>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <h6 class="font-weight-medium">KDV (%18)</h6>
-                <h6 class="font-weight-medium">@ViewBag.tax ₺</h6>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <h6 class="font-weight-medium">İndirim Oranı</h6>
-                <h6 class="font-weight-medium">%@ViewBag.discountRate</h6>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <h6 class="font-weight-medium">İndirimsiz Tutar</h6>
-                <h6 class="font-weight-medium">@ViewBag.totalPriceWithTax ₺</h6>
-            </div>
+
+    <h5 class="section-title position-relative text-uppercase mb-3">
+        <span class="bg-secondary pr-3">SİPARİŞ ÖZETİ</span>
+    </h5>
+
+    <div id="order-summary" class="order-summary-box p-4 mb-5">
+        <div class="summary-line">
+            <span>Toplam Ürün Fiyatı</span>
+            <span id="summary-total">@total.ToString("N2") ₺</span>
         </div>
-        <div class="pt-2">
-            <div class="d-flex justify-content-between mt-2">
-                <h5>İndirimli Güncel Fiyat</h5>
-                <h5> @ViewBag.totalAfterDiscount ₺</h5>
-            </div>
-            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Ödeme Adımına Geç</button>
+        <div class="summary-line">
+            <span>KDV (%10)</span>
+            <span id="summary-tax">@tax.ToString("N2") ₺</span>
         </div>
-       
+        <div class="summary-line">
+            <span>İndirim Oranı</span>
+            <span id="summary-discount">%@(discountRate)</span>
+        </div>
+        <div class="summary-line border-bottom pb-2">
+            <span>İndirimsiz Tutar</span>
+            <span id="summary-before-discount">@totalPriceWithTax.ToString("N2") ₺</span>
+        </div>
+        <div class="summary-line mt-3 total-line">
+            <strong>İndirimli Güncel Fiyat</strong>
+            <strong id="summary-after-discount">@totalAfterDiscount.ToString("N2") ₺</strong>
+        </div>
+
+        <button id="btnCheckout" class="btn btn-checkout mt-4 w-100">Ödeme Adımına Geç</button>
     </div>
 </div>
+
+<style>
+    .coupon-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #e0e0e0;
+        border-radius: 50px;
+        padding: 5px 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.06);
+        transition: box-shadow .3s ease, border-color .3s ease;
+        background: #fff;
+    }
+
+        .coupon-box:hover {
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(255,204,0,0.2);
+        }
+
+    .coupon-input {
+        border: none;
+        flex: 1;
+        font-weight: 600;
+        padding: 10px 12px;
+        outline: none;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .btn-apply {
+        background: #ffcc00;
+        color: #111;
+        font-weight: 700;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 20px;
+        transition: all .3s ease;
+    }
+
+        .btn-apply:hover {
+            background: #ffd84a;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(255,204,0,0.25);
+        }
+
+    .order-summary-box {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.05);
+        border: 1px solid #f1f1f1;
+    }
+
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        color: #333;
+        font-weight: 600;
+    }
+
+        .summary-line:not(:last-child) {
+            border-bottom: 1px solid rgba(0,0,0,.04);
+        }
+
+    .total-line {
+        color: #111;
+        font-size: 16px;
+        background: #fff8d6;
+        border-radius: 6px;
+        padding: 12px 10px;
+        box-shadow: 0 0 8px rgba(255,204,0,.15) inset;
+    }
+
+    .btn-checkout {
+        background: linear-gradient(90deg, #ffcc00, #ffe98a);
+        color: #111;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 0;
+        transition: all .3s ease;
+    }
+
+        .btn-checkout:hover {
+            background: linear-gradient(90deg, #ffd84a, #fff7b1);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255,204,0,0.25);
+        }
+
+    .empty-summary {
+        text-align: center;
+        color: #888;
+        font-weight: 600;
+        padding: 30px 0;
+        animation: fadeInEmpty 0.4s ease-in;
+    }
+
+        .empty-summary i {
+            font-size: 42px;
+            color: #ffcc00;
+            margin-bottom: 10px;
+            animation: cartBounce 2.5s ease-in-out infinite;
+        }
+
+    @@keyframes fadeInEmpty {
+        from
+
+    {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    }
+
+    @@keyframes cartBounce {
+        0%, 100%
+
+    {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // 🔸 Kupon formunu AJAX ile gönder
+        document.querySelector("#couponForm")?.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: "POST",
+                body: formData,
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(r => r.text())
+            .then(html => {
+                const newSummary = new DOMParser().parseFromString(html, "text/html").querySelector("#order-summary");
+                if (newSummary) document.querySelector("#order-summary").outerHTML = newSummary.outerHTML;
+            });
+        });
+
+        // 🔄 Sipariş özetini güncelleme (ürün miktarı veya silme sonrası)
+        function refreshOrderSummary() {
+            fetch('/Discount/ConfirmDiscountCouponPartial', {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(r => r.text())
+            .then(html => {
+                const newSummary = new DOMParser().parseFromString(html, "text/html").querySelector("#order-summary");
+                if (newSummary) {
+                    const current = document.querySelector("#order-summary");
+                    current.outerHTML = newSummary.outerHTML;
+                }
+            });
+        }
+
+        // 🧩 Bu fonksiyonu global hale getiriyoruz — miktar değişimi veya silme olduğunda çağrılacak
+        window.refreshOrderSummary = refreshOrderSummary;
+
+        // 🧮 Eğer toplam sıfırsa boş animasyonu göster
+        if (parseFloat("@total") <= 0) {
+            document.querySelector("#order-summary").innerHTML = `
+                <div class="empty-summary">
+                    <i class="fa fa-shopping-cart"></i>
+                    <div>Sepetiniz boş, sipariş özeti bulunmuyor.</div>
+                </div>`;
+        }
+    });
+</script>

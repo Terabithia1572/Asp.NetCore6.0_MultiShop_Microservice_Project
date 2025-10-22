@@ -5,79 +5,120 @@
 }
 
 <div class="tab-pane fade" id="tab-pane-3">
-    <div class="row">
-        
-              <div class="col-md-6">
-<h4 class="mb-4">Bu Ürün İçin @yorumSayisi Yorum Bulunmaktadır..</h4>
+    <div class="review-section bg-white p-4 rounded-4 shadow-sm">
 
-@if (yorumSayisi > 0)
-{
-    @* güvenli foreach *@
-    @foreach (var item in Model)
-    {
-            <div class="media mb-4">
-                <img src="@item.UserCommentImageURL" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                <div class="media-body">
-                    <h6>@item.UserCommentNameSurname<small> - <i>@item.UserCommentCreatedDate.ToShortDateString()</i></small></h6>
-                        @if(item.UserCommentRating==1)
-                        {
-                            <div class="text-primary mb-2">
-                                <i class="fas fa-star"></i>
-                            </div>
-                        }
-                        else if(item.UserCommentRating==2)
-                        {
-                            <div class="text-primary mb-2">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        }
-                        else if(item.UserCommentRating==3)
-                        {
-                            <div class="text-primary mb-2">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        }
-                        else if(item.UserCommentRating==4)
-                        {
-                            <div class="text-primary mb-2">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        }
-                        else if(item.UserCommentRating==5)
-                        {
-                            <div class="text-primary mb-2">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        }
+        <!-- 🟡 Başlık -->
+        <h4 class="review-title mb-4">
+            <i class="fa fa-comments text-warning me-2"></i>
+            Bu Ürün İçin
+            <span class="text-warning fw-bold ms-1 me-1">@yorumSayisi</span>
+            Yorum Bulunmaktadır
+        </h4>
 
-                        <p>@item.UserCommentDetail</p>
+        <!-- 💬 Yorumlar -->
+        <div class="review-list">
+            @if (yorumSayisi > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <div class="review-box d-flex align-items-start mb-4 p-3 rounded-3">
+                        <img src="@(!string.IsNullOrEmpty(item.UserCommentImageURL) ? item.UserCommentImageURL : "/img/default-user.png")"
+                             alt="Kullanıcı" class="review-avatar me-3" />
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <h6 class="fw-bold mb-0 text-dark">@item.UserCommentNameSurname</h6>
+                                <small class="text-muted ms-2">(@item.UserCommentCreatedDate.ToShortDateString())</small>
+                            </div>
 
-                </div>
-                    
-            </div>
-            }
+                            <div class="text-warning mb-2">
+                                @for (int i = 1; i <= item.UserCommentRating; i++)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                @for (int i = item.UserCommentRating + 1; i <= 5; i++)
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            </div>
+
+                            <p class="text-muted mb-0">@item.UserCommentDetail</p>
+                        </div>
+                    </div>
+                }
             }
             else
             {
-                <div class="text-muted">Bu ürüne henüz yorum yapılmamış.</div>
+                <div class="text-muted fst-italic py-3 text-center">
+                    Bu ürüne henüz yorum yapılmamış.
+                </div>
             }
         </div>
-        @await Html.PartialAsync(
-        "~/Views/ProductList/AddComment.cshtml",
-                new MultiShop.DTOLayer.CommentDTOs.CreateCommentDTO { ProductID = pid }
-                )
 
-      
-      
+        <!-- ✍️ Yorum Ekle -->
+        <div class="add-review mt-5">
+            @await Html.PartialAsync("AddComment", new MultiShop.DTOLayer.CommentDTOs.CreateCommentDTO { ProductID = ViewData["ProductID"]?.ToString() })
+        </div>
     </div>
 </div>
+
+<style>
+    /* === GENEL === */
+    .review-section {
+        border: 1px solid #eee;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .review-title {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #f2c200;
+        padding-bottom: 6px;
+        font-weight: 700;
+        color: #111;
+        letter-spacing: 0.3px;
+    }
+
+        .review-title i {
+            font-size: 1.25rem;
+            margin-right: 10px;
+        }
+
+    .review-box {
+        background: #fafafa;
+        border: 1px solid #eee;
+        transition: all .3s ease;
+    }
+
+        .review-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
+        }
+
+    .review-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #f2c200;
+    }
+
+    /* === FORM === */
+    .add-review {
+        margin-top: 40px;
+        border-top: 2px solid #f2c200;
+        padding-top: 20px;
+    }
+
+        .add-review h4 {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            color: #111;
+        }
+
+            .add-review h4 i {
+                font-size: 1.2rem;
+                margin-right: 8px;
+            }
+</style>

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MultiShop.DTOLayer.CatalogDTOs.ProductDTOs;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.CommentDTOs;
 using MultiShop.WebUI.Services.CatalogServices.CategoryServices;
 using MultiShop.WebUI.Services.CatalogServices.ProductServices;
+using MultiShop.WebUI.Services.CommentServices;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -13,34 +14,35 @@ namespace MultiShop.WebUI.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
+        private readonly ICommentService _commentService;
 
-        public ProductListController(IHttpClientFactory httpClientFactory, ICategoryService categoryService, IProductService productService)
+        public ProductListController(IHttpClientFactory httpClientFactory, ICategoryService categoryService, IProductService productService, ICommentService commentService)
         {
             _httpClientFactory = httpClientFactory;
             _categoryService = categoryService;
             _productService = productService;
+            _commentService = commentService;
         }
-        public async Task< IActionResult> Index(string id)
+
+        // ✅ Kategoriye göre ürün listesi
+        public async Task<IActionResult> Index(string id)
         {
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
-            ViewBag.directory3 = "Ürün Listesi"; 
+            ViewBag.directory3 = "Ürün Listesi";
             ViewBag.id = id;
+
             var products = await _productService.GetProductsWithByCategoryByCategoryIDAsync(id);
             ViewBag.ProductCount = products?.Count() ?? 0;
             ViewBag.CategoryName = products?.FirstOrDefault()?.Category?.CategoryName ?? "Ürünler";
 
-            // 🔹 Kategori bilgisi authentication istemeden çekilir
             var category = await _categoryService.GetByIDCategoryAsync(id);
-            if (category != null)
-                ViewBag.CategoryName = category.CategoryName;
-            else
-                ViewBag.CategoryName = "Kategori";
+            ViewBag.CategoryName = category?.CategoryName ?? "Kategori";
 
             return View(products);
         }
-        
 
+        // ✅ Ürün detay sayfası
         public IActionResult ProductDetail(string id)
         {
             ViewBag.directory1 = "Ana Sayfa";
@@ -49,40 +51,73 @@ namespace MultiShop.WebUI.Controllers
             ViewBag.x = id;
             return View();
         }
-        [HttpGet]
-        public PartialViewResult AddComment()
-        {
-            return PartialView();
-        }
-        [HttpPost]
-        public async Task< IActionResult> AddComment(CreateCommentDTO createCommentDTO)
-        {
-            createCommentDTO.UserCommentImageURL = "test";
-            createCommentDTO.UserCommentRating = 1;
-            createCommentDTO.UserCommentCreatedDate = DateTime.Parse(DateTime.Now.ToShortDateString());
-            createCommentDTO.UserCommentStatus = false;
-            createCommentDTO.ProductID = "68a60e7fc36ee1136596a4bd";
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createCommentDTO);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("http://localhost:7297/api/Comments", stringContent);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Default");
-            }
-            return View();
-        }
-        // 🔥 GÜNCELLENMİŞ FİYAT FİLTRELEME
+
+        // ✅ Fiyat filtreleme
         [HttpGet]
         public IActionResult FilterByPrice(string ranges, string? categoryId)
         {
-            // ❗ PartialView YOK, doğrudan ViewComponent çağırıyoruz
-            // ranges: "all" | "₺1000 - ₺5000, ₺20000+"
             return ViewComponent("_ProductListComponentPartial", new { id = categoryId ?? "", ranges = ranges ?? "all" });
         }
 
+        // ✅ AJAX ile yorum ekleme
+        // ✅ AJAX ile yorum ekleme
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddComment([FromBody] CreateCommentDTO dto)
+        {
+            try
+            {
+                // 🔹 Kullanıcı bilgilerini alıyoruz (Authenticate olmuş kullanıcıdan)
+                var claims = User.Claims.ToList();
+                var firstName = claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "Ziyaretçi";
+                var lastName = claims.FirstOrDefault(c => c.Type == "surname")?.Value ?? "";
+                var email = claims.FirstOrDefault(c => c.Type == "email")?.Value ?? "unknown@mail.com";
+
+                // 🔹 Profil fotoğrafı claim'i (farklı claim adlarını da kapsıyoruz)
+                var image = claims.FirstOrDefault(c =>
+                    c.Type == "profileImage" ||
+                    c.Type == "profile_image" ||
+                    c.Type == "profileimage"
+                )?.Value ?? "/img/default-user.png";
+
+                // 🔹 DTO'yu dolduruyoruz
+                dto.UserCommentNameSurname = $"{firstName} {lastName}".Trim();
+                dto.UserCommentEmail = email;
+                dto.UserCommentImageURL = image;
+                dto.UserCommentCreatedDate = DateTime.Now;
+                dto.UserCommentStatus = true; // Onaylı olarak eklenebilir (ya da admin onayı beklenebilir)
+
+                // 🔹 Servis üzerinden POST işlemi (baseAddress zaten Program.cs içinde)
+                await _commentService.CreateCommentAsync(dto);
+
+                // 🔹 Başarılı cevap (AJAX için JSON)
+                return Json(new
+                {
+                    success = true,
+                    message = "Yorum başarıyla eklendi.",
+                    comment = new
+                    {
+                        name = dto.UserCommentNameSurname,
+                        image = dto.UserCommentImageURL,
+                        detail = dto.UserCommentDetail,
+                        date = dto.UserCommentCreatedDate.ToString("dd.MM.yyyy"),
+                        rating = dto.UserCommentRating
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // 🔹 Hata olduğunda kullanıcıya JSON döndür
+                return Json(new
+                {
+                    success = false,
+                    message = "Sunucu hatası: " + ex.Message
+                });
+            }
+        }
+
+
+
+
     }
-
-
 }
-

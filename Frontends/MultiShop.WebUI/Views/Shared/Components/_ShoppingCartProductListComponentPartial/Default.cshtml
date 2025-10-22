@@ -1,44 +1,392 @@
 ﻿@model List<BasketItemDTO>
-<div class="col-lg-8 table-responsive mb-5">
-    <table class="table table-light table-borderless table-hover text-center mb-0 cart-table">
-        <thead class="thead-dark">
+
+<div id="shoppingCartContainer" class="col-lg-8 table-responsive mb-5 shopping-cart-premium">
+    <table class="table table-borderless text-center mb-0 cart-table align-middle">
+        <colgroup>
+            <col style="width:45%">
+            <col style="width:15%">
+            <col style="width:16%">
+            <col style="width:16%">
+            <col style="width:8%">
+        </colgroup>
+
+        <thead class="cart-header">
             <tr>
-                <th>Ürünler</th>
+                <th class="th-products">Ürünler</th>
                 <th>Fiyat</th>
                 <th>Miktar</th>
                 <th>Toplam</th>
                 <th>Sil</th>
             </tr>
         </thead>
-        <tbody class="align-middle">
-            @foreach (var item in Model)
+
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    var lineTotal = item.ProductPrice * item.ProductQuantity;
+                    <tr class="cart-row" data-id="@item.ProductID" data-price="@item.ProductPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        <td class="td-products align-middle text-start">
+                            <div class="product-cell">
+                                <img src="@item.ProductImageURL" alt="@item.ProductName" class="product-img" loading="lazy">
+                                <span class="name">@item.ProductName</span>
+                            </div>
+                        </td>
+                        <td class="currency">@item.ProductPrice.ToString("N2") ₺</td>
+                        <td>
+                            <div class="quantity-box">
+                                <button type="button" class="btn-qty btn-minus"><i class="fa fa-minus"></i></button>
+                                <input type="text" class="qty-input" value="@item.ProductQuantity">
+                                <button type="button" class="btn-qty btn-plus"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </td>
+                        <td class="currency row-total">@lineTotal.ToString("N2") ₺</td>
+                        <td>
+                            <button type="button" class="btn-remove remove-btn" data-id="@item.ProductID">
+                                <span class="btn-remove__x">×</span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td class="align-middle">
-                        <div class="product-cell">
-                            <img src="@item.ProductImageURL" alt="@item.ProductName">
-                            <span class="name">@item.ProductName</span>
+                    <td colspan="5" class="text-center py-5">
+                        <div class="empty-cart-animation">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Sepetiniz Boş</span>
                         </div>
                     </td>
-                    <td class="align-middle currency">@item.ProductPrice ₺</td>
-                    <td class="align-middle">
-                        <div class="input-group quantity mx-auto" style="width: 100px;">
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-primary btn-minus"><i class="fa fa-minus"></i></button>
-                            </div>
-                            <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="@item.ProductQuantity">
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="align-middle currency">@item.ProductPrice ₺</td>
-                    <td class="align-middle"><a href="/ShoppingCart/RemoveBasketItem/@item.ProductID" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></a></td>
                 </tr>
             }
-         
-           
         </tbody>
     </table>
 </div>
-<link rel="stylesheet" href="/multishop/css/ShoppingCart.css" />
+
+<style>
+    .shopping-cart-premium {
+        background: #fff;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 24px rgba(0,0,0,.05);
+    }
+
+    .cart-table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+        .cart-table th, .cart-table td {
+            padding: 16px 14px;
+            vertical-align: middle;
+        }
+
+    .cart-header {
+        background: #fff;
+        color: #111;
+        font-weight: 800;
+        text-transform: uppercase;
+        border-bottom: 2px solid #ffcc00;
+    }
+
+    .th-products, .td-products {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .cart-row {
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        transition: all .25s ease;
+    }
+
+        .cart-row:hover {
+            background: #fffef8;
+            box-shadow: 0 0 12px rgba(255,204,0,.12) inset;
+        }
+
+    .product-cell {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .product-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 10px;
+        object-fit: cover;
+        border: 1px solid rgba(0,0,0,.06);
+        transition: transform .25s ease;
+    }
+
+    .product-cell:hover .product-img {
+        transform: scale(1.04);
+    }
+
+    .name {
+        font-weight: 700;
+        color: #2a2a2a;
+        font-size: 15px;
+    }
+
+    .currency {
+        color: #111;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .quantity-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #E6E6E6;
+        border-radius: 999px;
+        padding: 4px 10px;
+        width: max-content;
+        margin: 0 auto;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .quantity-box:hover {
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(255,204,0,.18);
+        }
+
+    .btn-qty {
+        background: #ffcc00;
+        border: none;
+        color: #111;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .15s ease;
+    }
+
+        .btn-qty:hover {
+            background: #ffd84a;
+            transform: translateY(-1px);
+        }
+
+    .qty-input {
+        width: 46px;
+        border: none;
+        text-align: center;
+        background: transparent;
+        font-weight: 700;
+        color: #111;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .btn-remove {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid #e5e5e5;
+        background: #f9f9f9;
+        transition: all .25s ease;
+        overflow: hidden;
+    }
+
+    .btn-remove__x {
+        font-size: 20px;
+        color: #999;
+        transition: color .2s ease;
+    }
+
+    .btn-remove::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent, rgba(255,204,0,.2), transparent);
+        transform: translateX(-120%);
+        transition: transform .5s ease;
+    }
+
+    .btn-remove:hover {
+        border-color: #ffcc00;
+        box-shadow: 0 0 6px rgba(255,204,0,.2);
+        transform: translateY(-1px);
+    }
+
+        .btn-remove:hover .btn-remove__x {
+            color: #111;
+        }
+
+        .btn-remove:hover::after {
+            transform: translateX(120%);
+        }
+
+    @@keyframes fadeSlideOut {
+        0%
+
+    {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-25px) scale(0.95);
+    }
+
+    }
+
+    .cart-row.removing {
+        animation: fadeSlideOut 0.35s ease forwards;
+        background: #fff3f3;
+    }
+
+    /* 🛒 Sepet Boş Animasyonu */
+    .empty-cart-animation {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-weight: 600;
+        font-size: 15px;
+        animation: fadeInEmpty 0.4s ease-in;
+    }
+
+        .empty-cart-animation i {
+            font-size: 48px;
+            color: #ffcc00;
+            margin-bottom: 10px;
+            animation: cartBounce 2.5s ease-in-out infinite;
+        }
+
+    @@keyframes fadeInEmpty {
+        from
+
+    {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    }
+
+    @@keyframes cartBounce {
+        0%, 100%
+
+    {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fmt = n => Number(n).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const getQty = input => Math.max(1, parseInt(input.value.replace(/\D/g, '')) || 1);
+
+        function bindAll() {
+            document.querySelectorAll('.cart-row').forEach(row => {
+                const minus = row.querySelector('.btn-minus');
+                const plus = row.querySelector('.btn-plus');
+                const input = row.querySelector('.qty-input');
+                const totalCell = row.querySelector('.row-total');
+                const price = parseFloat(row.dataset.price);
+                const id = row.dataset.id;
+
+                const updateTotal = () => {
+                    const val = getQty(input);
+                    totalCell.textContent = fmt(price * val) + ' ₺';
+
+                    fetch(`/ShoppingCart/UpdateQuantityAjax?id=${id}&quantity=${val}`, { method: 'POST' })
+                        .then(() => {
+                            fetch('/ShoppingCart/GetMiniCart')
+                                .then(r => r.text())
+                                .then(miniHtml => {
+                                    const mini = document.querySelector('#mini-cart');
+                                    if (mini) mini.innerHTML = miniHtml;
+                                });
+                            fetch('/ShoppingCart/GetCartCount')
+                                .then(r => r.json())
+                                .then(count => {
+                                    const badge = document.querySelector('#cart-count');
+                                    if (badge) badge.textContent = count;
+                                });
+
+                            // 🟡 300ms gecikmeli sipariş özeti güncelle
+                            setTimeout(() => {
+                                window.refreshOrderSummary && window.refreshOrderSummary();
+                            }, 300);
+                        });
+                };
+
+                minus.addEventListener('click', () => { input.value = getQty(input) - 1; updateTotal(); });
+                plus.addEventListener('click', () => { input.value = getQty(input) + 1; updateTotal(); });
+                input.addEventListener('input', updateTotal);
+            });
+
+            // 🔥 Silme işlemi
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = this.dataset.id;
+                    const row = this.closest('.cart-row');
+                    row.classList.add('removing');
+
+                    row.addEventListener('animationend', () => {
+                        fetch('/ShoppingCart/RemoveBasketItemFromCartAjax?id=' + id, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(r => r.text())
+                        .then(html => {
+                            const container = document.querySelector('#shoppingCartContainer');
+                            if (container) container.outerHTML = html;
+
+                            // mini sepet + badge güncelle
+                            fetch('/ShoppingCart/GetMiniCart')
+                                .then(r => r.text())
+                                .then(miniHtml => {
+                                    const mini = document.querySelector('#mini-cart');
+                                    if (mini) mini.innerHTML = miniHtml;
+                                });
+                            fetch('/ShoppingCart/GetCartCount')
+                                .then(r => r.json())
+                                .then(count => {
+                                    const badge = document.querySelector('#cart-count');
+                                    if (badge) badge.textContent = count;
+                                });
+
+                            // 🟡 sipariş özeti + mini sepet senkron
+                            setTimeout(() => {
+                                window.refreshOrderSummary && window.refreshOrderSummary();
+                            }, 300);
+
+                            // 🔁 yeni elementleri yeniden bağla
+                            setTimeout(bindAll, 150);
+                        })
+                        .catch(() => alert('Ürün kaldırılırken hata oluştu.'));
+                    }, { once: true });
+                });
+            });
+        }
+
+        bindAll();
+    });
+</script>
+

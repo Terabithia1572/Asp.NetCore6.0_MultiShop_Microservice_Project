@@ -8,9 +8,35 @@
 <div class="container">
     <br /><br /><br />
     <h3>Kullanıcı Profil Bilgisi</h3>
-    <div  class="alert alert-danger">Kullanıcı Id: @Model.ID</div>
-    <div  class="alert alert-info">Kullanıcı Adı: @Model.Username</div>
-    <div  class="alert alert-warning">Ad: @Model.Name</div>
-    <div  class="alert alert-success">Soyad: @Model.Surname</div>
-    <div  class="alert alert-dark">E-Mail Adresi: @Model.Email</div>
+
+    <div class="alert alert-danger">Kullanıcı Id: @Model.ID</div>
+    <div class="alert alert-info">Kullanıcı Adı: @Model.Username</div>
+    <div class="alert alert-warning">Ad: @Model.Name</div>
+    <div class="alert alert-success">Soyad: @Model.Surname</div>
+    <div class="alert alert-dark">E-Mail Adresi: @Model.Email</div>
+
+    <!-- 🔹 Profil Fotoğrafı -->
+    <div class="alert alert-warning">
+        Profil Fotoğraf URL: @Model.ProfileImageUrl
+        @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+        {
+            <div class="mt-2">
+                <img src="@Model.ProfileImageUrl" alt="Profil Fotoğrafı" class="img-thumbnail rounded-circle" width="150" height="150" />
+            </div>
+        }
+    </div>
+
+    <!-- 🔹 Yeni Alanlar -->
+    <div class="alert alert-secondary">Hakkında: @Model.About</div>
+    <div class="alert alert-primary">Şehir: @Model.City</div>
+    <div class="alert alert-info">Cinsiyet: @Model.Gender</div>
+
+    <div class="alert alert-light">
+        Son Giriş Tarihi:
+        @(Model.LastLoginDate.HasValue? Model.LastLoginDate.Value.ToString("dd.MM.yyyy HH:mm") : "Henüz giriş yapılmadı")
+    </div>
+
+    <div class="alert alert-light">
+        Kayıt Tarihi: @Model.RegisterDate.ToString("dd.MM.yyyy HH:mm")
+    </div>
 </div>

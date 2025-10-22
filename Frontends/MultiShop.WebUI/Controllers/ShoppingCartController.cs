@@ -138,6 +138,29 @@ namespace MultiShop.WebUI.Controllers
             var basket = await _basketService.GetBasket();
             return PartialView("~/Views/Shared/Components/_MiniCartPartialView/_MiniCartPartialView.cshtml", basket);
         }
+        [HttpPost]
+        public async Task<IActionResult> RemoveBasketItemFromCartAjax(string id)
+        {
+            await _basketService.RemoveBasketItem(id);
+
+            // Güncel sepeti al
+            var basket = await _basketService.GetBasket();
+
+            // 🔹 ViewComponent çağırıyoruz — sadece sepet tablosu yenilenecek
+            return ViewComponent("_ShoppingCartProductListComponentPartial", basket.BasketItems);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantityAjax(string id, int quantity)
+        {
+            var basket = await _basketService.GetBasket();
+            var item = basket.BasketItems.FirstOrDefault(x => x.ProductID == id);
+            if (item != null)
+            {
+                item.ProductQuantity = quantity;
+                await _basketService.SaveBasket(basket);
+            }
+            return Ok();
+        }
 
 
     }

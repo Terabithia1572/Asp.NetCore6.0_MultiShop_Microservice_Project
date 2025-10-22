@@ -51,5 +51,28 @@ namespace MultiShop.WebUI.Controllers
 
            
         }
+        [HttpGet]
+        public async Task<IActionResult> ConfirmDiscountCouponPartial()
+        {
+            var basketValues = await _basketService.GetBasket();
+            decimal discountRate = 0;
+
+            // Eğer kupon uygulandıysa tempData veya ViewBag’den oran çekebilirsin
+            if (TempData["discountRate"] != null)
+                discountRate = Convert.ToDecimal(TempData["discountRate"]);
+
+            var totalPriceWithTax = basketValues.TotalPrice + basketValues.TotalPrice * 0.18m;
+            var tax = basketValues.TotalPrice * 0.18m;
+            var totalAfterDiscount = totalPriceWithTax - (totalPriceWithTax * discountRate / 100);
+
+            ViewBag.total = basketValues.TotalPrice.ToString("N2");
+            ViewBag.tax = tax.ToString("N2");
+            ViewBag.discountRate = discountRate.ToString("N2");
+            ViewBag.totalPriceWithTax = totalPriceWithTax.ToString("N2");
+            ViewBag.totalAfterDiscount = totalAfterDiscount.ToString("N2");
+
+            return PartialView("~/Views/Discount/ConfirmDiscountCoupon.cshtml");
+        }
+
     }
 }
