@@ -1,12 +1,115 @@
-﻿<div class="col-lg-5 mb-5">
-    <div class="bg-light p-30 mb-30">
-        <iframe style="width: 100%; height: 250px;"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd"
-                frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-    </div>
-    <div class="bg-light p-30 mb-3">
-        <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-        <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-        <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+﻿<div class="col-lg-6">
+    <div class="contact-gradient rounded-4 shadow-sm p-0 h-100 border border-light overflow-hidden d-flex flex-column">
+
+        <!-- 🗺️ HARİTA -->
+        <div class="map-container position-relative" style="height: 360px;">
+            <iframe class="w-100 h-100 border-0"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3066.868434330674!2d29.0939!3d40.9790!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac764e2e1c2c9%3A0x78f4a3a947c8!2sKadıköy%2C%20İstanbul!5e0!3m2!1str!2str!4v1688654301012!5m2!1str!2str"
+                    allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <!-- 📞 DETAYLAR -->
+        <div class="p-5">
+            <h4 class="fw-bold mb-4 text-dark text-uppercase d-flex align-items-center">
+                <i class="fa fa-address-book text-warning me-2"></i> İletişim Bilgilerimiz
+            </h4>
+
+            <!-- 🗺️ ADRES -->
+            <div class="d-flex align-items-center contact-info mb-4">
+                <div class="icon-wrapper d-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-map-marker-alt"></i>
+                </div>
+                <div class="info-text">
+                    <h6 class="fw-semibold mb-1">Adres</h6>
+                    <small class="text-muted">34100 Bostancı Kadıköy - İstanbul</small>
+                </div>
+            </div>
+
+            <!-- ✉️ E-POSTA -->
+            <div class="d-flex align-items-center contact-info mb-4">
+                <div class="icon-wrapper d-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-envelope"></i>
+                </div>
+                <div class="info-text">
+                    <h6 class="fw-semibold mb-1">E-posta</h6>
+                    <small class="text-muted">multishop@gmail.com</small>
+                </div>
+            </div>
+
+            <!-- 📞 TELEFON -->
+            <div class="d-flex align-items-center contact-info">
+                <div class="icon-wrapper d-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-phone-alt"></i>
+                </div>
+                <div class="info-text">
+                    <h6 class="fw-semibold mb-1">Telefon</h6>
+                    <small class="text-muted">+90 541 123 45 67</small>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- 💅 STYLES -->
+<style>
+    /* 🎨 Degrade Arka Plan */
+    .contact-gradient {
+        background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
+        transition: all 0.5s ease;
+    }
+
+        .contact-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 197, 66, 0.25);
+        }
+
+    /* 🗺️ Harita Efekti */
+    iframe {
+        filter: grayscale(15%) contrast(1.05);
+        transition: all 0.4s ease;
+    }
+
+        iframe:hover {
+            filter: grayscale(0%) brightness(1.05);
+            transform: scale(1.01);
+        }
+
+    /* 🌟 İkon Kutuları */
+    .icon-wrapper {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffecb3, #f5c542);
+        color: #1f1f1f;
+        font-size: 17px;
+        box-shadow: 0 2px 6px rgba(245, 197, 66, 0.4);
+        margin-left: 6px;
+        transition: all 0.3s ease;
+    }
+
+        .icon-wrapper:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 12px rgba(245, 197, 66, 0.5);
+        }
+
+    /* 🧩 Bilgi Satırı */
+    .contact-info {
+        gap: 18px;
+        padding-left: 5px;
+    }
+
+    .info-text h6 {
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 4px;
+        color: #2c2c2c;
+    }
+
+    .info-text small {
+        font-size: 14px;
+    }
+
+    .p-5 {
+        padding: 2.8rem !important;
+    }
+</style>

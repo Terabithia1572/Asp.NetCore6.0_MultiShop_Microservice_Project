@@ -1,53 +1,181 @@
 ﻿@model CreateContactDTO
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "İletişim";
     Layout = "~/Views/UILayout/_UILayout.cshtml";
 }
 
-
-<!-- Breadcrumb Start -->
-<!--NULL UPDATE-->
-<!-- Breadcrumb End -->
-<!-- Contact Start -->
-<div class="container-fluid">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">BİZİMLE İLETİŞİME GEÇİN..</span></h2>
-    <div class="row px-xl-5">
-        <div class="col-lg-7 mb-5">
-            <div class="contact-form bg-light p-30">
-                <div id="success"></div>
-                <form method="post">
-                    <div class="control-group">
-                        <input type="text" class="form-control" id="name" placeholder="Adınız Soyadınız"
-                               required="required" data-validation-required-message="Lütfen Boş Geçmeyiniz.." asp-for="ContactNameSurname" />
-                        <p class="help-block text-danger"></p>
-                    </div>
-                    <div class="control-group">
-                        <input type="email" class="form-control" id="email" placeholder="Email Adresiniz"
-                               required="required" data-validation-required-message="Lütfen Boş Geçmeyiniz.." asp-for="ContactEmail" />
-                        <p class="help-block text-danger"></p>
-                    </div>
-                    <div class="control-group">
-                        <input type="text" class="form-control" id="subject" placeholder="Konu"
-                               required="required" data-validation-required-message="Lütfen Boş Geçmeyiniz.." asp-for="ContactSubject" />
-                        <p class="help-block text-danger"></p>
-                    </div>
-                    <div class="control-group">
-                        <textarea class="form-control" rows="8" id="message" placeholder="Mesajınız"
-                                  required="required"
-                                  data-validation-required-message="Lütfen Boş Geçmeyiniz.." asp-for="ContactMessage"></textarea>
-                        <p class="help-block text-danger"></p>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">
-                            Mesaj
-                            Gönder
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        @await Component.InvokeAsync("_ContactDetailComponentPartial") <!-- Burada Biz İletişim Sayfası kodlarını _ContactDetailViewComponentPartial Tuttuk -->
+<!-- 🟡 HEADER -->
+<section class="contact-header text-center border-bottom">
+    <div class="container pt-3 pb-2">
+        <h2 class="fw-bold text-uppercase mb-2" style="letter-spacing:1px;">Bizimle İletişime Geçin</h2>
+        <div class="mx-auto contact-divider"></div>
+        <p class="text-muted mt-2 mb-0">Sorularınız, önerileriniz veya iş birliği talepleriniz için bize ulaşabilirsiniz.</p>
     </div>
-</div>
-<!-- Contact End -->
+</section>
 
+<!-- 🖋️ CONTACT SECTION -->
+<section class="contact-section d-flex align-items-center" style="min-height:82vh;">
+    <div class="container-fluid px-5">
+        <div class="row gx-4 gy-4 justify-content-center align-items-stretch">
+
+            <!-- SOL FORM -->
+            <div class="col-lg-6 contact-card">
+                <div class="bg-white rounded-4 shadow-sm p-4 h-100 border border-light">
+                    <h4 class="fw-bold mb-4 text-dark">
+                        <i class="fa fa-envelope text-warning me-2"></i> Mesaj Gönderin
+                    </h4>
+                    <form id="contactForm" method="post">
+                        <div class="mb-3">
+                            <input asp-for="ContactNameSurname" class="form-control form-control-lg rounded-3"
+                                   placeholder="Adınız ve Soyadınız" required />
+                        </div>
+                        <div class="mb-3">
+                            <input asp-for="ContactEmail" type="email" class="form-control form-control-lg rounded-3"
+                                   placeholder="E-posta Adresiniz" required />
+                        </div>
+                        <div class="mb-3">
+                            <input asp-for="ContactSubject" class="form-control form-control-lg rounded-3"
+                                   placeholder="Konu" required />
+                        </div>
+                        <div class="mb-4">
+                            <textarea asp-for="ContactMessage" rows="6"
+                                      class="form-control form-control-lg rounded-3"
+                                      placeholder="Mesajınızı buraya yazın..." required></textarea>
+                        </div>
+                        <button id="sendButton" class="btn btn-warning text-dark w-100 fw-semibold py-3 rounded-3 shadow-sm">
+                            <i class="fa fa-paper-plane me-2"></i> Mesaj Gönder
+                        </button>
+                    </form>
+
+                    <!-- ✨ Teşekkür Kartı -->
+                    <div id="successCard" class="thankyou-card shadow-sm">
+                        <div class="icon-circle">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <h5 class="fw-bold mt-3 mb-1">Mesajınız başarıyla gönderildi!</h5>
+                        <p class="text-muted small mb-0">En kısa sürede sizinle iletişime geçeceğiz.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAĞ HARİTA -->
+            @await Component.InvokeAsync("_ContactDetailComponentPartial")
+
+        </div>
+    </div>
+</section>
+
+<!-- 💅 STYLES -->
+<style>
+    .contact-header {
+        background: #f9f9f9;
+        margin-top: -10px;
+    }
+
+    .contact-divider {
+        width: 90px;
+        height: 3px;
+        background: linear-gradient(90deg, #f5c542, #f5a623);
+        border-radius: 2px;
+    }
+
+    .contact-section .col-lg-6 {
+        flex: 0 0 49%;
+        max-width: 49%;
+    }
+
+    @@media (max-width: 992px) {
+        .contact-section .col-lg-6
+
+    {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    }
+
+    .form-control {
+        border: 1px solid #eee !important;
+        transition: all 0.25s ease;
+    }
+
+        .form-control:focus {
+            border-color: #f5c542 !important;
+            box-shadow: 0 0 8px rgba(245, 197, 66, 0.4) !important;
+        }
+
+    .btn-warning {
+        background: linear-gradient(90deg, #f5c542, #f5a623);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    /* Teşekkür Kartı */
+    .thankyou-card {
+        display: none;
+        text-align: center;
+        padding: 30px;
+        border-radius: 12px;
+        background: #fffef3;
+        border: 1px solid #f5c542;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+        .thankyou-card .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #f5c542, #f5a623);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            color: #fff;
+            font-size: 26px;
+            box-shadow: 0 3px 10px rgba(245, 197, 66, 0.5);
+        }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+</style>
+
+<!-- 🪄 Script -->
+<script>
+    const form = document.getElementById("contactForm");
+    const successCard = document.getElementById("successCard");
+    const button = document.getElementById("sendButton");
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        button.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i> Gönderiliyor...';
+        setTimeout(() => {
+            button.style.display = "none";
+            form.style.display = "none";
+            successCard.style.display = "block";
+            setTimeout(() => {
+                successCard.style.display = "none";
+                form.reset();
+                form.style.display = "block";
+                button.style.display = "block";
+                button.innerHTML = '<i class="fa fa-paper-plane me-2"></i> Mesaj Gönder';
+            }, 4000);
+        }, 1200);
+    });
+</script>
