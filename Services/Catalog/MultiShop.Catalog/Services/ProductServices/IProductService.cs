@@ -16,5 +16,8 @@ namespace MultiShop.Catalog.Services.ProductServices
         // 🆕 EKLENDİ: İndirimli ürün listesini getir
         Task<List<ResultProductWithDiscountDTO>> GetAllProductWithDiscountAsync();
 
+        // 🆕 EKLENDİ: Tüm ürünleri kategorileriyle birlikte getir (All sayfası için)
+        Task<List<ResultProductsWithCategoryDTO>> GetAllProductsWithCategoryAsync();
+
     }
 }

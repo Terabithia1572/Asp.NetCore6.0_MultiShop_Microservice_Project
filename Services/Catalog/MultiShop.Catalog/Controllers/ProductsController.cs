@@ -147,5 +147,13 @@ namespace MultiShop.Catalog.Controllers
 
             return Ok(result); // 200 OK + indirimli ürün listesi
         }
+
+        [HttpGet("ProductListWithCategoryAll")]
+        public async Task<IActionResult> GetAllProductsWithCategory()
+        {
+            var values = await _productService.GetAllProductsWithCategoryAsync();
+            return Ok(values);
+        }
+
     }
 }

@@ -116,6 +116,18 @@ namespace MultiShop.WebUI.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> All()
+        {
+            ViewBag.directory1 = "Ana Sayfa";
+            ViewBag.directory2 = "Ürünler";
+            ViewBag.directory3 = "Tüm Ürünler";
+
+            // Catalog → /api/products/ProductListWithCategoryAll (veya mevcut tüm+kategori metodun)
+            var products = await _productService.GetAllProductsWithCategoryAsync(); // List<ResultProductWithCategoryDTO>
+
+            return View("All", products); // 🔥 Bu view'e direkt model gönderiyoruz
+        }
 
 
 

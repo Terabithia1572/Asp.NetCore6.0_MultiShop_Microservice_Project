@@ -69,5 +69,17 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
             return JsonConvert.DeserializeObject<List<ResultProductWithDiscountDTO>>(json)
                    ?? new List<ResultProductWithDiscountDTO>();
         }
+
+        public async Task<List<ResultProductWithCategoryDTO>> GetAllProductsWithCategoryAsync()
+        {
+            var response = await _httpClient.GetAsync("products/ProductListWithCategoryAll"); // ✅ Yeni endpoint
+            if (!response.IsSuccessStatusCode)
+                return new List<ResultProductWithCategoryDTO>();
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<ResultProductWithCategoryDTO>>(jsonData)
+                   ?? new List<ResultProductWithCategoryDTO>();
+        }
+
     }
 }

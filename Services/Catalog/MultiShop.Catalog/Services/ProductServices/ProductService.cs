@@ -121,5 +121,19 @@ namespace MultiShop.Catalog.Services.ProductServices
                 x => x.ProductID == updateProductDTO.ProductID,
                 values); // Verilen ProductID'ye sahip olan Product nesnesini MongoDB'deki Product koleksiyonunda bulur ve bulduğu nesneyi tamamen values ile değiştirerek asenkron olarak günceller (tüm alanları yeni değerlerle değiştirir).
         }
+        public async Task<List<ResultProductsWithCategoryDTO>> GetAllProductsWithCategoryAsync()
+        {
+            var values = await _productCollection.Find(x => true).ToListAsync(); // Tüm ürünler
+            foreach (var item in values)
+            {
+                item.Category = await _categoryCollection
+                    .Find<Category>(x => x.CategoryID == item.CategoryID)
+                    .FirstOrDefaultAsync();
+            }
+
+            return _mapper.Map<List<ResultProductsWithCategoryDTO>>(values);
+        }
+
+
     }
 }
