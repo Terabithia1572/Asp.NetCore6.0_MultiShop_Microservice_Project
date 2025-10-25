@@ -21,6 +21,7 @@ using MultiShop.WebUI.Services.CatalogServices.SpecialOfferServices;
 using MultiShop.WebUI.Services.CommentServices;
 using MultiShop.WebUI.Services.Concrete;
 using MultiShop.WebUI.Services.DiscountServices;
+using MultiShop.WebUI.Services.FavoriteServices;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Services.MessageServices;
 using MultiShop.WebUI.Services.OrderServices.OrderAddressServices;
@@ -101,6 +102,13 @@ builder.Services.AddHttpClient<IMessageStatisticService, MessageStatisticService
 {
     // Ocelot üzerinden Catalog servisini iþaret et
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Message.Path}");
+    // Örn: http://localhost:5000/services/catalog/
+    opt.DefaultRequestVersion = new Version(1, 1);
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
+builder.Services.AddHttpClient<IFavoriteService, FavoriteService>(opt =>
+{
+    // Ocelot üzerinden Catalog servisini iþaret et
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Favorite.Path}");
     // Örn: http://localhost:5000/services/catalog/
     opt.DefaultRequestVersion = new Version(1, 1);
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();

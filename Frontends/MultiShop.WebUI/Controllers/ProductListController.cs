@@ -122,7 +122,10 @@ namespace MultiShop.WebUI.Controllers
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
             ViewBag.directory3 = "Tüm Ürünler";
-
+            var discountList = await _productService.GetAllProductWithDiscountAsync();
+            ViewBag.Discounts = discountList
+                .Where(d => d.DiscountRate.HasValue)
+                .ToDictionary(d => d.ProductID, d => d.DiscountRate!.Value);
             // Catalog → /api/products/ProductListWithCategoryAll (veya mevcut tüm+kategori metodun)
             var products = await _productService.GetAllProductsWithCategoryAsync(); // List<ResultProductWithCategoryDTO>
 

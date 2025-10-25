@@ -2,6 +2,8 @@ Ocelot---------->localhost:1434
 IdentityDB------>localhost:1435
 OrderDB--------->localhost:1440
 CargoDB------>localhost:1441
+CommentDB------>localhost:1442
+FavoriteDB------>localhost:1443
 DiscountDB------>localhost kendi localhost SQL sunucumuzda tuttuk.
 
 // Bu portlar, ilgili veritabanlarýnýn SQL sunucusundaki baðlantý noktalarýný temsil eder.
@@ -21,3 +23,4 @@ MultiShop.Comment.WebAPI------>1007
 MultiShop.Payment.WebAPI------>1008
 MultiShop.Images.WebAPI------>1009
 MultiShop.Messages.WebAPI------>1010
+MultiShop.Favorite.API------>1011

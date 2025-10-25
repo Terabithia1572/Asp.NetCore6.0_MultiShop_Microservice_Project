@@ -13,6 +13,7 @@
         public ServiceApi Payment { get; set; }
         public ServiceApi Comment { get; set; }
         public ServiceApi Message { get; set; }
+        public ServiceApi Favorite { get; set; }
     }
     public class ServiceApi
     {
