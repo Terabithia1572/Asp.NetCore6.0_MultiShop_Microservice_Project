@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ResultProductWithCategoryDTO>
+@{
+    var discounts = ViewBag.Discounts as IDictionary<string, decimal>;
+}
+
+<div class="row g-4 product-grid">
+    @foreach (var p in Model)
+    {
+        var categoryName = p.Category?.CategoryName ?? "Genel";
+
+        // İndirim bilgisi ViewBag.Discounts'tan okunur
+        bool hasDiscount = discounts != null && discounts.ContainsKey(p.ProductID);
+        decimal discountRate = hasDiscount ? discounts[p.ProductID] : 0m;
+        decimal discountedPrice = hasDiscount ? p.ProductPrice * (1 - discountRate / 100m) : p.ProductPrice;
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="deluxe-card position-relative rounded-4 overflow-hidden bg-white shadow-sm">
+
+                @if (hasDiscount)
+                {
+                    <span class="discount-badge">-%@discountRate</span>
+                }
+
+                <!-- Görsel -->
+                <div class="deluxe-img position-relative">
+                    <img src="@p.ProductImageURL" alt="@p.ProductName" />
+                    <div class="deluxe-overlay d-flex flex-column justify-content-end align-items-center pb-3 gap-2">
+                        <a href="/ProductList/ProductDetail/@p.ProductID" class="btn detail-btn">
+                            <i class="fa fa-search me-1"></i> Detayına Git
+                        </a>
+                        <a href="javascript:void(0)" class="btn add-btn add-to-cart" data-id="@p.ProductID">
+                            <i class="fa fa-shopping-cart me-2"></i>Sepete Ekle
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bilgi -->
+                <div class="p-3 text-center">
+                    <h6 class="fw-semibold text-dark mb-1 text-truncate" title="@p.ProductName">@p.ProductName</h6>
+
+                    <div class="price-wrapper d-flex justify-content-center align-items-center gap-2">
+                        @if (hasDiscount)
+                        {
+                            <h6 class="text-muted mb-0"><del>@String.Format("{0:0.##}", p.ProductPrice)₺</del></h6>
+                            <h5 class="new-price mb-0">@String.Format("{0:0.##}", discountedPrice)₺</h5>
+                        }
+                        else
+                        {
+                            <span class="new-price">@String.Format("{0:0.##}", p.ProductPrice)₺</span>
+                        }
+                    </div>
+
+                    <div class="mt-2 small text-muted">
+                        <span class="category-pill">@categoryName</span>
+                        <span class="text-success"><i class="bi bi-check2-circle"></i> Stokta Var</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
