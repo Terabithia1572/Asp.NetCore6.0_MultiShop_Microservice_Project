@@ -6,8 +6,11 @@ namespace MultiShop.WebUI.Services.OrderServices.OrderAddressServices
     {
        // Task<List<ResultOrderAddressDTO>> GetAllOrderAddressAsync(); // Tüm kategorileri getirir
         Task CreateOrderAddressAsync(CreateOrderAddressDTO createOrderAddressDTO); // Yeni kategori oluşturur
-      //  Task UpdateOrderAddressAsync(UpdateOrderAddressDTO updateOrderAddressDTO); // Kategoriyi günceller
-      //  Task DeleteOrderAddressAsync(string id); // Kategoriyi siler
-      //  Task<UpdateOrderAddressDTO> GetByIDOrderAddressAsync(string id); // ID ile kategori getirir
+                                                                                   //  Task UpdateOrderAddressAsync(UpdateOrderAddressDTO updateOrderAddressDTO); // Kategoriyi günceller
+                                                                                   //  Task DeleteOrderAddressAsync(string id); // Kategoriyi siler
+                                                                                   //  Task<UpdateOrderAddressDTO> GetByIDOrderAddressAsync(string id); // ID ile kategori getirir
+
+        Task<List<ResultOrderAddressDTO>> GetAllOrderAddressAsync(); // Tüm adresleri getirir
+
     }
 }

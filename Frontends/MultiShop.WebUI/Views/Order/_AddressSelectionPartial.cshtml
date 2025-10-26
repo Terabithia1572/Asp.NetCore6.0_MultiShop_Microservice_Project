@@ -1,0 +1,263 @@
+﻿@model List<MultiShop.DTOLayer.OrderDTOs.OrderAddressDTO.ResultOrderAddressDTO>
+
+<section class="address-step fade-in">
+    <div class="container-fluid px-xl-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="fw-bold text-dark m-0">
+                <i class="fa fa-map-marker-alt text-deluxe me-2"></i> Teslimat Adresi Seçimi
+            </h4>
+            <button id="btnBackToCart" class="btn btn-link text-secondary">
+                <i class="fa fa-arrow-left me-1"></i> Sepete Dön
+            </button>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-3">
+                @foreach (var a in Model)
+                {
+                    var name = string.Join(" ", new[] { a.Name, a.Surname }.Where(s => !string.IsNullOrWhiteSpace(s)));
+                    var line1 = !string.IsNullOrWhiteSpace(a.AddressDetail1) ? a.AddressDetail1 : "";
+                    var line2 = !string.IsNullOrWhiteSpace(a.AddressDetail2) ? a.AddressDetail2 : "";
+                    var city = string.Join(" / ", new[] { a.AddressDistrict, a.AddressCity }.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label class="address-card w-100">
+                            <input type="radio" name="selectedAddress" class="address-radio" value="@a.AddressID" />
+                            <div class="address-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="fw-bold">
+                                        @(string.IsNullOrWhiteSpace(name) ? "Adres" : name)
+                                    </div>
+                                    <span class="badge bg-warning text-dark">Kayıtlı</span>
+                                </div>
+
+                                <div class="address-lines mt-2">
+                                    @if (!string.IsNullOrWhiteSpace(line1))
+                                    {
+                                        <div>@line1</div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(line2))
+                                    {
+                                        <div>@line2</div>
+                                    }
+                                    <div>@city</div>
+                                    @if (!string.IsNullOrWhiteSpace(a.AddressZipCode) || !string.IsNullOrWhiteSpace(a.Country))
+                                    {
+                                        <div>@(a.AddressZipCode) @(a.Country)</div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(a.PhoneNumber))
+                                    {
+                                        <div><i class="fa fa-phone me-1"></i>@a.PhoneNumber</div>
+                                    }
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                }
+
+                <div class="col-12 mt-3">
+                    <button id="btnGoToPayment" class="btn btn-checkout w-100">
+                        <i class="fa fa-credit-card me-2"></i> Devam Et (Ödeme)
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center my-4">
+                <button id="btnOpenNewAddress" class="btn add-btn">
+                    <i class="fa fa-plus me-1"></i> Yeni Adres Ekle
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state text-center py-4">
+                <i class="fa fa-map-marker-alt text-deluxe" style="font-size:42px"></i>
+                <p class="mt-2 text-muted fw-semibold">Kayıtlı adresiniz bulunamadı. Lütfen yeni bir adres ekleyin.</p>
+            </div>
+        }
+
+        <!-- 🟨 Yeni Adres Formu -->
+        <div id="newAddressForm" class="address-form d-none">
+            <form id="formNewAddress" method="post" action="/Order/AddAddress">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Ad</label>
+                        <input name="Name" class="form-control deluxe-input" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Soyad</label>
+                        <input name="Surname" class="form-control deluxe-input" required />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Telefon</label>
+                        <input name="PhoneNumber" class="form-control deluxe-input" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">E-posta</label>
+                        <input type="email" name="Email" class="form-control deluxe-input" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Ülke</label>
+                        <input name="Country" class="form-control deluxe-input" value="Türkiye" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Posta Kodu</label>
+                        <input name="AddressZipCode" class="form-control deluxe-input" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Şehir</label>
+                        <input name="AddressCity" class="form-control deluxe-input" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">İlçe</label>
+                        <input name="AddressDistrict" class="form-control deluxe-input" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Adres Satırı 1</label>
+                        <textarea name="AddressDetail1" class="form-control deluxe-input" rows="2" required></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Adres Satırı 2 (opsiyonel)</label>
+                        <textarea name="AddressDetail2" class="form-control deluxe-input" rows="2"></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Adres Açıklaması (opsiyonel)</label>
+                        <input name="AddressDescription" class="form-control deluxe-input" />
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <button class="btn add-btn w-100" type="submit">
+                            <i class="fa fa-save me-1"></i> Kaydet ve Listeyi Güncelle
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<style>
+    .address-step {
+        background: linear-gradient(180deg,#fffefc,#fffaf0);
+        border-top: 2px solid #f5cf42;
+        padding: 18px 0 6px;
+    }
+
+    .address-card {
+        cursor: pointer;
+    }
+
+        .address-card input {
+            display: none;
+        }
+
+    .address-card-body {
+        background: #fff;
+        border: 1px solid rgba(245,207,66,.25);
+        border-radius: 16px;
+        padding: 16px;
+        transition: .3s ease;
+        box-shadow: 0 4px 14px rgba(245,207,66,.12);
+    }
+
+    .address-card:hover .address-card-body {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(245,207,66,.25);
+    }
+
+    .address-card input:checked + .address-card-body {
+        border-color: #f5cf42;
+        box-shadow: 0 0 0 4px rgba(245,207,66,.18) inset;
+    }
+
+    .address-lines {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .deluxe-input {
+        border: 1.5px solid #f5cf42;
+        border-radius: 12px;
+        box-shadow: 0 3px 8px rgba(245,207,66,0.1);
+    }
+
+        .deluxe-input:focus {
+            border-color: #e3b800;
+            box-shadow: 0 0 10px rgba(245,207,66,.25);
+        }
+
+   .address-form {
+    background: linear-gradient(180deg, #fffefc, #fffdf7);
+    border: 1.5px solid rgba(245, 207, 66, 0.35);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(245, 207, 66, 0.1);
+    transition: all 0.3s ease;
+}
+
+.address-form:hover {
+    box-shadow: 0 12px 32px rgba(245, 207, 66, 0.18);
+}
+    @@keyframes slideDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .btn-checkout {
+        background: linear-gradient(90deg,#ffcc00,#ffe98a);
+        color: #111;
+        font-weight: 700;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 0;
+        transition: .25s;
+    }
+
+        .btn-checkout:hover {
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 8px 18px rgba(255,204,0,.25);
+        }
+
+    .add-btn {
+        background: rgba(255,255,255,.92);
+        color: #111;
+        font-weight: 700;
+        border: 1px solid #f5cf42;
+        border-radius: 999px;
+        padding: 10px 18px;
+        transition: .25s;
+        box-shadow: 0 3px 10px rgba(245,207,66,.15);
+    }
+
+        .add-btn:hover {
+            background: #f5cf42;
+            color: #111;
+        }
+</style>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const firstRadio = document.querySelector('input[name="selectedAddress"]');
+      if (firstRadio) {
+        firstRadio.checked = true;
+      }
+    });
+</script>

@@ -7,7 +7,7 @@
 <!-- Breadcrumb Start -->
 <!-- Breadcrumb End -->
 <!-- Cart Start -->
-<div class="container-fluid">
+<div id="checkoutStepsContainer" class="container-fluid">
     <div class="row px-xl-5">
         @await Component.InvokeAsync("_ShoppingCartProductListComponentPartial") <!-- Burada Biz Alışveriş Kartı kodlarını _ShoppingCartProductListComponentPartial Tuttuk -->
         @* @await Component.InvokeAsync("_ShoppingCartDiscountCouponComponentPartial") <!-- Burada Biz Alışveriş Kartı İndirim Kuponu kodlarını _ShoppingCartDiscountCouponComponentPartial Tuttuk --> *@
@@ -16,3 +16,22 @@
 </div>
 <!-- Cart End -->
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btnCheckout')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const container = document.getElementById('checkoutStepsContainer');
+            try {
+                const resp = await fetch('/Order/GetAddressSelectionPartial', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const html = await resp.text();
+                container.innerHTML = html;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                console.error('Adres ekranı yüklenemedi:', err);
+            }
+        });
+    });
+</script>
