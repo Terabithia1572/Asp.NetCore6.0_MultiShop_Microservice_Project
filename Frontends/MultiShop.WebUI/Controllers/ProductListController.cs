@@ -119,6 +119,8 @@ namespace MultiShop.WebUI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
+            var categories = await _categoryService.GetAllCategoryAsync();
+            ViewBag.Categories = categories;
             ViewBag.directory1 = "Ana Sayfa";
             ViewBag.directory2 = "Ürünler";
             ViewBag.directory3 = "Tüm Ürünler";
@@ -130,6 +132,35 @@ namespace MultiShop.WebUI.Controllers
             var products = await _productService.GetAllProductsWithCategoryAsync(); // List<ResultProductWithCategoryDTO>
 
             return View("All", products); // 🔥 Bu view'e direkt model gönderiyoruz
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> FilterProducts(string categoryId = "", string sort = "default")
+        {
+            // Tüm ürünleri çek
+            var products = await _productService.GetAllProductsWithCategoryAsync();
+
+            // Kategori filtresi
+            if (!string.IsNullOrEmpty(categoryId))
+                products = products.Where(p => p.Category?.CategoryID == categoryId).ToList();
+
+            // Sıralama işlemi
+            products = sort switch
+            {
+                "price-asc" => products.OrderBy(p => p.ProductPrice).ToList(),
+                "price-desc" => products.OrderByDescending(p => p.ProductPrice).ToList(),
+                "name-asc" => products.OrderBy(p => p.ProductName).ToList(),
+                "name-desc" => products.OrderByDescending(p => p.ProductName).ToList(),
+                _ => products
+            };
+
+            // İndirimleri ViewBag ile gönderelim (mevcut yapıyı koruyoruz)
+            var discountList = await _productService.GetAllProductWithDiscountAsync();
+            ViewBag.Discounts = discountList
+                .Where(d => d.DiscountRate.HasValue)
+                .ToDictionary(d => d.ProductID, d => d.DiscountRate!.Value);
+
+            // Partial View döndür
+            return PartialView("_ProductGridPartial", products);
         }
 
 
