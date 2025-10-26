@@ -1,50 +1,85 @@
 ﻿@model IEnumerable<ResultProductWithCategoryDTO>
 @{
-    ViewData["Title"] = "Tüm Ürünler - MultiShop Deluxe Edition V3";
+    ViewData["Title"] = "Tüm Ürünler - MultiShop Deluxe Edition V2";
     Layout = "~/Views/UILayout/_UILayout.cshtml";
 
     // İndirim sözlüğü: ProductID -> %Oran (Controller’dan set edilecek; gelmezse null olabilir)
     var discounts = ViewBag.Discounts as IDictionary<string, decimal>;
 }
 
-<!-- 🏷️ Filtre Bar (Sticky + Deluxe) -->
-<section class="filter-bar sticky-top py-3 bg-white shadow-sm border-bottom">
-    <div class="container-fluid px-xl-5 d-flex flex-wrap justify-content-between align-items-center gap-3">
-        <h4 class="fw-bold text-dark m-0">
-            <i class="fa fa-box-open text-deluxe me-2"></i> Tüm Ürünler
-        </h4>
-
-        <div class="d-flex gap-3">
-            <!-- 🔹 Kategori Filtresi (Deluxe Select) -->
-            <div class="deluxe-select-wrapper">
-                <select id="categoryFilter" class="deluxe-select">
-                    <option value="">Tüm Kategoriler</option>
-                    @await Html.PartialAsync("_CategoryDropdownPartial", (IEnumerable<ResultCategoryDTO>)ViewBag.Categories)
-                </select>
-                <i class="fa fa-chevron-down select-icon"></i>
-            </div>
-
-            <!-- 🔹 Sıralama (Deluxe Select) -->
-            <div class="deluxe-select-wrapper">
-                <select id="sortFilter" class="deluxe-select">
-                    <option value="default">Sıralama</option>
-                    <option value="price-asc">Fiyat: Artan</option>
-                    <option value="price-desc">Fiyat: Azalan</option>
-                    <option value="name-asc">İsim: A→Z</option>
-                    <option value="name-desc">İsim: Z→A</option>
-                </select>
-                <i class="fa fa-chevron-down select-icon"></i>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 🔥 Ürün Listesi Alanı (footer'dan boşluk için section içine aldım) -->
+<!-- 🛍️ Deluxe Tüm Ürünler -->
 <section class="deluxe-shop-section py-5">
     <div class="container-fluid px-xl-5">
-        <div id="productListContainer" class="fade-in">
-            @await Html.PartialAsync("_ProductGridPartial", Model)
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold text-dark m-0">
+                <i class="fa fa-box-open text-deluxe me-2"></i> Tüm Ürünler
+            </h4>
+            <span class="text-muted small">@(Model?.Count() ?? 0) ürün listeleniyor</span>
         </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center text-muted py-5">Henüz ürün bulunmamaktadır.</div>
+        }
+        else
+        {
+            <div class="row g-4 product-grid">
+                @foreach (var p in Model)
+                {
+                    var categoryName = p.Category?.CategoryName ?? "Genel";
+
+                    // İndirim bilgisi ViewBag.Discounts'tan okunur
+                    bool hasDiscount = discounts != null && discounts.ContainsKey(p.ProductID);
+                    decimal discountRate = hasDiscount ? discounts[p.ProductID] : 0m;
+                    decimal discountedPrice = hasDiscount ? p.ProductPrice * (1 - discountRate / 100m) : p.ProductPrice;
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="deluxe-card position-relative rounded-4 overflow-hidden bg-white shadow-sm">
+
+                            @if (hasDiscount)
+                            {
+                                <span class="discount-badge">-%@discountRate</span>
+                            }
+
+                            <!-- Görsel -->
+                            <div class="deluxe-img position-relative">
+                                <img src="@p.ProductImageURL" alt="@p.ProductName" />
+                                <div class="deluxe-overlay d-flex flex-column justify-content-end align-items-center pb-3 gap-2">
+                                    <a href="/ProductList/ProductDetail/@p.ProductID" class="btn detail-btn">
+                                        <i class="fa fa-search me-1"></i> Detayına Git
+                                    </a>
+                                    <a href="javascript:void(0)" class="btn add-btn add-to-cart" data-id="@p.ProductID">
+                                        <i class="fa fa-shopping-cart me-2"></i>Sepete Ekle
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Bilgi -->
+                            <div class="p-3 text-center">
+                                <h6 class="fw-semibold text-dark mb-1 text-truncate" title="@p.ProductName">@p.ProductName</h6>
+
+                                <div class="price-wrapper d-flex justify-content-center align-items-center gap-2">
+                                    @if (hasDiscount)
+                                    {
+                                        <h6 class="text-muted mb-0"><del>@String.Format("{0:0.##}", p.ProductPrice)₺</del></h6>
+                                        <h5 class="new-price mb-0">@String.Format("{0:0.##}", discountedPrice)₺</h5>
+                                    }
+                                    else
+                                    {
+                                        <span class="new-price">@String.Format("{0:0.##}", p.ProductPrice)₺</span>
+                                    }
+                                </div>
+
+                                <div class="mt-2 small text-muted">
+                                    <span class="category-pill">@categoryName</span>
+                                    <span class="text-success"><i class="bi bi-check2-circle"></i> Stokta Var</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </section>
 
@@ -64,10 +99,24 @@
         color: var(--deluxe-gold) !important;
     }
 
+    .deluxe-breadcrumb {
+        background: #fff;
+        border-bottom: 2px solid var(--deluxe-gold);
+    }
+
+        .deluxe-breadcrumb .breadcrumb a {
+            text-decoration: none;
+            color: #444;
+            transition: color .2s;
+        }
+
+            .deluxe-breadcrumb .breadcrumb a:hover {
+                color: var(--deluxe-gold);
+            }
+
     .deluxe-shop-section {
         background: linear-gradient(180deg,#fffefc,#fffaf0);
         min-height: 75vh;
-        padding-bottom: 100px;
     }
 
     .product-grid {
@@ -135,6 +184,7 @@
         transform: translateX(100%);
     }
 
+
     .deluxe-overlay {
         position: absolute;
         inset: 0;
@@ -179,14 +229,14 @@
 
     .price-wrapper {
         margin-top: 10px;
-        gap: 8px;
+        gap: 8px; /* fiyatlar arası boşluk */
         display: flex;
         justify-content: center;
-        align-items: baseline;
+        align-items: baseline; /* alt hizayı düzgün tutar */
     }
 
         .price-wrapper del {
-            margin-right: 6px;
+            margin-right: 6px; /* ekstra minik tampon */
         }
 
     .new-price {
@@ -224,9 +274,12 @@
         }
 
     @@media (max-width:991px) {
-        .deluxe-img {
-            height: 220px;
-        }
+        .deluxe-img
+
+    {
+        height: 220px;
+    }
+
     }
 
     .category-pill {
@@ -238,100 +291,18 @@
         font-weight: 600;
     }
 
-    .filter-bar {
-        z-index: 50;
-        border-top: 2px solid var(--deluxe-gold);
-    }
-
-    .deluxe-select-wrapper {
-        position: relative;
-        display: inline-block;
-    }
-
-    .deluxe-select {
-        appearance: none;
-        background: #fff;
-        border: 1.5px solid var(--deluxe-gold);
-        border-radius: 12px;
-        padding: 6px 36px 6px 12px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #444;
-        transition: all 0.25s ease;
-        cursor: pointer;
-        min-width: 150px;
-        box-shadow: 0 3px 8px rgba(245,207,66,0.1);
-    }
-
-        .deluxe-select:hover, .deluxe-select:focus {
-            outline: none;
-            border-color: #e3b800;
-            box-shadow: 0 0 12px rgba(245,207,66,0.3);
-        }
-
-    .select-icon {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--deluxe-gold);
-        pointer-events: none;
-        font-size: 0.8rem;
-    }
-
-    .fade-in {
-        animation: fadeIn 0.45s ease;
-    }
-
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(8px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 </style>
 
 <!-- ⚡ Script -->
 <script>
-    // 🔸 Global fonksiyonlar (her yerde erişilir)
-    async function updateCartCount() {
-        const countElement = document.querySelector('#cart-count');
-        if (!countElement) return;
-        try {
-            const resp = await fetch('/ShoppingCart/GetCartCount', { credentials: 'include' });
-            if (resp.ok) {
-                const count = await resp.text();
-                countElement.textContent = count;
-                countElement.style.animation = 'bump .4s ease';
-                setTimeout(() => countElement.style.animation = '', 400);
-            }
-        } catch {}
-    }
-
-    async function updateMiniCart() {
-        const cart = document.querySelector('#mini-cart');
-        if (!cart) return;
-        try {
-            const resp = await fetch('/ShoppingCart/GetMiniCart', { credentials: 'include' });
-            if (resp.ok) {
-                const html = await resp.text();
-                cart.innerHTML = html;
-            }
-        } catch {}
-    }
-
-    // 🔁 Sepete ekle
-    function rebindAddToCart() {
+    document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.add-to-cart').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 const id = btn.dataset.id;
+
                 try {
+                    // Ajax endpoint: partial döner -> mini sepeti direkt güncelleyeceğiz
                     const resp = await fetch(`/ShoppingCart/AddBasketItemAjax?id=${id}`, {
                         method: 'POST',
                         credentials: 'include'
@@ -343,11 +314,18 @@
                     }
 
                     if (resp.ok) {
-                        const html = await resp.text();
-                        const cart = document.querySelector('#mini-cart');
-                        if (cart) cart.innerHTML = html;
-                        await updateCartCount();
                         showToast('🛒 Ürün sepete eklendi!');
+                        await updateCartCount();
+
+                        // AddBasketItemAjax partial HTML döndürüyorsa, onu kullan
+                        const cart = document.querySelector('#mini-cart');
+                        if (cart) {
+                            const html = await resp.text();
+                            cart.innerHTML = html;
+                        } else {
+                            // Yedek: mini cart endpointinden çek
+                            await updateMiniCart();
+                        }
                     } else {
                         showToast('⚠️ Sepete ekleme başarısız!');
                     }
@@ -356,46 +334,43 @@
                 }
             });
         });
-    }
 
-    // 🔸 Filtreleme
-    document.addEventListener('DOMContentLoaded', () => {
-        const categorySelect = document.getElementById('categoryFilter');
-        const sortSelect = document.getElementById('sortFilter');
-        const container = document.getElementById('productListContainer');
-
-        async function filterProducts() {
-            const cat = categorySelect.value;
-            const sort = sortSelect.value;
-            const url = `/ProductList/FilterProducts?categoryId=${cat}&sort=${sort}`;
+        async function updateCartCount() {
+            const countElement = document.querySelector('#cart-count');
+            if (!countElement) return;
             try {
-                container.classList.remove('fade-in');
-                const resp = await fetch(url, { credentials: 'include' });
-                const html = await resp.text();
-                container.innerHTML = html;
-                void container.offsetWidth;
-                container.classList.add('fade-in');
-                rebindAddToCart(); // 🧩 yeni kartlarda çalışsın
-            } catch {
-                container.innerHTML = "<div class='text-center text-muted py-5'>Bir hata oluştu.</div>";
-            }
+                const resp = await fetch('/ShoppingCart/GetCartCount', { credentials: 'include' });
+                if (resp.ok) {
+                    const count = await resp.text();
+                    countElement.textContent = count;
+                    countElement.style.animation = 'bump .4s ease';
+                    setTimeout(() => countElement.style.animation = '', 400);
+                }
+            } catch {}
         }
 
-        categorySelect.addEventListener('change', filterProducts);
-        sortSelect.addEventListener('change', filterProducts);
-        rebindAddToCart(); // ilk yüklemede bağla
-    });
+        async function updateMiniCart() {
+            const cart = document.querySelector('#mini-cart');
+            if (!cart) return;
+            try {
+                const resp = await fetch('/ShoppingCart/GetMiniCart', { credentials: 'include' });
+                if (resp.ok) {
+                    const html = await resp.text();
+                    cart.innerHTML = html;
+                }
+            } catch {}
+        }
 
-    // 💬 Toast
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.className = 'toast-box';
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 1600);
-    }
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-box';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 1600);
+        }
+    });
 </script>
