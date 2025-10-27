@@ -20,7 +20,7 @@ namespace MultiShop.Basket.Services
 
         public async Task<BasketTotalDTO> GetBasket(string UserID)
         {
-           var existBasket=await _redisService.GetDB().StringGetAsync(UserID); // belirli bir kullanıcının sepetini getirir
+            var existBasket = await _redisService.GetDB().StringGetAsync(UserID); // belirli bir kullanıcının sepetini getirir
             return JsonSerializer.Deserialize<BasketTotalDTO>(existBasket); // Sepeti JSON'dan nesneye dönüştürür
 
         }

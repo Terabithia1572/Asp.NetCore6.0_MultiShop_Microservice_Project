@@ -9,36 +9,36 @@ using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var requireAuthorizationPolicy = new AuthorizationPolicyBuilder() // Yetkilendirme politikasý oluþturma
-    .RequireAuthenticatedUser() // Kimlik doðrulamasý gerektirir
-    .Build(); // Yetkilendirme politikasýný oluþturur
+var requireAuthorizationPolicy = new AuthorizationPolicyBuilder() // Yetkilendirme politikas? olu?turma
+    .RequireAuthenticatedUser() // Kimlik do?rulamas? gerektirir
+    .Build(); // Yetkilendirme politikas?n? olu?turur
 
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub"); // JWT'den gelen "sub" (subject) claim'ini varsayýlan olarak haritalamaktan kaldýrýr
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub"); // JWT'den gelen "sub" (subject) claim'ini varsay?lan olarak haritalamaktan kald?r?r
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = builder.Configuration["IdentityServerUrl"]; // IdentityServer URL'si
-        options.Audience="ResourceBasket"; // API Audience
+        options.Audience = "ResourceBasket"; // API Audience
         options.RequireHttpsMetadata = false; // HTTPS gereksinimi
     });
 
-builder.Services.AddHttpContextAccessor(); // HttpContext eriþimi için gerekli
-builder.Services.AddScoped<ILoginService, LoginService>(); // Kullanýcý kimliði yönetimi için servis
-builder.Services.AddScoped<IBasketService, BasketService>(); // Sepet iþlemleri için servis
-builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings")); // Redis ayarlarýný yapýlandýrma
+builder.Services.AddHttpContextAccessor(); // HttpContext eri?imi için gerekli
+builder.Services.AddScoped<ILoginService, LoginService>(); // Kullan?c? kimli?i yönetimi için servis
+builder.Services.AddScoped<IBasketService, BasketService>(); // Sepet i?lemleri için servis
+builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings")); // Redis ayarlar?n? yap?land?rma
 
 builder.Services.AddSingleton<RedisService>(sp => // RedisService'i DI konteynerine ekleme
 {
-    var redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value; // Redis ayarlarýný al
-    var redis = new RedisService(redisSettings.Host, redisSettings.Port); // RedisService nesnesini oluþtur
-    redis.Connect(); // Redis'e baðlantý kur
+    var redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value; // Redis ayarlar?n? al
+    var redis = new RedisService(redisSettings.Host, redisSettings.Port); // RedisService nesnesini olu?tur
+    redis.Connect(); // Redis'e ba?lant? kur
     return redis; // RedisService nesnesini döner
 });
 
 builder.Services.AddControllers(opt =>
 {
-    opt.Filters.Add(new AuthorizeFilter(requireAuthorizationPolicy)); // Tüm denetleyicilere yetkilendirme politikasý uygula
+    opt.Filters.Add(new AuthorizeFilter(requireAuthorizationPolicy)); // Tüm denetleyicilere yetkilendirme politikas? uygula
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -54,7 +54,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); // Kimlik doðrulama middleware'ini ekle
+app.UseAuthentication(); // Kimlik do?rulama middleware'ini ekle
 
 app.UseAuthorization();
 

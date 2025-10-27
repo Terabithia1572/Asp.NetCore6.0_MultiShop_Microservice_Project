@@ -1,66 +1,65 @@
-﻿
-using MultiShop.DTOLayer.BasketDTOs;
+﻿using MultiShop.DTOLayer.BasketDTOs;
+using System.Net.Http.Json;
 
 namespace MultiShop.WebUI.Services.BasketServices
 {
     public class BasketService : IBasketService
     {
         private readonly HttpClient _httpClient;
+
         public BasketService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
+
         public async Task AddBasketItem(BasketItemDTO basketItemDto)
         {
             var values = await GetBasket();
 
             if (values == null)
-            {
-                values = new BasketTotalDTO
-                {
-                    BasketItems = new List<BasketItemDTO>()
-                };
-            }
+                values = new BasketTotalDTO { BasketItems = new List<BasketItemDTO>() };
 
             var existingItem = values.BasketItems.FirstOrDefault(x => x.ProductID == basketItemDto.ProductID);
 
             if (existingItem == null)
-            {
                 values.BasketItems.Add(basketItemDto);
-            }
             else
-            {
-                existingItem.ProductQuantity += basketItemDto.ProductQuantity; // miktarı artır
-            }
+                existingItem.ProductQuantity += basketItemDto.ProductQuantity;
 
             await SaveBasket(values);
         }
 
-
-        public Task DeleteBasket(string userId)
+        public async Task DeleteBasket(string userId)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync("baskets");
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<BasketTotalDTO> GetBasket()
         {
-            var responseMessage = await _httpClient.GetAsync("baskets");
-            var values = await responseMessage.Content.ReadFromJsonAsync<BasketTotalDTO>();
-            return values;
+            var response = await _httpClient.GetAsync("baskets");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<BasketTotalDTO>();
         }
 
         public async Task<bool> RemoveBasketItem(string id)
         {
             var values = await GetBasket();
             var deletedItem = values.BasketItems.FirstOrDefault(x => x.ProductID == id);
-            var result = values.BasketItems.Remove(deletedItem);
+
+            if (deletedItem == null)
+                return false;
+
+            values.BasketItems.Remove(deletedItem);
             await SaveBasket(values);
             return true;
         }
 
         public async Task SaveBasket(BasketTotalDTO basketTotalDto)
         {
-            await _httpClient.PostAsJsonAsync<BasketTotalDTO>("baskets", basketTotalDto);
+            await _httpClient.PostAsJsonAsync("baskets", basketTotalDto);
         }
     }
 }

@@ -3,8 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.OrderDTOs.OrderAddressDTO;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Services.OrderServices.OrderAddressServices;
-using System.Linq;
-using System.Threading.Tasks;
+
+// 🔹 Sepet ve Sipariş servisleri
+using MultiShop.WebUI.Services.BasketServices;
+using MultiShop.WebUI.Services.OrderServices.OrderOrderingServices;
+using MultiShop.WebUI.Services.OrderServices.OrderDetailServices;
+
+// 🔹 DTO'lar
+using MultiShop.DTOLayer.OrderDTOs.OrderingDTO;
+using MultiShop.DTOLayer.OrderDTOs.OrderDetailDTO;
 
 namespace MultiShop.WebUI.Controllers
 {
@@ -13,14 +20,23 @@ namespace MultiShop.WebUI.Controllers
     {
         private readonly IOrderAddressService _orderAddressService;
         private readonly IUserService _userService;
+        private readonly IBasketService _basketService;
+        private readonly IOrderOrderingService _orderOrderingService;
 
-        public OrderController(IOrderAddressService orderAddressService, IUserService userService)
+        public OrderController(
+            IOrderAddressService orderAddressService,
+            IUserService userService,
+            IBasketService basketService,
+            IOrderOrderingService orderOrderingService
+        )
         {
             _orderAddressService = orderAddressService;
             _userService = userService;
+            _basketService = basketService;
+            _orderOrderingService = orderOrderingService;
         }
 
-        // 🏠 Ana Sayfa (adres ekleme vs. değil, sadece yönlendirme)
+        // 📍 Ana Sayfa
         [HttpGet]
         public IActionResult Index()
         {
@@ -30,22 +46,18 @@ namespace MultiShop.WebUI.Controllers
             return View();
         }
 
-        // 🧩 Ödeme adımında adres seçimi partial'ı
+        // 🧩 Adres seçimi partial'ı
         [HttpGet]
         public async Task<IActionResult> GetAddressSelectionPartial()
         {
             var user = await _userService.GetUserInfo();
             var allAddresses = await _orderAddressService.GetAllOrderAddressAsync();
-
-            // sadece giriş yapan kullanıcıya ait adresleri filtrele
-            var userAddresses = allAddresses
-                .Where(a => a.AddressUserID == user.ID)
-                .ToList();
+            var userAddresses = allAddresses.Where(a => a.AddressUserID == user.ID).ToList();
 
             return PartialView("~/Views/Order/_AddressSelectionPartial.cshtml", userAddresses);
         }
 
-        // 🆕 Yeni adres ekleme
+        // ➕ Yeni adres ekleme
         [HttpPost]
         public async Task<IActionResult> AddAddress(CreateOrderAddressDTO dto)
         {
@@ -56,32 +68,69 @@ namespace MultiShop.WebUI.Controllers
             await _orderAddressService.CreateOrderAddressAsync(dto);
 
             var allAddresses = await _orderAddressService.GetAllOrderAddressAsync();
-            var userAddresses = allAddresses
-                .Where(a => a.AddressUserID == user.ID)
-                .ToList();
+            var userAddresses = allAddresses.Where(a => a.AddressUserID == user.ID).ToList();
 
             return PartialView("~/Views/Order/_AddressSelectionPartial.cshtml", userAddresses);
         }
 
-        // 💳 Adres seçilip ödeme ekranına geçildiğinde (geçici veri)
+        // 💳 Adres seçilip ödeme ekranına geçildiğinde
         [HttpPost]
-        public IActionResult GoToPayment(int selectedAddressId)
+        public async Task<IActionResult> GoToPayment(int selectedAddressId)
         {
             TempData["SelectedAddressId"] = selectedAddressId;
-            return Json(new { ok = true });
+            var basket = await _basketService.GetBasket();
+
+            if (basket == null || basket.BasketItems == null || !basket.BasketItems.Any())
+                return Json(new { ok = false, message = "Sepetiniz boş görünüyor." });
+
+            return PartialView("~/Views/Order/_PaymentCardPartial.cshtml", basket);
         }
 
-        // 📦 Yeni adres kaydı (mevcut senin Index POST)
-        [HttpPost]
-        public async Task<IActionResult> Index(CreateOrderAddressDTO createOrderAddressDTO)
+        // 💰 Ödeme ekranı (AJAX yenileme)
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentCardPartial()
         {
-            var values = await _userService.GetUserInfo();
-            createOrderAddressDTO.AddressUserID = values.ID;
-            createOrderAddressDTO.AddressDescription = "Varsayılan Adres";
+            var basket = await _basketService.GetBasket();
+            return PartialView("~/Views/Order/_PaymentCardPartial.cshtml", basket);
+        }
 
-            await _orderAddressService.CreateOrderAddressAsync(createOrderAddressDTO);
+        // ✅ Ödemeyi Tamamlama
+        [HttpPost]
+        public async Task<IActionResult> CompleteOrder()
+        {
+            var user = await _userService.GetUserInfo();
+            var basket = await _basketService.GetBasket();
 
-            return RedirectToAction("Index", "Payment");
+            if (basket == null || basket.BasketItems == null || !basket.BasketItems.Any())
+            {
+                TempData["Error"] = "Sepetiniz boş görünüyor!";
+                return RedirectToAction("Index", "ShoppingCart");
+            }
+
+            decimal totalPrice = basket.BasketItems.Sum(x => x.ProductPrice * x.ProductQuantity);
+
+            var newOrder = new CreateOrderingDTO
+            {
+                OrderingUserID = user.ID,
+                OrderingTotalPrice = totalPrice,
+                OrderingDate = DateTime.Now
+            };
+
+            // 🔹 Sipariş kaydı
+            await _orderOrderingService.CreateOrderingAsync(newOrder);
+
+            // 🔹 Sepeti temizle
+            await _basketService.DeleteBasket(user.ID ?? "");
+
+            return RedirectToAction("Success");
+        }
+
+        // 🎉 Başarılı ekran
+        [HttpGet]
+        public IActionResult Success()
+        {
+            ViewBag.Title = "Ödeme Başarılı";
+            return View("~/Views/Order/Success.cshtml");
         }
     }
 }

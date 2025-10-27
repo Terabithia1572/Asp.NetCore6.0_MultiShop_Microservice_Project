@@ -173,26 +173,44 @@
             }
 
             // ✅ “Devam Et (Ödeme)” tıklanınca
-            if (e.target.closest('#btnGoToPayment')) {
-                const selected = document.querySelector('input[name="selectedAddress"]:checked');
-                if (!selected) {
-                    alert('Lütfen bir adres seçiniz.');
-                    return;
-                }
+                // ✅ “Devam Et (Ödeme)” tıklanınca
+    if (e.target.closest('#btnGoToPayment')) {
+        const selected = document.querySelector('input[name="selectedAddress"]:checked');
+        if (!selected) {
+            alert('Lütfen bir adres seçiniz.');
+            return;
+        }
 
-                const resp = await fetch('/Order/GoToPayment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: `selectedAddressId=${encodeURIComponent(selected.value)}`
-                });
+        const resp = await fetch('/Order/GoToPayment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `selectedAddressId=${encodeURIComponent(selected.value)}`
+        });
 
-                if (resp.ok) {
-                    alert('Adres seçildi! Ödeme ekranı hazırlanıyor...');
-                }
+        if (resp.ok) {
+            // 🟡 Artık partial'ı alıyoruz:
+            const html = await resp.text();
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html;
+
+            const paymentStep = wrapper.querySelector('.payment-step');
+            const addressStep = document.querySelector('.address-step');
+
+            if (paymentStep && addressStep) {
+                addressStep.replaceWith(paymentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+
+            // 💬 Bildirim:
+            toastr.success('Adres seçildi! Ödeme ekranı yüklendi.');
+        } else {
+            toastr.error('Ödeme ekranı yüklenemedi.');
+        }
+    }
+
         });
 </script>
 
