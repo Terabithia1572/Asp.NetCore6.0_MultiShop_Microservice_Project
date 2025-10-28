@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MultiShop.WebUI.Services.Interfaces;
 using System.Net;
@@ -20,25 +19,45 @@ namespace MultiShop.WebUI.Handlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            // ❗ HttpContext null olabilir; koru
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            // ❗ access_token yoksa header yazma
+            var accessToken = httpContext != null
+                ? await httpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken)
+                : null;
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
+
             var response = await base.SendAsync(request, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
+                // 🔄 Refresh dene (bu metot genelde cookie'deki tokenları günceller)
                 var tokenResponse = await _identityService.GetRefreshToken();
 
                 if (tokenResponse != null)
                 {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                    response = await base.SendAsync(request, cancellationToken);
+                    // ✔️ Güncellenmiş access_token'ı tekrar oku
+                    var renewedAccessToken = httpContext != null
+                        ? await httpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken)
+                        : null;
+
+                    // önceki Authorization'ı temizle (güvenli taraf)
+                    request.Headers.Authorization = null;
+
+                    if (!string.IsNullOrEmpty(renewedAccessToken))
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", renewedAccessToken);
+                        response = await base.SendAsync(request, cancellationToken);
+                    }
                 }
             }
 
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                //hata mesajı
-            }
+            // (İstersen burada hâlâ 401 ise log/hata işleyişi)
             return response;
         }
     }

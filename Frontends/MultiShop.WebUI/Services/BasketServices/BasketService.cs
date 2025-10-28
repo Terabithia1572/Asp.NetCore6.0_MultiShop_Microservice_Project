@@ -1,15 +1,28 @@
 ﻿using MultiShop.DTOLayer.BasketDTOs;
+using MultiShop.WebUI.Services.Interfaces;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace MultiShop.WebUI.Services.BasketServices
 {
     public class BasketService : IBasketService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IUserService _userService;
 
-        public BasketService(HttpClient httpClient)
+        public BasketService(HttpClient httpClient, IHttpContextAccessor contextAccessor, IUserService userService)
         {
             _httpClient = httpClient;
+            _contextAccessor = contextAccessor;
+            _userService = userService;
+        }
+
+        // ✅ Kullanıcının ID’sini güvenli şekilde getir
+        private async Task<string> GetUserIdAsync()
+        {
+            var user = await _userService.GetUserInfo();
+            return user?.ID ?? string.Empty;
         }
 
         public async Task AddBasketItem(BasketItemDTO basketItemDto)
@@ -26,11 +39,18 @@ namespace MultiShop.WebUI.Services.BasketServices
             else
                 existingItem.ProductQuantity += basketItemDto.ProductQuantity;
 
+            // 🧠 UserID'yi garantili ata
+            values.UserID = await GetUserIdAsync();
+
             await SaveBasket(values);
         }
 
         public async Task DeleteBasket(string userId)
         {
+            // 💡 UserID parametresi boş gelse bile kendi ID'sini alır
+            if (string.IsNullOrEmpty(userId))
+                userId = await GetUserIdAsync();
+
             var response = await _httpClient.DeleteAsync("baskets");
             response.EnsureSuccessStatusCode();
         }
@@ -41,7 +61,13 @@ namespace MultiShop.WebUI.Services.BasketServices
             if (!response.IsSuccessStatusCode)
                 return null;
 
-            return await response.Content.ReadFromJsonAsync<BasketTotalDTO>();
+            var values = await response.Content.ReadFromJsonAsync<BasketTotalDTO>();
+
+            // 🧠 Eksikse kullanıcı ID'sini doldur
+            if (values != null && string.IsNullOrEmpty(values.UserID))
+                values.UserID = await GetUserIdAsync();
+
+            return values;
         }
 
         public async Task<bool> RemoveBasketItem(string id)
@@ -53,12 +79,18 @@ namespace MultiShop.WebUI.Services.BasketServices
                 return false;
 
             values.BasketItems.Remove(deletedItem);
+            values.UserID = await GetUserIdAsync(); // garanti altına al
+
             await SaveBasket(values);
             return true;
         }
 
         public async Task SaveBasket(BasketTotalDTO basketTotalDto)
         {
+            // 🧠 UserID boşsa tekrar al
+            if (string.IsNullOrEmpty(basketTotalDto.UserID))
+                basketTotalDto.UserID = await GetUserIdAsync();
+
             await _httpClient.PostAsJsonAsync("baskets", basketTotalDto);
         }
     }

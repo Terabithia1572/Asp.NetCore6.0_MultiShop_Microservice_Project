@@ -106,8 +106,12 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "OcelotAuthenticationScheme",
         "AllowedScopes": [ "BasketFullPermission" ]
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Authorization"
       }
     },
+
 
     //-----------------------------Mesaj Mikroservisi----------------------------
     {

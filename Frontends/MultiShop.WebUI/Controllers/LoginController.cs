@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using MultiShop.DTOLayer.IdentityDTOs.LoginDTOs;
 using MultiShop.WebUI.Models;
+using MultiShop.WebUI.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication;
-using MultiShop.WebUI.Services.Interfaces;
 
 namespace MultiShop.WebUI.Controllers
 {
@@ -30,10 +31,27 @@ namespace MultiShop.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SignInDTO signInDTO)
         {
-            await _identityService.SignIn(signInDTO); //IdentityService üzerinden SignIn metodunu çağırıyoruz
+            // 1️⃣ Eski oturum ve cookie’yi temizle
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return RedirectToAction("Index", "User"); //Başarısız ise tekrar kayıt sayfasını gösteriyoruz
+            // 2️⃣ Yeni oturum aç
+            var result = await _identityService.SignIn(signInDTO);
+
+            if (!result)
+            {
+                TempData["LoginError"] = "Kullanıcı adı veya şifre hatalı!";
+                return View(signInDTO);
+            }
+
+            // 3️⃣ Yeni cookie ve token set edilmiş durumda
+            return RedirectToAction("Index", "User");
         }
-      
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Login");
+        }
+
+
     }
 }
