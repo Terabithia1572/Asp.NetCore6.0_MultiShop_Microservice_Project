@@ -116,14 +116,16 @@ namespace MultiShop.WebUI.Controllers
                 OrderingDate = DateTime.Now
             };
 
-            // 🔹 Sipariş kaydı
+            // 🔹 Siparişi kaydet
             await _orderOrderingService.CreateOrderingAsync(newOrder);
 
-            // 🔹 Sepeti temizle
-            await _basketService.DeleteBasket(user.ID ?? "");
+            // 🔹 Sepeti silmek yerine boşaltıyoruz
+            await _basketService.ClearBasketAsync();
 
+            // 🔹 Ödeme başarılı sayfasına yönlendir
             return RedirectToAction("Success");
         }
+
 
         // 🎉 Başarılı ekran
         [HttpGet]

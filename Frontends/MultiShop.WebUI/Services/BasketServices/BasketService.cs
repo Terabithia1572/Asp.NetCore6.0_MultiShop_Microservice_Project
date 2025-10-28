@@ -93,5 +93,14 @@ namespace MultiShop.WebUI.Services.BasketServices
 
             await _httpClient.PostAsJsonAsync("baskets", basketTotalDto);
         }
+        public async Task ClearBasketAsync()
+        {
+            var basket = await GetBasket();
+            if (basket == null) return;
+
+            basket.BasketItems.Clear(); // 🔥 Tüm ürünleri temizle
+            await SaveBasket(basket);   // Güncel boş sepeti kaydet
+        }
+
     }
 }
