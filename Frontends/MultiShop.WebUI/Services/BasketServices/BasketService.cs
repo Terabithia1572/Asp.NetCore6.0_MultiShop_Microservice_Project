@@ -1,7 +1,8 @@
-﻿using MultiShop.DTOLayer.BasketDTOs;
+﻿using Microsoft.AspNetCore.Http;
+using MultiShop.DTOLayer.BasketDTOs;
 using MultiShop.WebUI.Services.Interfaces;
+using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Http;
 
 namespace MultiShop.WebUI.Services.BasketServices
 {
@@ -58,17 +59,38 @@ namespace MultiShop.WebUI.Services.BasketServices
         public async Task<BasketTotalDTO> GetBasket()
         {
             var response = await _httpClient.GetAsync("baskets");
-            if (!response.IsSuccessStatusCode)
-                return null;
+
+            // 🧩 Sepet bulunamadıysa veya Redis’te kayıt yoksa
+            if (response.StatusCode == HttpStatusCode.NotFound || !response.IsSuccessStatusCode)
+            {
+                var userId = await GetUserIdAsync();
+
+                // 🚀 Kullanıcıya özel boş sepet oluştur
+                var emptyBasket = new BasketTotalDTO
+                {
+                    UserID = userId,
+                    DiscountCode = "",
+                    DiscountRate = null,
+                    BasketItems = new List<BasketItemDTO>(),
+                   
+                };
+
+                // 🧩 Redis'e kaydet (otomatik sepet oluştur)
+                await SaveBasket(emptyBasket);
+
+                // 🔄 Yeni boş sepeti geri döndür
+                return emptyBasket;
+            }
 
             var values = await response.Content.ReadFromJsonAsync<BasketTotalDTO>();
 
-            // 🧠 Eksikse kullanıcı ID'sini doldur
+            // 🧠 Kullanıcı ID boşsa doldur
             if (values != null && string.IsNullOrEmpty(values.UserID))
                 values.UserID = await GetUserIdAsync();
 
             return values;
         }
+
 
         public async Task<bool> RemoveBasketItem(string id)
         {
