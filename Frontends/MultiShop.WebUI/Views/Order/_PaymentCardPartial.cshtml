@@ -12,6 +12,7 @@ else
 {
     <section class="payment-step fade-in">
         <div class="container-fluid px-xl-5">
+
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h4 class="fw-bold text-dark m-0">
                     <i class="fa fa-credit-card text-deluxe me-2"></i> Ödeme Bilgileri
@@ -21,28 +22,48 @@ else
                 </button>
             </div>
 
-            <div class="row g-4">
+            <div class="row gy-4 align-items-start">
+
+                <!-- 🟨 Kart alanı -->
                 <div class="col-lg-7">
                     <div class="payment-card p-4">
+                        
+
                         <form id="paymentForm" method="post" action="/Order/CompleteOrder">
                             <div class="mb-3">
-                                <label class="form-label">Kart Üzerindeki İsim</label>
-                                <input type="text" name="CardName" class="form-control deluxe-input" required />
+                                <label class="form-label">Kart Numarası</label>
+                                <input type="text" name="CardNumber" maxlength="19" class="form-control deluxe-input card-number-input" required placeholder="0000 0000 0000 0000" />
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Kart Numarası</label>
-                                <input type="text" name="CardNumber" maxlength="19" class="form-control deluxe-input" required placeholder="0000 0000 0000 0000" />
+                                <label class="form-label">Kart Sahibi</label>
+                                <input type="text" name="CardName" class="form-control deluxe-input card-holder-input" required placeholder="Ad Soyad" />
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Son Kullanma (AA/YY)</label>
-                                    <input type="text" name="Expiration" maxlength="5" class="form-control deluxe-input" required placeholder="12/29" />
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Ay</label>
+                                    <select name="ExpMonth" class="form-select deluxe-input month-input" required>
+                                        <option value="" disabled selected>AA</option>
+                                        @for (int i = 1; i <= 12; i++)
+                                        {
+                                            <option value="@i.ToString("D2")">@i.ToString("D2")</option>
+                                        }
+                                    </select>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Yıl</label>
+                                    <select name="ExpYear" class="form-select deluxe-input year-input" required>
+                                        <option value="" disabled selected>YY</option>
+                                        @for (int y = DateTime.Now.Year; y <= DateTime.Now.Year + 10; y++)
+                                        {
+                                            <option value="@y">@y</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
                                     <label class="form-label">CVV</label>
-                                    <input type="password" name="CVV" maxlength="3" class="form-control deluxe-input" required placeholder="000" />
+                                    <input type="password" name="CVV" maxlength="3" class="form-control deluxe-input cvv-input" required placeholder="000" />
                                 </div>
                             </div>
 
@@ -53,6 +74,7 @@ else
                     </div>
                 </div>
 
+                <!-- 🟧 Sipariş Özeti -->
                 <div class="col-lg-5">
                     <div class="summary-box p-4">
                         <h5 class="fw-bold mb-3 text-dark">Sipariş Özeti</h5>
@@ -75,101 +97,3 @@ else
         </div>
     </section>
 }
-
-<style>
-    .payment-step {
-        background: linear-gradient(180deg, #fffefc, #fffaf0);
-        border-top: 2px solid #f5cf42;
-        padding: 25px 0 40px;
-    }
-
-    .payment-card {
-        background: #fff;
-        border: 1px solid rgba(245, 207, 66, 0.25);
-        border-radius: 20px;
-        box-shadow: 0 6px 20px rgba(245, 207, 66, 0.12);
-        transition: 0.3s;
-    }
-
-        .payment-card:hover {
-            box-shadow: 0 10px 30px rgba(245, 207, 66, 0.25);
-            transform: translateY(-2px);
-        }
-
-    .summary-box {
-        background: linear-gradient(180deg, #fffefc, #fff9e6);
-        border-radius: 18px;
-        box-shadow: 0 5px 20px rgba(245, 207, 66, 0.15);
-        border: 1px solid rgba(245, 207, 66, 0.3);
-    }
-
-    .btn-deluxe-pay {
-        background: linear-gradient(90deg, #f5cf42, #ffe98a);
-        color: #111;
-        font-weight: 700;
-        border: none;
-        border-radius: 50px;
-        padding: 14px 0;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        box-shadow: 0 6px 14px rgba(245, 207, 66, 0.3);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-        .btn-deluxe-pay::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: skewX(-25deg);
-            transition: all 0.6s ease;
-        }
-
-        .btn-deluxe-pay:hover::before {
-            left: 130%;
-        }
-
-        .btn-deluxe-pay:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 28px rgba(245, 207, 66, 0.35);
-        }
-
-    .deluxe-input {
-        border: 1.5px solid #f5cf42;
-        border-radius: 12px;
-        box-shadow: 0 3px 8px rgba(245, 207, 66, 0.1);
-    }
-
-        .deluxe-input:focus {
-            border-color: #e3b800;
-            box-shadow: 0 0 10px rgba(245, 207, 66, 0.25);
-        }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Kart numarasına otomatik boşluk formatı
-        const cardInput = document.querySelector('input[name="CardNumber"]');
-        if (cardInput) {
-            cardInput.addEventListener('input', (e) => {
-                let val = e.target.value.replace(/\D/g, '').substring(0, 16);
-                e.target.value = val.replace(/(.{4})/g, '$1 ').trim();
-            });
-        }
-
-        // Geri dönme
-        document.getElementById('btnBackToAddress')?.addEventListener('click', () => {
-            fetch('/Order/GetAddressSelectionPartial')
-                .then(r => r.text())
-                .then(html => {
-                    document.querySelector('section.payment-step').outerHTML = html;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-        });
-    });
-</script>

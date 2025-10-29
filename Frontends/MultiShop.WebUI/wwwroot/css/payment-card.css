@@ -1,0 +1,90 @@
+﻿.payment-step {
+    background: linear-gradient(180deg, #fffefc, #fffaf0);
+    border-top: 2px solid #f5cf42;
+    padding: 25px 0 60px;
+}
+
+/* Kart */
+.credit-card-view {
+    background: linear-gradient(145deg, #d4af37, #f8e27a);
+    border-radius: 16px;
+    padding: 25px 30px;
+    color: #fff;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(245, 207, 66, 0.35);
+}
+
+    .credit-card-view .chip {
+        width: 45px;
+        height: 35px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #bca74b, #fff2a1);
+        margin-bottom: 10px;
+    }
+
+    .credit-card-view .visa-logo {
+        width: 60px;
+        position: absolute;
+        bottom: 20px;
+        right: 25px;
+        opacity: 0.85;
+    }
+
+.card-number-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.payment-card {
+    background: #fff;
+    border: 1px solid rgba(245, 207, 66, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(245, 207, 66, 0.12);
+    transition: 0.3s;
+}
+
+    .payment-card:hover {
+        box-shadow: 0 10px 30px rgba(245, 207, 66, 0.25);
+        transform: translateY(-2px);
+    }
+
+.summary-box {
+    background: linear-gradient(180deg, #fffefc, #fff9e6);
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(245, 207, 66, 0.15);
+    border: 1px solid rgba(245, 207, 66, 0.3);
+}
+
+.btn-deluxe-pay {
+    background: linear-gradient(90deg, #f5cf42, #ffe98a);
+    color: #111;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 6px 14px rgba(245, 207, 66, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn-deluxe-pay:hover {
+        transform: scale(1.03);
+        box-shadow: 0 10px 28px rgba(245, 207, 66, 0.35);
+    }
+
+.deluxe-input {
+    border: 1.5px solid #f5cf42;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(245, 207, 66, 0.1);
+}
+
+    .deluxe-input:focus {
+        border-color: #e3b800;
+        box-shadow: 0 0 10px rgba(245, 207, 66, 0.25);
+    }
