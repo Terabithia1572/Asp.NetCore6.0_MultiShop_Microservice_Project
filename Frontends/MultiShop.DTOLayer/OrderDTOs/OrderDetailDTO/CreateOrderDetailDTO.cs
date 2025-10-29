@@ -8,6 +8,7 @@ namespace MultiShop.DTOLayer.OrderDTOs.OrderDetailDTO
         public string ProductName { get; set; } // Ürün Adı
         public decimal ProductPrice { get; set; } // Ürün Fiyatı
         public int ProductQuantity { get; set; } // Ürün Adedi
+        public int ProductAmount { get; set; }      // 🔥 EKLEDİK (DB alanı)
         public decimal ProductTotalPrice { get; set; } // Ürün Toplam Tutarı
         public int OrderingID { get; set; } // Ordering tablosuna foreign key
     }

@@ -80,6 +80,15 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
             return JsonConvert.DeserializeObject<List<ResultProductWithCategoryDTO>>(jsonData)
                    ?? new List<ResultProductWithCategoryDTO>();
         }
+        // Services/CatalogServices/ProductServices/ProductService.cs
+        public async Task<ResultProductDTO> GetProductByIdAsync(string id)
+        {
+            var resp = await _httpClient.GetAsync($"products/{id}");
+            if (!resp.IsSuccessStatusCode) return null;
+            return await resp.Content.ReadFromJsonAsync<ResultProductDTO>(
+                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+        }
 
     }
 }

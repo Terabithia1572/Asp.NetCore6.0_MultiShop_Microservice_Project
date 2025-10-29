@@ -18,5 +18,7 @@ namespace MultiShop.WebUI.Services.CatalogServices.ProductServices
 
         // 🆕 Yeni Eklendi: Tüm ürünleri kategorileriyle birlikte getir (All sayfası için)
         Task<List<ResultProductWithCategoryDTO>> GetAllProductsWithCategoryAsync();
+        Task<ResultProductDTO> GetProductByIdAsync(string id);
+
     }
 }
