@@ -15,7 +15,18 @@ namespace MultiShop.WebUI.Services.OrderServices.OrderDetailServices
 
         public async Task CreateOrderDetailAsync(CreateOrderDetailDTO dto)
         {
-            await _httpClient.PostAsJsonAsync("orderdetails", dto);
+            // 🔹 JSON’da ProductQuantity yerine ProductAmount olarak göndereceğiz
+            var payload = new
+            {
+                dto.ProductID,
+                dto.ProductName,
+                dto.ProductPrice,
+                ProductAmount = dto.ProductQuantity, // ✅ manuel map
+                dto.ProductTotalPrice,
+                dto.OrderingID
+            };
+
+            await _httpClient.PostAsJsonAsync("orderdetails", payload);
         }
     }
 }

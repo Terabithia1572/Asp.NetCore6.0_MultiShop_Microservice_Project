@@ -22,18 +22,21 @@ namespace MultiShop.WebUI.Controllers
         private readonly IUserService _userService;
         private readonly IBasketService _basketService;
         private readonly IOrderOrderingService _orderOrderingService;
+        private readonly IOrderDetailService _orderDetailService;
 
         public OrderController(
             IOrderAddressService orderAddressService,
             IUserService userService,
             IBasketService basketService,
             IOrderOrderingService orderOrderingService
-        )
+,
+            IOrderDetailService orderDetailService)
         {
             _orderAddressService = orderAddressService;
             _userService = userService;
             _basketService = basketService;
             _orderOrderingService = orderOrderingService;
+            _orderDetailService = orderDetailService;
         }
 
         // 📍 Ana Sayfa
@@ -119,12 +122,40 @@ namespace MultiShop.WebUI.Controllers
             // 🔹 Siparişi kaydet
             await _orderOrderingService.CreateOrderingAsync(newOrder);
 
-            // 🔹 Sepeti silmek yerine boşaltıyoruz
+            // 🔹 Şimdi o kullanıcıya ait en son oluşturulan siparişi bul
+            var ordersOfUser = await _orderOrderingService.GetOrderingByUserID(user.ID);
+            var lastOrder = ordersOfUser
+                .OrderByDescending(x => x.OrderingDate)
+                .FirstOrDefault();
+
+            if (lastOrder != null)
+            {
+                int orderingId = lastOrder.OrderingID; // 🔹 artık elimizde doğru ID var
+
+                // 🔹 Her sepet ürününü OrderDetail olarak ekle
+                foreach (var item in basket.BasketItems)
+                {
+                    var detail = new CreateOrderDetailDTO
+                    {
+                        ProductID = item.ProductID,
+                        ProductName = item.ProductName,
+                        ProductPrice = item.ProductPrice,
+                        ProductQuantity = item.ProductQuantity,
+                        ProductTotalPrice = item.ProductPrice * item.ProductQuantity,
+                        OrderingID = orderingId
+                    };
+
+                    await _orderDetailService.CreateOrderDetailAsync(detail);
+                }
+            }
+
+            // 🔹 Sepeti temizle
             await _basketService.ClearBasketAsync();
 
             // 🔹 Ödeme başarılı sayfasına yönlendir
             return RedirectToAction("Success");
         }
+
 
 
         // 🎉 Başarılı ekran

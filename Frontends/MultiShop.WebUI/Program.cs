@@ -25,6 +25,7 @@ using MultiShop.WebUI.Services.FavoriteServices;
 using MultiShop.WebUI.Services.Interfaces;
 using MultiShop.WebUI.Services.MessageServices;
 using MultiShop.WebUI.Services.OrderServices.OrderAddressServices;
+using MultiShop.WebUI.Services.OrderServices.OrderDetailServices;
 using MultiShop.WebUI.Services.OrderServices.OrderOrderingServices;
 using MultiShop.WebUI.Services.StatisticServices.CatalogStatisticServices;
 using MultiShop.WebUI.Services.StatisticServices.DiscountStatisticServices;
@@ -144,6 +145,12 @@ builder.Services.AddHttpClient<IOrderOrderingService, OrderOrderingService>(opt 
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Order.Path}"); // http://localhost:5001
     opt.DefaultRequestVersion = new Version(1, 1); // opsiyonel: HTTP/1.1 zorla
 }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); // HttpClient'a delegating handler ekle
+builder.Services.AddHttpClient<IOrderDetailService, OrderDetailService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Order.Path}"); // Order mikroservis adresi
+    opt.DefaultRequestVersion = new Version(1, 1);
+}).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
+
 builder.Services.AddHttpClient<IMessageService, MessageService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Message.Path}"); // http://localhost:5001
