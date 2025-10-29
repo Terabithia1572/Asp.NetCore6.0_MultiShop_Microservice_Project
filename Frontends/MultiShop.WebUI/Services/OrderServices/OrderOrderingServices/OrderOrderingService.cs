@@ -33,5 +33,12 @@ namespace MultiShop.WebUI.Services.OrderServices.OrderOrderingServices
             // ama ID dönüyorsa burada o değeri deserialize edebiliriz
             return 0;
         }
+        public async Task<List<ResultOrderingByUserIDDTO>> GetAllOrdersAsync()
+        {
+            var response = await _httpClient.GetAsync("orderings");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<ResultOrderingByUserIDDTO>>();
+        }
+
     }
 }

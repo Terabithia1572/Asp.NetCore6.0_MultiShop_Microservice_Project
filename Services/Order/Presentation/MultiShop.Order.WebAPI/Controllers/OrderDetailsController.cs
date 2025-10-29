@@ -63,5 +63,13 @@ namespace MultiShop.Order.WebAPI.Controllers
             return Ok("Sipariş Detayı başarıyla silindi..");
 
         }
+        [HttpGet("GetOrderDetailsByOrderingId/{orderingId}")]
+        public async Task<IActionResult> GetOrderDetailsByOrderingId(int orderingId)
+        {
+            var allDetails = await _getOrderDetailQueryHandler.Handle();
+            var filtered = allDetails.Where(x => x.OrderingID == orderingId).ToList();
+            return Ok(filtered);
+        }
+
     }
 }

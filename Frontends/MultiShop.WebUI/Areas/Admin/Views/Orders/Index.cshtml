@@ -1,0 +1,74 @@
+﻿@model List<MultiShop.DTOLayer.OrderDTOs.OrderingDTOs.ResultOrderingByUserIDDTO>
+@{
+    ViewData["Title"] = "Siparişlerim";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<!-- 🔶 Üst Başlık -->
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <div class="d-flex align-items-center gap-2">
+        <h4 class="fw-semibold text-dark mb-0">
+            <i class="fa-solid fa-bag-shopping text-warning me-2"></i> Siparişlerim
+        </h4>
+    </div>
+</div>
+
+<!-- 🧾 Sipariş Kartları -->
+<div id="orderGrid" class="order-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px;">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-light border text-center py-4">
+            <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+            Henüz siparişiniz bulunmuyor.
+        </div>
+    }
+    else
+    {
+        foreach (var o in Model.OrderByDescending(x => x.OrderingDate))
+        {
+            <div class="order-card" id="order-@o.OrderingID">
+                <div class="order-header bg-warning text-dark px-3 py-2 rounded-top fw-semibold">
+                    <i class="fa-solid fa-receipt me-2"></i> Sipariş No: @o.OrderingID
+                </div>
+                <div class="order-body bg-white p-3 text-center">
+                    <h5 class="fw-bold text-dark mb-2">
+                        <i class="fa-solid fa-calendar-day text-warning me-1"></i>
+                        @o.OrderingDate.ToString("dd MMM yyyy")
+                    </h5>
+                    <p class="text-muted small mb-2">Toplam Tutar</p>
+                    <div class="fs-4 fw-bold text-success mb-3">
+                        @o.OrderingTotalPrice.ToString("C")
+                    </div>
+                    <a href="/Admin/Orders/Details/@o.OrderingID" class="btn btn-outline-warning fw-semibold px-4 rounded-pill shadow-sm">
+                        <i class="fa-solid fa-eye me-1"></i> Detayları Gör
+                    </a>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<style>
+    .order-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        transition: all .3s ease;
+        background: #fff;
+        border: 1px solid rgba(255,193,7,0.3);
+    }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255,193,7,0.35);
+        }
+
+    .order-header {
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .order-body {
+        background: #fff;
+    }
+</style>
