@@ -1,0 +1,251 @@
+﻿@model List<MultiShop.DTOLayer.CommentDTOs.ResultCommentDTO>
+@{
+    ViewData["Title"] = "Yorumlarım";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-dark">
+        <i class="fa-solid fa-comments text-warning me-2"></i> Yorumlarım
+    </h4>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-5">
+        <i class="fa-regular fa-face-frown me-2 text-warning"></i>
+        Henüz bir yorum yapmadınız.
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 col-xl-4" id="comment-card-@item.UserCommentID">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden comment-card">
+                    <div class="card-header bg-warning bg-opacity-10 border-0 d-flex align-items-center">
+                        <img src="@item.UserCommentImageURL" class="rounded-circle me-2" width="40" height="40" alt="profil" />
+                        <div>
+                            <h6 class="mb-0 fw-semibold text-dark">@item.UserCommentNameSurname</h6>
+                            <small class="text-muted">@item.UserCommentCreatedDate.ToString("dd MMM yyyy")</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="@(item.ProductImageURL ?? "/img/no-image.png")"
+                                 alt="@(item.ProductName ?? "Ürün")"
+                                 width="44" height="44"
+                                 class="rounded me-2" style="object-fit:cover;" />
+
+                            <a href="/ProductList/ProductDetail/@item.ProductID"
+                               class="text-decoration-none text-dark fw-semibold">
+                                <i class="fa-solid fa-box text-warning me-1"></i>
+                                @(item.ProductName ?? "Ürün")
+                            </a>
+                        </div>
+
+                        <p id="comment-text-@item.UserCommentID" class="mb-3 text-dark">@item.UserCommentDetail</p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= item.UserCommentRating)
+                                    {
+                                        <i class="fa-solid fa-star text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-star text-warning"></i>
+                                    }
+                                }
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-warning fw-semibold edit-btn"
+                                        data-id="@item.UserCommentID">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger fw-semibold delete-btn"
+                                        data-id="@item.UserCommentID">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- 🔹 Yorum Güncelleme Modal -->
+<div class="modal fade" id="editCommentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-warning bg-opacity-10 border-0">
+                <h5 class="modal-title text-dark fw-bold">
+                    <i class="fa-solid fa-pen-to-square me-2 text-warning"></i>Yorumu Düzenle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCommentForm">
+                    <input type="hidden" id="editCommentId" />
+                    <div class="mb-3">
+                        <label class="form-label">Yorum</label>
+                        <textarea class="form-control" id="editCommentText" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Puan</label>
+                        <input type="number" class="form-control" id="editCommentRating" min="1" max="5" required />
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 fw-semibold">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Tüm alanları POST'ta kullanmak için basit bir cache
+        const editCache = new Map(); // key: commentId, value: dto (serverdan gelen tüm alanlar)
+
+        // 🔸 Düzenleme (modal aç)
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const id = this.dataset.id;
+                const response = await fetch(`/Admin/Comment/EditMyComment/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // cache'e koy
+                    editCache.set(data.userCommentID, data);
+
+                    // modalı doldur
+                    document.getElementById('editCommentId').value = data.userCommentID;
+                    document.getElementById('editCommentText').value = data.userCommentDetail;
+                    document.getElementById('editCommentRating').value = data.userCommentRating;
+                    new bootstrap.Modal(document.getElementById('editCommentModal')).show();
+                }
+            });
+        });
+
+        // 🔸 Düzenleme formunu AJAX ile gönder (tam payload + sayısal ID)
+        document.getElementById('editCommentForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const id = parseInt(document.getElementById('editCommentId').value, 10);  // 🔥 number
+            const detail = document.getElementById('editCommentText').value;
+            const rating = parseInt(document.getElementById('editCommentRating').value, 10); // 🔥 number
+
+            // cache'teki tüm alanları al, sadece değişenleri üzerine yaz
+            const original = editCache.get(id) || {};
+            const payload = {
+                userCommentID: id,
+                userCommentDetail: detail,
+                userCommentRating: rating,
+
+                // aşağıdakiler DB'de bozulmasın diye aynıyla geri gönderiliyor
+                productID: original.productID,
+                userCommentNameSurname: original.userCommentNameSurname,
+                userCommentEmail: original.userCommentEmail,
+                userCommentImageURL: original.userCommentImageURL,
+                userCommentCreatedDate: original.userCommentCreatedDate,
+                userCommentStatus: (typeof original.userCommentStatus === 'boolean') ? original.userCommentStatus : true
+            };
+
+            const response = await fetch(`/Admin/Comment/EditMyComment/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Yorum güncellendi!',
+                    showConfirmButton: false,
+                    timer: 1200
+                });
+
+                // DOM'u yenilemeden güncelle
+                document.querySelector(`#comment-text-${id}`).textContent = detail;
+
+                // istersen yıldızları da canlı güncelle:
+                // (kart içindeki ilk yıldız container'ını bul)
+                const card = document.getElementById(`comment-card-${id}`);
+                if (card) {
+                    const starsBox = card.querySelector('.fa-star')?.parentElement;
+                    if (starsBox) {
+                        starsBox.innerHTML = '';
+                        for (let i = 1; i <= 5; i++) {
+                            starsBox.innerHTML += (i <= rating)
+                                ? '<i class="fa-solid fa-star text-warning"></i>'
+                                : '<i class="fa-regular fa-star text-warning"></i>';
+                        }
+                    }
+                }
+
+                // cache'i de güncelle
+                editCache.set(id, { ...original, ...payload });
+
+                // modalı kapat
+                bootstrap.Modal.getInstance(document.getElementById('editCommentModal')).hide();
+            } else {
+                Swal.fire('Hata', 'Yorum güncellenemedi', 'error');
+            }
+        });
+
+        // 🔸 Yorum Silme (SweetAlert onaylı)
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const id = this.dataset.id;
+
+                const result = await Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu yorumu kalıcı olarak silmek istiyorsunuz!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ffc107',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'İptal'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await fetch(`/Admin/Comment/DeleteMyComment/${id}`, { method: 'POST' });
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Silindi!',
+                            text: 'Yorum başarıyla silindi.',
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
+                        document.getElementById(`comment-card-${id}`).remove();
+                        editCache.delete(parseInt(id, 10));
+                    } else {
+                        Swal.fire('Hata', 'Silme işlemi başarısız.', 'error');
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .comment-card {
+        transition: all .3s ease;
+    }
+
+        .comment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        }
+</style>

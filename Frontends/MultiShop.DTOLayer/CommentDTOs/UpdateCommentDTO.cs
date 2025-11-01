@@ -17,5 +17,8 @@ namespace MultiShop.DTOLayer.CommentDTOs
         public DateTime UserCommentCreatedDate { get; set; } //Kullanıcı Yorum Oluşturma Tarihi
         public bool UserCommentStatus { get; set; } //Kullanıcı Yorum Durum
         public string ProductID { get; set; } //Ürün ID
+                                              // 🔽 UI için
+        public string? ProductName { get; set; }
+        public string? ProductImageURL { get; set; }
     }
 }

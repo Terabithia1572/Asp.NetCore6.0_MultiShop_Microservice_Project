@@ -76,5 +76,22 @@ namespace MultiShop.Comment.Controllers
             int value = _context.UserComments.Count(); // UserCommentsteki toplam yorum sayısını getirir.
             return Ok(value);
         }
+        // 🆕 Yeni Endpoint: Kullanıcı ID’ye göre yorumları getir
+        [HttpGet("GetCommentsByUserId/{userId}")]
+        public IActionResult GetCommentsByUserId(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest("Kullanıcı ID boş olamaz.");
+
+            var values = _context.UserComments
+                .Where(x => x.UserId == userId)
+                .OrderByDescending(x => x.UserCommentCreatedDate)
+                .ToList();
+
+            if (values == null || !values.Any())
+                return NotFound("Bu kullanıcıya ait yorum bulunamadı.");
+
+            return Ok(values);
+        }
     }
 }

@@ -1,42 +1,243 @@
-﻿@model List<ResultUserDTO>
+﻿@model List<MultiShop.DTOLayer.IdentityDTOs.UserDTOs.ResultUserDTO>
 @{
-    ViewData["Title"] = "UserList";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] = "Kullanıcı Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="chart-box">
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Ad Soyad</th>
-                                <th>Kullanıcı Adı</th>
-                                <th>Email</th>
-                                <th>Adres Detayı</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.name</td>
-                                    <td>@item.userName</td>
-                                    <td>@item.email</td>
-                                    <td><a href="/Admin/User/UserAddressInfo/@item.id" class="btn btn-warning">Adres Detayı</a></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-dark">
+        <i class="fa-solid fa-users text-warning me-2"></i> Kullanıcı Listesi
+    </h4>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-5">
+        <i class="fa-regular fa-user-slash me-2 text-warning"></i>
+        Henüz kullanıcı bulunmamaktadır.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle table-hover shadow-sm">
+            <thead class="table-warning text-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Ad Soyad</th>
+                    <th>E-Posta</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>Telefon</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Select((u, index) => new { u, index }))
+                {
+                    <tr>
+                        <td>@(item.index + 1)</td>
+                        <td>@(item.u.name + " " + item.u.surname)</td>
+                        <td>@item.u.email</td>
+                        <td>@item.u.userName</td>
+                        <td>@item.u.phoneNumber</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-info me-2 view-btn" data-id="@item.u.id">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning edit-btn" data-id="@item.u.id">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<!-- 🔹 Kullanıcı Detay & Düzenleme Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-warning bg-opacity-10 border-0">
+                <h5 class="modal-title text-dark fw-bold">
+                    <i class="fa-solid fa-user-edit me-2 text-warning"></i> Kullanıcı Düzenle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 🟨 Mini Kullanıcı Kartı -->
+                <div class="d-flex align-items-center bg-light rounded-3 p-3 mb-3 shadow-sm">
+                    <img id="cardProfileImage" src="/img/no-avatar.png"
+                         class="rounded-circle me-3 border border-3 border-warning"
+                         width="70" height="70" style="object-fit:cover;" />
+                    <div>
+                        <h5 class="mb-1 fw-bold text-dark" id="cardUserFullName">Kullanıcı Adı</h5>
+                        <p class="mb-0 text-muted small">
+                            <i class="fa-solid fa-envelope text-warning me-1"></i>
+                            <span id="cardUserEmail">mail@example.com</span>
+                            <br />
+                            <i class="fa-solid fa-location-dot text-warning me-1"></i>
+                            <span id="cardUserCity">Şehir</span>
+                        </p>
+                    </div>
                 </div>
+
+                <form id="updateUserForm" enctype="multipart/form-data">
+                    <input type="hidden" id="userId" name="Id" />
+
+                    <!-- Profil Fotoğrafı -->
+                    <div class="text-center mb-3">
+                        <img id="profilePreview" src="/img/no-avatar.png" width="110" height="110"
+                             class="rounded-circle shadow-sm mb-2" style="object-fit:cover;" />
+                        <div>
+                            <input type="file" id="profileImage" name="ProfileImage"
+                                   accept="image/*" class="form-control form-control-sm w-50 mx-auto" />
+                        </div>
+                    </div>
+
+                    <!-- Ad Soyad / Email -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Ad</label>
+                            <input type="text" class="form-control" id="userName" name="Name" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Soyad</label>
+                            <input type="text" class="form-control" id="userSurname" name="Surname" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">E-Posta</label>
+                            <input type="email" class="form-control" id="userEmail" name="Email" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Telefon</label>
+                            <input type="text" class="form-control" id="userPhone" name="PhoneNumber" />
+                        </div>
+                    </div>
+
+                    <!-- Şehir / Cinsiyet -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Şehir</label>
+                            <input type="text" class="form-control" id="userCity" name="City" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Cinsiyet</label>
+                            <select class="form-select" id="userGender" name="Gender">
+                                <option value="">Seçiniz</option>
+                                <option value="Erkek">Erkek</option>
+                                <option value="Kadın">Kadın</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Hakkında -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Hakkında</label>
+                        <textarea class="form-control" id="userAbout" name="About" rows="3"></textarea>
+                    </div>
+
+                    <!-- Yeni Şifre -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Yeni Şifre (İsteğe bağlı)</label>
+                        <input type="password" class="form-control" id="newPassword" name="NewPassword" placeholder="Yeni şifre girin" />
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100 fw-semibold">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Profil foto önizleme
+    document.getElementById("profileImage").addEventListener("change", function (e) {
+        const f = e.target.files[0];
+        if (f) {
+            const r = new FileReader();
+            r.onload = ev => document.getElementById("profilePreview").src = ev.target.result;
+            r.readAsDataURL(f);
+        }
+    });
+
+    // Modal aç: kullanıcıyı doldur + mini kart
+    document.querySelectorAll('.view-btn, .edit-btn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const id = this.dataset.id;
+
+            const res = await fetch(`/Admin/User/GetUserInfo?id=${id}`);
+            if (!res.ok) return Swal.fire('Hata', 'Kullanıcı bilgisi alınamadı', 'error');
+            const user = await res.json();
+
+            // inputlar
+            document.getElementById('userId').value = user.id ?? '';
+            document.getElementById('userName').value = user.name ?? '';
+            document.getElementById('userSurname').value = user.surname ?? '';
+            document.getElementById('userEmail').value = user.email ?? '';
+            document.getElementById('userPhone').value = user.phoneNumber ?? '';
+            document.getElementById('userCity').value = user.city ?? '';
+            document.getElementById('userGender').value = user.gender ?? '';
+            document.getElementById('userAbout').value = user.about ?? '';
+
+            // görseller
+            const imgUrl = user.profileImageUrl || '/img/no-avatar.png';
+            document.getElementById('profilePreview').src = imgUrl;
+
+            // mini kart
+            document.getElementById('cardProfileImage').src = imgUrl;
+            document.getElementById('cardUserFullName').innerText = `${user.name ?? ''} ${user.surname ?? ''}`.trim() || (user.userName ?? 'Kullanıcı');
+            document.getElementById('cardUserEmail').innerText = user.email ?? '—';
+            document.getElementById('cardUserCity').innerText = user.city ?? '—';
+
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        });
+    });
+
+    // Güncelle
+      
+
+    document.getElementById('updateUserForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const fd = new FormData();
+        fd.append("Id", document.getElementById("userId").value);
+        fd.append("Name", document.getElementById("userName").value);
+        fd.append("Surname", document.getElementById("userSurname").value);
+        fd.append("Email", document.getElementById("userEmail").value);
+        fd.append("PhoneNumber", document.getElementById("userPhone").value);
+        fd.append("City", document.getElementById("userCity").value);
+        fd.append("Gender", document.getElementById("userGender").value);
+        fd.append("About", document.getElementById("userAbout").value);
+
+        const pw = document.getElementById("newPassword").value?.trim();
+        if (pw) fd.append("NewPassword", pw); // boşsa ekleme!
+
+        const fileInput = document.getElementById("profileImage");
+        if (fileInput.files.length > 0) {
+            fd.append("ProfileImage", fileInput.files[0]);
+        }
+
+        const resp = await fetch(`/Admin/User/UpdateUserInfo`, {
+            method: "POST",
+            body: fd
+        });
+
+        if (resp.ok) {
+            Swal.fire({ icon: "success", title: "Kullanıcı güncellendi!", timer: 1400, showConfirmButton: false })
+                .then(() => location.reload());
+        } else {
+            const text = await resp.text();
+            // API {message:"..."} dönerse onu çıkar
+            let msg = "Güncelleme başarısız.";
+            try { msg = (JSON.parse(text).message) || msg; } catch {}
+            Swal.fire("Hata", msg, "error");
+        }
+    });
+</script>
 

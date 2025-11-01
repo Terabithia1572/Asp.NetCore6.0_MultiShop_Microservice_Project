@@ -21,6 +21,7 @@
     <Folder Include="Areas\User\Models\" />
     <Folder Include="SignalRHub\" />
     <Folder Include="wwwroot\Images\brandImages\" />
+    <Folder Include="wwwroot\profile-images\" />
   </ItemGroup>
 
   <ItemGroup>

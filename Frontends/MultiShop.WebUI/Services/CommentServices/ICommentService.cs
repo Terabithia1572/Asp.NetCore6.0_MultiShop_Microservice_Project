@@ -13,5 +13,9 @@ namespace MultiShop.WebUI.Services.CommentServices
         Task<int> GetTotalCommentCount();
         Task<int> GetActiveCommentCount();
         Task<int> GetPassiveCommentCount();
+
+        Task<List<ResultCommentDTO>> GetCommentsByUserIdAsync(string userId);
+        Task<ResultCommentDTO> GetCommentByIdAsync(int id);
+
     }
 }

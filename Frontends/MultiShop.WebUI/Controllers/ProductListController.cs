@@ -72,6 +72,11 @@ namespace MultiShop.WebUI.Controllers
                 var firstName = claims.FirstOrDefault(c => c.Type == "name")?.Value ?? "Ziyaretçi";
                 var lastName = claims.FirstOrDefault(c => c.Type == "surname")?.Value ?? "";
                 var email = claims.FirstOrDefault(c => c.Type == "email")?.Value ?? "unknown@mail.com";
+                // 🔹 Kullanıcı ID’sini alıyoruz
+                var userId = claims.FirstOrDefault(c =>
+                    c.Type == "sub" || c.Type == "nameidentifier" || c.Type == "userid"
+                )?.Value;
+
 
                 // 🔹 Profil fotoğrafı claim'i (farklı claim adlarını da kapsıyoruz)
                 var image = claims.FirstOrDefault(c =>
@@ -81,11 +86,14 @@ namespace MultiShop.WebUI.Controllers
                 )?.Value ?? "/img/default-user.png";
 
                 // 🔹 DTO'yu dolduruyoruz
+                dto.UserId = userId;
                 dto.UserCommentNameSurname = $"{firstName} {lastName}".Trim();
                 dto.UserCommentEmail = email;
                 dto.UserCommentImageURL = image;
                 dto.UserCommentCreatedDate = DateTime.Now;
                 dto.UserCommentStatus = true; // Onaylı olarak eklenebilir (ya da admin onayı beklenebilir)
+                
+
 
                 // 🔹 Servis üzerinden POST işlemi (baseAddress zaten Program.cs içinde)
                 await _commentService.CreateCommentAsync(dto);

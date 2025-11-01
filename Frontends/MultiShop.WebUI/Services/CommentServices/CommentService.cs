@@ -74,5 +74,28 @@ namespace MultiShop.WebUI.Services.CommentServices
             await _httpClient.PutAsJsonAsync<UpdateCommentDTO>("comments", updateCommentDTO); //HttpClient ile PUT isteği gönderilir
 
         }
+
+        public async Task<List<ResultCommentDTO>> GetCommentsByUserIdAsync(string userId)
+        {
+            var response = await _httpClient.GetAsync($"comments/GetCommentsByUserId/{userId}");
+            if (!response.IsSuccessStatusCode)
+                return new List<ResultCommentDTO>();
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultCommentDTO>>(jsonData);
+            return values ?? new List<ResultCommentDTO>();
+        }
+
+        public async Task<ResultCommentDTO> GetCommentByIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"comments/{id}");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<ResultCommentDTO>(jsonData);
+            return value;
+        }
+
     }
 }
