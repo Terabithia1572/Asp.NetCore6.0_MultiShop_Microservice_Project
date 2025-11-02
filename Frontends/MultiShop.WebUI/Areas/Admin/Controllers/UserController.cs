@@ -11,11 +11,13 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     {
         private readonly IUserIdentityService _userIdentityService;
         private readonly ICargoCustomerService _cargoCustomerService;
+        private readonly IWebHostEnvironment _env; // ⬅️ eklendi
 
-        public UserController(IUserIdentityService userIdentityService, ICargoCustomerService cargoCustomerService)
+        public UserController(IUserIdentityService userIdentityService, ICargoCustomerService cargoCustomerService, IWebHostEnvironment env)
         {
             _userIdentityService = userIdentityService;
             _cargoCustomerService = cargoCustomerService;
+            _env = env;
         }
 
         public async Task<IActionResult> UserList()
@@ -59,28 +61,46 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> UpdateUserInfo()
         {
-            var form = await Request.ReadFormAsync();
+            var form = Request.Form;
 
-            string id = form["Id"];
-            string name = form["Name"];
-            string surname = form["Surname"];
-            string email = form["Email"];
-            string phone = form["PhoneNumber"];
-            string city = form["City"];
-            string gender = form["Gender"];
-            string about = form["About"];
-            string newPassword = form["NewPassword"];
+            // 1) Dosyayı UI/wwwroot/profile-images içine kaydet
+            string? profileUrl = null;
+            if (Request.Form.Files != null && Request.Form.Files.Count > 0)
+            {
+                var file = Request.Form.Files["ProfileImage"];
+                if (file != null && file.Length > 0)
+                {
+                    var imagesRoot = Path.Combine(_env.WebRootPath, "profile-images");
+                    if (!Directory.Exists(imagesRoot)) Directory.CreateDirectory(imagesRoot);
 
-            IFormFile? file = form.Files.FirstOrDefault();
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    var savePath = Path.Combine(imagesRoot, fileName);
+                    using (var fs = new FileStream(savePath, FileMode.Create))
+                        await file.CopyToAsync(fs);
 
-            var (ok, message) = await _userIdentityService.UpdateUserAsyncMultipart(
-                id, name, surname, email, phone, city, gender, about,
-                string.IsNullOrWhiteSpace(newPassword) ? null : newPassword,
-                file
-            );
+                    // UI tarafında kullanılacak relative url
+                    profileUrl = $"/profile-images/{fileName}";
+                }
+            }
 
+            // 2) IdentityServer’a JSON gönder
+            var dto = new UpdateUserDTO
+            {
+                Id = form["Id"],
+                Name = form["Name"],
+                Surname = form["Surname"],
+                Email = form["Email"],
+                PhoneNumber = form["PhoneNumber"],
+                City = form["City"],
+                Gender = form["Gender"],
+                About = form["About"],
+                NewPassword = string.IsNullOrWhiteSpace(form["NewPassword"]) ? null : form["NewPassword"].ToString(),
+                ProfileImageUrl = profileUrl // null olabilir → API dokunmaz
+            };
+
+            var ok = await _userIdentityService.UpdateUserAsync(dto);
             if (!ok)
-                return BadRequest(message); // JS tarafında bu mesajı aynen göstereceğiz
+                return BadRequest(new { message = "Güncelleme başarısız." });
 
             return Ok(new { success = true });
         }

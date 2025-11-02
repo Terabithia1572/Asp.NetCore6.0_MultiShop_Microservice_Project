@@ -84,8 +84,11 @@ namespace MultiShop.IdentityServer.Controllers
         }
 
         // 🔹 Kullanıcı güncelleme (PUT)
+        // 🔹 Kullanıcı güncelleme (PUT)
+        // MultiShop.IdentityServer/Controllers/UsersController.cs
+
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest dto)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest dto)
         {
             var user = await _userManager.FindByIdAsync(dto.Id);
             if (user == null)
@@ -99,20 +102,11 @@ namespace MultiShop.IdentityServer.Controllers
             user.Gender = dto.Gender;
             user.About = dto.About;
 
-            // Klasör garanti
-            var root = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "profile-images");
-            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
+            // 🔹 UI’dan gelen hazır link
+            if (!string.IsNullOrWhiteSpace(dto.ProfileImageUrl))
+                user.ProfileImageUrl = dto.ProfileImageUrl;
 
-            if (dto.ProfileImage != null && dto.ProfileImage.Length > 0)
-            {
-                var fileName = Guid.NewGuid() + Path.GetExtension(dto.ProfileImage.FileName);
-                var path = Path.Combine(root, fileName);
-                using var stream = new FileStream(path, FileMode.Create);
-                await dto.ProfileImage.CopyToAsync(stream);
-                user.ProfileImageUrl = "/profile-images/" + fileName;
-            }
-
-            // Şifre değişimi istenmişse
+            // 🔹 Şifre istenirse
             if (!string.IsNullOrWhiteSpace(dto.NewPassword))
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -128,7 +122,6 @@ namespace MultiShop.IdentityServer.Controllers
             return Ok(new { success = true, message = "Kullanıcı bilgileri başarıyla güncellendi." });
         }
 
-
         public class UpdateUserRequest
         {
             public string Id { get; set; }
@@ -140,8 +133,11 @@ namespace MultiShop.IdentityServer.Controllers
             public string Gender { get; set; }
             public string About { get; set; }
             public string? NewPassword { get; set; }
-            public IFormFile? ProfileImage { get; set; }
+
+            // 🔸 artık dosya yok, sadece URL string
+            public string? ProfileImageUrl { get; set; }
         }
+
 
     }
 

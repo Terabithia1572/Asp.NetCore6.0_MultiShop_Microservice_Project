@@ -38,37 +38,12 @@ namespace MultiShop.WebUI.Services.UserIdentityServices
 
         // 🔹 Kullanıcı bilgilerini güncelle
         // 🔹 Kullanıcı güncelleme (FormData ile PUT)
-        public async Task<(bool ok, string message)> UpdateUserAsyncMultipart(
-     string id, string name, string surname, string email, string phoneNumber,
-     string city, string gender, string about, string? newPassword,
-     IFormFile? profileImage)
+        public async Task<bool> UpdateUserAsync(UpdateUserDTO dto)
         {
-            using var form = new MultipartFormDataContent();
-            form.Add(new StringContent(id ?? ""), "Id");
-            form.Add(new StringContent(name ?? ""), "Name");
-            form.Add(new StringContent(surname ?? ""), "Surname");
-            form.Add(new StringContent(email ?? ""), "Email");
-            form.Add(new StringContent(phoneNumber ?? ""), "PhoneNumber");
-            form.Add(new StringContent(city ?? ""), "City");
-            form.Add(new StringContent(gender ?? ""), "Gender");
-            form.Add(new StringContent(about ?? ""), "About");
-            if (!string.IsNullOrWhiteSpace(newPassword))
-                form.Add(new StringContent(newPassword), "NewPassword");
-
-            if (profileImage is not null && profileImage.Length > 0)
-            {
-                var stream = profileImage.OpenReadStream();
-                var fileContent = new StreamContent(stream);
-                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(profileImage.ContentType ?? "application/octet-stream");
-                form.Add(fileContent, "ProfileImage", profileImage.FileName);
-            }
-
-            var resp = await _httpClient.PutAsync("http://localhost:5001/api/users/UpdateUser", form);
-            var body = await resp.Content.ReadAsStringAsync();
-
-            return resp.IsSuccessStatusCode
-                ? (true, body)
-                : (false, body);
+            var json = JsonConvert.SerializeObject(dto);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var resp = await _httpClient.PutAsync("http://localhost:5001/api/users/UpdateUser", content);
+            return resp.IsSuccessStatusCode;
         }
 
     }
