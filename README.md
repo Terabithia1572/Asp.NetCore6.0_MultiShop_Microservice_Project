@@ -74,21 +74,20 @@ Bootstrap 5 + SASS • ES6 • Responsive UI • SEO/OG etiketleri
 ## 📸 Öne Çıkan Ekran Görüntüleri
 
 <p align="center">
-  <img src="https://i.ibb.co/pvGBTJJb/Ek-A-klama-2025-11-02-163744.png" width="900" alt="Ana Sayfa"/>
-  <img src="https://i.ibb.co/Y4bWCR7k/Ek-A-klama-2025-11-02-163820.png" width="900" alt="Ürün Detay"/>
-  <img src="https://i.ibb.co/Q4QjjMH/Ek-A-klama-2025-11-02-163841.png" width="900" alt="Sepet Görünümü"/>
-  <img src="https://i.ibb.co/Q7ztdYGk/Ek-A-klama-2025-11-02-164254.png" width="900" alt="Kampanyalar ve İndirimler"/>
-  <img src="https://i.ibb.co/bjfRnkQ2/Ek-A-klama-2025-11-02-164422.png" width="900" alt="Yorum & Puanlama"/>
-  <img src="https://i.ibb.co/TxZpw2wN/Ek-A-klama-2025-11-02-164609.png" width="900" alt="Kullanıcı Dashboard"/>
-  <img src="https://i.ibb.co/9kjqKKfx/Ek-A-klama-2025-11-02-164755.png" width="900" alt="Bildirim Sistemi (SignalR)"/>
-  <img src="https://i.ibb.co/1Y3tTPBX/Ek-A-klama-2025-11-02-165044.png" width="900" alt="Admin Panel / Yönetici Arayüzü"/>
-  <img src="https://i.ibb.co/mrv7qy3d/Ek-A-klama-2025-11-02-165109.png" width="900" alt="Responsive Görünüm"/>
-  <img src="https://i.ibb.co/8nGDtnrS/Ek-A-klama-2025-11-02-165405.png" width="900" alt="MultiShop Premium Tema"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 163744.png" style="max-width:100%; height:auto;" alt="Ana Sayfa"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 163820.png" style="max-width:100%; height:auto;" alt="Ürün Detay"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 163841.png" style="max-width:100%; height:auto;" alt="Sepet Görünümü"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 164254.png" style="max-width:100%; height:auto;" alt="Kampanyalar ve İndirimler"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 164422.png" style="max-width:100%; height:auto;" alt="Yorum & Puanlama"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 164609.png" style="max-width:100%; height:auto;" alt="Kullanıcı Dashboard"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 164755.png" style="max-width:100%; height:auto;" alt="Bildirim Sistemi (SignalR)"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 165044.png" style="max-width:100%; height:auto;" alt="Admin Panel / Yönetici Arayüzü"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 165109.png" style="max-width:100%; height:auto;" alt="Responsive Görünüm"/>
+  <img src="screenshots/Ek Açıklama 2025-11-02 165405.png" style="max-width:100%; height:auto;" alt="MultiShop Premium Tema"/>
 </p>
 
 > 📂 **Tüm ekran görüntüleri için:**  
 > [screenshots klasörüne git →](https://github.com/Terabithia1572/Asp.NetCore6.0_MultiShop_Microservice_Project/tree/master/screenshots)
-
 
 ---
 
@@ -107,3 +106,12 @@ Bootstrap 5 + SASS • ES6 • Responsive UI • SEO/OG etiketleri
 
 ## 🏷️ Etiketler
 #DotNet #AspNetCore #Microservices #CSharp #API #MongoDB #PostgreSQL #Redis #Docker #RabbitMQ #SignalR #CQRS #Mediator #OcelotGateway #ECommerce #FullStackDeveloper #JWT #SoftwareArchitecture #LearningByDoing #Udemy #TechCommunity
+
+---
+
+<p align="center">
+  <sub>🚀 Developed by <strong>Yunus İNAN</strong> • 
+  <a href="https://github.com/Terabithia1572">GitHub</a> • 
+  <a href="https://youtu.be/3rQURdOtYv8">YouTube Demo</a>
+  </sub>
+</p>
