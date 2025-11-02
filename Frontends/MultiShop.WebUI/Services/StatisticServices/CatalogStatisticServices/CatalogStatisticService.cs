@@ -27,17 +27,18 @@ namespace MultiShop.WebUI.Services.StatisticServices.CatalogStatisticServices
 
         public async Task<string> GetMaximumPriceProductName()
         {
-            var responseMessage = await _httpClient.GetAsync("statistics/GetMaximumPriceProductName");
+            var responseMessage = await _httpClient.GetAsync("statistics/GetMaxPriceProductName"); // 🔥 düzeltildi
             var values = await responseMessage.Content.ReadAsStringAsync();
-            return values;
+            return values.Replace("\"", ""); // gelen string tırnaklı olmasın
         }
 
         public async Task<string> GetMinimumPriceProductName()
         {
-            var responseMessage = await _httpClient.GetAsync("statistics/GetMinimumPriceProductName");
+            var responseMessage = await _httpClient.GetAsync("statistics/GetMinPriceProductName"); // 🔥 düzeltildi
             var values = await responseMessage.Content.ReadAsStringAsync();
-            return values;
+            return values.Replace("\"", "");
         }
+
 
         public async Task<long> GetProductCount()
         {

@@ -5,52 +5,84 @@ using System.Threading.Tasks;
 
 namespace MultiShop.WebUI.Areas.Admin.Controllers
 {
-    [Area("Admin")] // Bu Area'nın "Admin Area" olduğunu belirtir
-    [Route("Admin/[controller]/[action]")] // Route şablonu
-
+    [Area("Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class CargoController : Controller
     {
-        private readonly ICargoCompanyService _cargoCompanyService; // ICargoCompanyService arayüzü için bir alan
+        private readonly ICargoCompanyService _cargoCompanyService;
 
         public CargoController(ICargoCompanyService cargoCompanyService)
         {
-            _cargoCompanyService = cargoCompanyService; // Arayüzü yapıcıya enjekte et
+            _cargoCompanyService = cargoCompanyService;
         }
 
+        // LIST
+        [HttpGet]
         public async Task<IActionResult> CargoCompanyList()
         {
-            var values=await _cargoCompanyService.GetAllCargoCompanyAsync(); // Tüm kargo şirketlerini asenkron olarak al
-            return View(values); // Değerleri görünüme gönder
-        }
-        [HttpGet] // Sadece GET istekleri için
-        public IActionResult CreateCargoCompany()
-        {
-            return View(); // Değerleri görünüme gönder
-        }
-        [HttpPost] // Sadece POST istekleri için
-        public async Task<IActionResult> CreateCargoCompany(CreateCargoCompanyDTO createCargoCompanyDTO)
-        {
-            await _cargoCompanyService.CreateCargoCompanyAsync(createCargoCompanyDTO); // Yeni kargo şirketi oluştur
-            return RedirectToAction("CargoCompanyList","Cargo",new {Area="Admin"}); // Kargo şirketi listesine yönlendir
-        }
-        [HttpGet("{id}")] // Sadece GET istekleri için
-        public async Task<IActionResult> UpdateCargoCompany(int id)
-        {
-            var values=await _cargoCompanyService.GetByIDCargoCompanyAsync(id); // ID ile kargo şirketini al
-            return View(values); // Değerleri görünüme gönder
-        }
-        [HttpPost("{id}")] // Sadece POST istekleri için
-        public async Task<IActionResult> UpdateCargoCompany(UpdateCargoCompanyDTO updateCargoCompanyDTO)
-        {
-            await _cargoCompanyService.UpdateCargoCompanyAsync(updateCargoCompanyDTO); // Kargo şirketini güncelle
-            return RedirectToAction("CargoCompanyList","Cargo",new {Area="Admin"}); // Kargo şirketi listesine yönlendir
-        }
-        [HttpGet("{id}")] // Sadece GET istekleri için
-        public async Task<IActionResult> DeleteCargoCompany(int id)
-        {
-            await _cargoCompanyService.DeleteCargoCompanyAsync(id); // Kargo şirketini sil
-            return RedirectToAction("CargoCompanyList","Cargo",new {Area="Admin"}); // Kargo şirketi listesine yönlendir
+            var values = await _cargoCompanyService.GetAllCargoCompanyAsync();
+            return View(values);
         }
 
+        // CREATE (GET)
+        [HttpGet]
+        public IActionResult CreateCargoCompany()
+        {
+            return View();
+        }
+
+        // CREATE (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCargoCompany(CreateCargoCompanyDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["err"] = "Lütfen gerekli alanları doldurun.";
+                return View(dto);
+            }
+
+            await _cargoCompanyService.CreateCargoCompanyAsync(dto);
+            TempData["ok"] = "Kargo firması başarıyla eklendi.";
+            return RedirectToAction(nameof(CargoCompanyList));
+        }
+
+        // UPDATE (GET)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> UpdateCargoCompany(int id)
+        {
+            var value = await _cargoCompanyService.GetByIDCargoCompanyAsync(id);
+            if (value == null)
+            {
+                TempData["err"] = "Kargo firması bulunamadı.";
+                return RedirectToAction(nameof(CargoCompanyList));
+            }
+            return View(value);
+        }
+
+        // UPDATE (POST)
+        [HttpPost("{id:int}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCargoCompany(UpdateCargoCompanyDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["err"] = "Lütfen gerekli alanları doldurun.";
+                return View(dto);
+            }
+
+            await _cargoCompanyService.UpdateCargoCompanyAsync(dto);
+            TempData["ok"] = "Kargo firması başarıyla güncellendi.";
+            return RedirectToAction(nameof(CargoCompanyList));
+        }
+
+        // DELETE
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> DeleteCargoCompany(int id)
+        {
+            await _cargoCompanyService.DeleteCargoCompanyAsync(id);
+            TempData["ok"] = "Kargo firması silindi.";
+            return RedirectToAction(nameof(CargoCompanyList));
+        }
     }
 }

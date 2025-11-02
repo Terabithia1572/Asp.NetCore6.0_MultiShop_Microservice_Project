@@ -22,12 +22,7 @@ namespace MultiShop.WebUI.Services.CommentServices
             await _httpClient.DeleteAsync("comments?id=" + id); //HttpClient ile DELETE isteği gönderilir
         }
 
-        public async Task<int> GetActiveCommentCount()
-        {
-            var response = await _httpClient.GetAsync("GetActiveCommentCount");
-            var content = await response.Content.ReadAsStringAsync();
-            return int.TryParse(content, out var value) ? value : 0;
-        }
+       
 
         public async Task<List<ResultCommentDTO>> GetAllCommentAsync() //Tüm kategorileri getirir
         {
@@ -55,19 +50,27 @@ namespace MultiShop.WebUI.Services.CommentServices
             return values;
         }
 
-        public async Task<int> GetPassiveCommentCount()
+        public async Task<int> GetTotalCommentCount()
         {
-            var response = await _httpClient.GetAsync("GetPassiveCommentCount");
+            var response = await _httpClient.GetAsync("comments/GetTotalCommentCount");
             var content = await response.Content.ReadAsStringAsync();
             return int.TryParse(content, out var value) ? value : 0;
         }
 
-        public async Task<int> GetTotalCommentCount()
+        public async Task<int> GetActiveCommentCount()
         {
-            var response = await _httpClient.GetAsync("GetTotalCommentCount");
+            var response = await _httpClient.GetAsync("comments/GetActiveCommentCount");
             var content = await response.Content.ReadAsStringAsync();
             return int.TryParse(content, out var value) ? value : 0;
         }
+
+        public async Task<int> GetPassiveCommentCount()
+        {
+            var response = await _httpClient.GetAsync("comments/GetPassiveCommentCount");
+            var content = await response.Content.ReadAsStringAsync();
+            return int.TryParse(content, out var value) ? value : 0;
+        }
+
 
         public async Task UpdateCommentAsync(UpdateCommentDTO updateCommentDTO) //Kategoriyi günceller
         {

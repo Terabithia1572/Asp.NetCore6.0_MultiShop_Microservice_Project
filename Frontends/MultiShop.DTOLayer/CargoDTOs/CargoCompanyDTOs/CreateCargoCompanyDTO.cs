@@ -8,6 +8,6 @@ namespace MultiShop.DTOLayer.CargoDTOs.CargoCompanyDTOs
 {
     public class CreateCargoCompanyDTO
     {
-        public string cargoCompanyName { get; set; }
+        public string CargoCompanyName { get; set; }
     }
 }

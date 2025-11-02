@@ -1,28 +1,47 @@
-﻿@model UpdateCargoCompanyDTO
+﻿@model MultiShop.DTOLayer.CargoDTOs.CargoCompanyDTOs.UpdateCargoCompanyDTO
 @{
-    ViewData["Title"] = "UpdateCargoCompany";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Kargo Firması Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-8">
+            <div class="card border-0 rounded-4 shadow-lg">
+                <div class="card-header bg-warning bg-opacity-10 border-0 rounded-top-4 p-4">
+                    <h4 class="m-0 fw-bold text-dark">
+                        <i class="fa-solid fa-pen-to-square text-warning me-2"></i> Kargo Firması Güncelle
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="UpdateCargoCompany"
+                          asp-controller="Cargo"
+                          asp-area="Admin"
+                          method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="CargoCompanyID" />
 
-        <div class="col-md-12">
-            <div class="chart-box">
-                <h4>Kargo Şirketi Güncelleme Sayfası</h4>
-                <br />
-                <div class="bs-example" data-example-id="bordered-table">
-                    <form method="post">
-                        <input type="hidden" asp-for="cargoCompanyID" />
-                        <label>Kargo Şirketi Adı</label>
-                        <input type="text" class="form-control" asp-for="cargoCompanyName" />
-                        <br />
-                        <button type="submit" class="btn btn-primary">Kargo Şirketini Güncelle</button>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Firma Adı</label>
+                            <input asp-for="CargoCompanyName" class="form-control form-control-lg" required />
+                            <span class="text-danger" asp-validation-for="CargoCompanyName"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="/Admin/Cargo/CargoCompanyList" class="btn btn-outline-secondary px-4">
+                                <i class="fa-solid fa-arrow-left-long me-1"></i> Geri
+                            </a>
+                            <button type="submit" class="btn btn-warning fw-semibold ms-auto px-4">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Güncelle
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
+
+            <div class="text-center mt-3 small text-muted">
+                Premium MultiShop • Kargo Yönetimi
+            </div>
         </div>
     </div>
-</section>
-
-
+</div>

@@ -1,44 +1,164 @@
-﻿@model List<ResultCargoCompanyDTO>
+﻿@model List<MultiShop.DTOLayer.CargoDTOs.CargoCompanyDTOs.ResultCargoCompanyDTO>
 @{
-    ViewData["Title"] = "CargoCompanyList";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] = "Kargo Firmaları";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="chart-box">
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Kargo Adı</th>
-                                <th>Sil</th>
-                                <th>Güncelle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.cargoCompanyName</td>
-                                    <td><a href="/Admin/Cargo/DeleteCargoCompany/@item.cargoCompanyID" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/Cargo/UpdateCargoCompany/@item.cargoCompanyID" class="btn btn-success">Güncelle</a></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <a href="/Admin/Cargo/CreateCargoCompany/" class="btn btn-primary">Yeni Kargo Firması Girişi</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-dark m-0">
+        <i class="fa-solid fa-truck-fast text-warning me-2"></i> Kargo Firmaları
+    </h4>
+    <a href="/Admin/Cargo/CreateCargoCompany" class="btn btn-warning fw-semibold">
+        <i class="fa-solid fa-plus me-1"></i> Yeni Firma
+    </a>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center py-5">
+        <i class="fa-regular fa-face-frown me-2 text-warning"></i> Henüz kargo firması eklenmemiş.
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var c in Model)
+        {
+            <div class="col-12 col-sm-6 col-lg-4 col-xxl-3">
+                <div class="cargo-card h-100 rounded-4 border-0 shadow-sm position-relative overflow-hidden">
+                    <div class="cargo-card__glow"></div>
+                    <div class="p-4 d-flex align-items-start gap-3">
+                        <div class="cargo-card__icon">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="m-0 fw-bold text-dark text-truncate" title="@c.CargoCompanyName">
+                                    @c.CargoCompanyName
+                                </h5>
+                                <span class="badge bg-dark text-warning ms-2">#@c.CargoCompanyID</span>
+                            </div>
+                            <p class="text-muted small mb-0 mt-2">
+                                Güvenilir teslimat, hızlı operasyon.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="cargo-card__actions p-3 d-flex justify-content-end gap-2">
+                        <a href="/Admin/Cargo/UpdateCargoCompany/@c.CargoCompanyID"
+                           class="btn btn-sm btn-outline-warning fw-semibold">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> Düzenle
+                        </a>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger fw-semibold btn-delete"
+                                data-id="@c.CargoCompanyID"
+                                data-name="@c.CargoCompanyName">
+                            <i class="fa-solid fa-trash-can me-1"></i> Sil
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-
-
+        }
     </div>
-</section>
+}
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // TempData -> SweetAlert
+        (function () {
+            const ok = '@(TempData["ok"] ?? "")';
+            const err = '@(TempData["err"] ?? "")';
+            if (ok) Swal.fire({ icon: 'success', title: ok, showConfirmButton: false, timer: 1400 });
+            if (err) Swal.fire({ icon: 'error', title: 'Hata', text: err });
+        })();
+
+        // Silme onayı
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const name = btn.dataset.name || 'Firma';
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    html: `<b>${name}</b> firmasını silmek üzeresiniz.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ffc107',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet, sil',
+                    cancelButtonText: 'İptal'
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        window.location.href = `/Admin/Cargo/DeleteCargoCompany/${id}`;
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .cargo-card {
+            background: #ffffff;
+            transition: transform .25s ease, box-shadow .25s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,.08);
+        }
+
+            .cargo-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 16px 40px rgba(255,193,7,.25);
+            }
+
+        .cargo-card__glow {
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(600px circle at var(--mx, 0) var(--my, 0), rgba(255,193,7,.12), transparent 40%);
+            pointer-events: none;
+            transition: opacity .2s ease;
+            opacity: 0;
+        }
+
+        .cargo-card:hover .cargo-card__glow {
+            opacity: 1;
+        }
+
+        .cargo-card__icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: #fff7e0;
+            color: #b88600;
+            font-size: 22px;
+            box-shadow: inset 0 0 0 1px rgba(255,193,7,.45), 0 8px 18px rgba(255,193,7,.20);
+            transform: translateY(0);
+            transition: transform .25s ease;
+        }
+
+        .cargo-card:hover .cargo-card__icon {
+            transform: translateY(-3px);
+        }
+
+        .cargo-card__actions {
+            opacity: .95;
+        }
+
+        .btn-outline-warning {
+            border-width: 2px;
+        }
+    </style>
+
+    <script>
+        // mouse glow
+        document.querySelectorAll('.cargo-card').forEach(card => {
+            const glow = card.querySelector('.cargo-card__glow');
+            card.addEventListener('pointermove', (e) => {
+                const r = card.getBoundingClientRect();
+                const x = e.clientX - r.left;
+                const y = e.clientY - r.top;
+                glow && glow.style.setProperty('--mx', x + 'px');
+                glow && glow.style.setProperty('--my', y + 'px');
+            });
+        });
+    </script>
+}
