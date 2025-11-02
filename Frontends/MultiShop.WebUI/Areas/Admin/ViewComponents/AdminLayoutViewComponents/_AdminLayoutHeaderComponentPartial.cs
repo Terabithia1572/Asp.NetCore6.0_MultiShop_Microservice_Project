@@ -5,33 +5,44 @@ using MultiShop.WebUI.Services.MessageServices;
 
 namespace MultiShop.WebUI.Areas.Admin.ViewComponents.AdminLayoutViewComponents
 {
-    public class _AdminLayoutHeaderComponentPartial: ViewComponent // ViewComponent sınıfından türetilir
+    public class _AdminLayoutHeaderComponentPartial : ViewComponent
     {
         private readonly IMessageService _messageService;
         private readonly IUserService _userService;
         private readonly ICommentService _commentService;
 
-        public _AdminLayoutHeaderComponentPartial(IMessageService messageService, IUserService userService, ICommentService commentService)
+        public _AdminLayoutHeaderComponentPartial(
+            IMessageService messageService,
+            IUserService userService,
+            ICommentService commentService)
         {
             _messageService = messageService;
             _userService = userService;
             _commentService = commentService;
         }
 
-        public async Task< IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            // ViewComponent içinde kullanılacak verileri hazırlayabilirsiniz.
-            // Örneğin, başlık, meta etiketleri vb. gibi.
-            // ViewComponent'ı render etmek için bir view döndürüyoruz.
-            var user = await _userService.GetUserInfo(); // Giriş yapmış kullanıcının bilgilerini al
-            int messageCount = await _messageService.GetTotalMessageCountByReceiverID(user.ID);
-            ViewBag.messageCount = messageCount;
+            var user = await _userService.GetUserInfo(); // 🔹 Giriş yapan kullanıcı bilgisi
 
-            int totalCommentCount = await _commentService.GetTotalCommentCount();
-            ViewBag.totalCommentCount = totalCommentCount;
+            if (user != null)
+            {
+                ViewBag.UserName = $"{user.Name} {user.Surname}";
+                ViewBag.UserImage = !string.IsNullOrEmpty(user.ProfileImageUrl)
+                    ? user.ProfileImageUrl
+                    : "/profile-images/default-avatar.png"; // fallback
+            }
+            else
+            {
+                ViewBag.UserName = "Misafir";
+                ViewBag.UserImage = "/profile-images/default-avatar.png";
+            }
+
+            // Mesaj & yorum sayısı
+            ViewBag.MessageCount = await _messageService.GetTotalMessageCountByReceiverID(user?.ID ?? "");
+            ViewBag.TotalCommentCount = await _commentService.GetTotalCommentCount();
 
             return View();
         }
-       
     }
 }

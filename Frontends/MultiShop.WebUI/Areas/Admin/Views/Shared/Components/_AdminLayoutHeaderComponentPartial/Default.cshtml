@@ -11,12 +11,12 @@
             <span class="position-absolute top-0 start-100 translate-middle p-1 bg-warning rounded-circle"></span>
         </i>
         <div class="profile" id="profileBtn">
-            <img src="https://i.pravatar.cc/150?img=47" alt=""><span class="name">Yunus</span>
+            <img src="@ViewBag.UserImage" alt=""><span class="name">@ViewBag.UserName</span>
             <div class="dropdown" id="profileMenu">
-                <a href="#"><i class="fa fa-user"></i>Profilimi Düzenle</a>
-                <a href="#"><i class="fa fa-box"></i>Siparişlerim</a>
-                <a href="#"><i class="fa fa-gear"></i>Ayarlar</a>
-                <a href="#"><i class="fa fa-right-from-bracket"></i>Çıkış Yap</a>
+                <a href="/Admin/User/UserList"><i class="fa fa-user"></i>Profilimi Düzenle</a>
+                <a href="/Admin/Orders/Index"><i class="fa fa-box"></i>Siparişlerim</a>
+                <a href="/Admin/Setting/Index"><i class="fa fa-gear"></i>Ayarlar</a>
+                <a href="/Login/Logout"><i class="fa fa-right-from-bracket"></i>Çıkış Yap</a>
             </div>
         </div>
     </div>
