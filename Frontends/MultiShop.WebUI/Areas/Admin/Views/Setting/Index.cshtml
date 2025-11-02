@@ -1,0 +1,233 @@
+﻿@model MultiShop.DTOLayer.IdentityDTOs.UserDTOs.ResultUserDTO
+@{
+    ViewData["Title"] = "Ayarlar";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<section class="container py-5">
+    <div class="d-flex align-items-center mb-4">
+        <i class="fa-solid fa-gear text-warning fs-3 me-2"></i>
+        <h4 class="fw-bold text-dark mb-0">Kullanıcı Ayarları</h4>
+    </div>
+
+    <!-- 🔹 Sekmeler -->
+    <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-semibold" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profileTab" type="button" role="tab">
+                <i class="fa-solid fa-user-gear me-1 text-warning"></i> Profil
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold" id="app-tab" data-bs-toggle="tab" data-bs-target="#appTab" type="button" role="tab">
+                <i class="fa-solid fa-sliders me-1 text-warning"></i> Uygulamalar
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold" id="security-tab" data-bs-toggle="tab" data-bs-target="#securityTab" type="button" role="tab">
+                <i class="fa-solid fa-shield-halved me-1 text-warning"></i> Güvenlik
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-4" id="settingsTabsContent">
+
+        <!-- 🔸 PROFİL SEKME -->
+        <div class="tab-pane fade show active" id="profileTab" role="tabpanel">
+            <div class="card border-0 shadow-lg rounded-4 p-4">
+                <form id="profileForm" enctype="multipart/form-data">
+                    <input type="hidden" name="Id" value="@Model?.id" />
+
+                    <div class="text-center mb-4">
+                        <img id="profilePreview" src="@(!string.IsNullOrEmpty(Model?.profileImageUrl) ? Model.profileImageUrl : "/img/no-avatar.png")"
+                             class="rounded-circle shadow-sm border border-3 border-warning"
+                             width="140" height="140" style="object-fit:cover;" />
+                        <div class="mt-2">
+                            <label class="btn btn-outline-warning btn-sm">
+                                <i class="fa-solid fa-camera me-1"></i> Fotoğraf Değiştir
+                                <input type="file" id="profileImage" name="ProfileImage" accept="image/*" hidden />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Ad</label>
+                            <input type="text" class="form-control border-warning" name="Name" value="@Model?.name" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Soyad</label>
+                            <input type="text" class="form-control border-warning" name="Surname" value="@Model?.surname" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">E-Posta</label>
+                            <input type="email" class="form-control border-warning" name="Email" value="@Model?.email" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Telefon</label>
+                            <input type="text" class="form-control border-warning" name="PhoneNumber" value="@Model?.phoneNumber" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Şehir</label>
+                            <input type="text" class="form-control border-warning" name="City" value="@Model?.city" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Cinsiyet</label>
+                            <select class="form-select border-warning" name="Gender">
+                                <option value="">Seçiniz</option>
+                                <option value="Erkek" @@(Model?.gender == "Erkek" ? "selected" : "")>Erkek</option>
+                                <option value="Kadın" @@(Model?.gender == "Kadın" ? "selected" : "")>Kadın</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Hakkında</label>
+                            <textarea class="form-control border-warning" name="About" rows="3">@Model?.about</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Yeni Şifre (isteğe bağlı)</label>
+                            <input type="password" class="form-control border-warning" name="NewPassword" placeholder="Yeni şifre girin" />
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-warning fw-bold px-5 py-2">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ⚙️ UYGULAMA SEKME -->
+        <div class="tab-pane fade" id="appTab" role="tabpanel">
+            <div class="card border-0 shadow-lg rounded-4 p-4">
+                <h5 class="text-warning mb-3"><i class="fa-solid fa-sliders me-2"></i> Uygulama Ayarları</h5>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-bell text-warning me-2"></i> Bildirimler</h6>
+                            <p class="text-muted small">Yeni siparişler, yorumlar ve kampanyalar için bildirim almak ister misiniz?</p>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input border-warning" type="checkbox" id="notifications" checked />
+                                <label class="form-check-label" for="notifications">Bildirimleri Aç</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-language text-warning me-2"></i> Dil Tercihi</h6>
+                            <select class="form-select border-warning">
+                                <option selected>Türkçe</option>
+                                <option>English</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-palette text-warning me-2"></i> Tema</h6>
+                            <select class="form-select border-warning">
+                                <option selected>Aydınlık</option>
+                                <option>Karanlık</option>
+                                <option>Sistem Varsayılanı</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-chart-line text-warning me-2"></i> Gösterge Panelleri</h6>
+                            <p class="text-muted small">Girişte hangi dashboard sayfasının görüntüleneceğini seçin.</p>
+                            <select class="form-select border-warning">
+                                <option>Genel Yönetim Paneli</option>
+                                <option>Satış Analiz Paneli</option>
+                                <option>Raporlama Paneli</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end mt-4">
+                    <button type="button" class="btn btn-warning fw-bold px-5 py-2"><i class="fa-solid fa-save me-1"></i> Kaydet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔒 GÜVENLİK SEKME -->
+        <div class="tab-pane fade" id="securityTab" role="tabpanel">
+            <div class="card border-0 shadow-lg rounded-4 p-4">
+                <h5 class="text-warning mb-3"><i class="fa-solid fa-shield-halved me-2"></i> Güvenlik Ayarları</h5>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-lock text-warning me-2"></i> İki Adımlı Doğrulama (2FA)</h6>
+                            <p class="text-muted small">Hesabınıza giriş yaparken ekstra güvenlik katmanı ekler.</p>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input border-warning" type="checkbox" id="twoFactor">
+                                <label class="form-check-label" for="twoFactor">Etkinleştir</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark"><i class="fa-solid fa-envelope-open-text text-warning me-2"></i> Giriş Uyarıları</h6>
+                            <p class="text-muted small">Yeni bir cihazdan giriş yapıldığında e-posta bildirimi alırsınız.</p>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input border-warning" type="checkbox" id="loginAlerts" checked>
+                                <label class="form-check-label" for="loginAlerts">E-posta bildirimi gönder</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="button" class="btn btn-warning fw-bold px-5 py-2"><i class="fa-solid fa-shield me-1"></i> Güvenlik Ayarlarını Kaydet</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Fotoğraf önizleme
+        document.getElementById("profileImage").addEventListener("change", e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => document.getElementById("profilePreview").src = ev.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Profil güncelleme
+        document.getElementById("profileForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const fd = new FormData(this);
+            const res = await fetch("/Admin/User/UpdateUserInfo", { method: "POST", body: fd });
+            if (res.ok) {
+                Swal.fire({ icon: "success", title: "Profil başarıyla güncellendi!", timer: 1500, showConfirmButton: false })
+                    .then(() => location.reload());
+            } else Swal.fire("Hata", "Profil güncelleme başarısız!", "error");
+        });
+    </script>
+
+    <style>
+        .nav-tabs .nav-link {
+            color: #555;
+            border: none;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+        .nav-tabs .nav-link.active {
+            color: #000;
+            border-bottom: 3px solid #ffc107;
+            background: none;
+        }
+        .card:hover { box-shadow: 0 0 25px rgba(255, 204, 0, 0.25); }
+        .form-control:focus, .form-select:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.25);
+        }
+    </style>
+}
