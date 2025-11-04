@@ -44,7 +44,7 @@ namespace MultiShop.WebUI.Controllers
             }
 
             // 3️⃣ Yeni cookie ve token set edilmiş durumda
-            return RedirectToAction("Index", "User");
+            return RedirectToAction("Index", "Default");
         }
         public async Task<IActionResult> Logout()
         {
